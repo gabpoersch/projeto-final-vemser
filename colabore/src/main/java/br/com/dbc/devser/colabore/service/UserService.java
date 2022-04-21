@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -24,6 +27,12 @@ public class UserService {
         return objectMapper.convertValue(userRepository.save(userEntity), UserDTO.class);
     }
 
+    public List<UserDTO> list () {
+        return userRepository.findAll().stream()
+                .map(user -> objectMapper.convertValue(user, UserDTO.class))
+                .collect(Collectors.toList());
+    }
+
     public UserDTO update (UserDTO updateUserDTO, Integer userId) throws BusinessRuleException {
         userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         UserEntity userEntity = userRepository.getById(userId);
@@ -36,9 +45,10 @@ public class UserService {
         return objectMapper.convertValue((userRepository.save(userEntity)), UserDTO.class);
     }
 
-    public void delete (Integer userId) throws BusinessRuleException {
+    public UserDTO delete (Integer userId) throws BusinessRuleException {
         userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         userRepository.deleteById(userId);
+        return null;
     }
 
     public UserEntity findByLogin(String email) {
