@@ -1,18 +1,46 @@
 package br.com.dbc.devser.colabore.entity;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity (name = "user_colabore")
 public class UserEntity implements UserDetails {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_user")
+    @SequenceGenerator(name = "sequence_user", sequenceName = "sequence_user", allocationSize = 1)
+    @Column(name = "user_id")
     private Integer userId;
+
+    @Column(name = "full_name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "profile_photo")
+    private String profilePhoto;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "donator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DonationEntity> donations;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fundraiserCreator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<FundraiserEntity> fundraisers;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

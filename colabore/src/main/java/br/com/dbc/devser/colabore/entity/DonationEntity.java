@@ -25,11 +25,9 @@ public class DonationEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "donator_id", referencedColumnName = "user_id")
-    @Column(name = "donator_id")
     private UserEntity donator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
-    @Column(name = "fundraiser_id")
     private FundraiserEntity fundraiser;
 }

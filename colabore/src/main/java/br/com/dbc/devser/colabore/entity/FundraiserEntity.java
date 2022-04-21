@@ -44,6 +44,5 @@ public class FundraiserEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")
-    @Column(name = "fundraiser_creator")
-    private UserEntity fundraiseCreator;
+    private UserEntity fundraiserCreator;
 }
