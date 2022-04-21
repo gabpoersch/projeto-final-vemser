@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
@@ -46,13 +47,13 @@ public class UserEntity implements UserDetails {
     private Set<FundraiserEntity> fundraisers;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinColumn(name = "role_id", referencedColumnName = "user_id")
-    private Set<RoleEntity> roles;
+    @OneToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    private RoleEntity roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return Set.of(roles);
     }
 
     @Override
