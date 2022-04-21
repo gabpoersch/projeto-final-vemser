@@ -1,7 +1,7 @@
 package br.com.dbc.devser.colabore.controller;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
-import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
+import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.service.FundraiserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,12 +20,12 @@ public class FundraiserController {
     }
 
     @GetMapping("/user/{numberPage}")
-    public Page<FundraiserDetailsDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) {
+    public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) {
         return fundraiserService.findUserFundraisers(numberPage);
     }
 
     @GetMapping("/findAll/{numberPage}")
-    public Page<FundraiserDetailsDTO> findAllFundraisers(@PathVariable("numberPage") Integer numberPage) {
+    public Page<FundraiserGenericDTO> findAllFundraisers(@PathVariable("numberPage") Integer numberPage) {
         return fundraiserService.findAllFundraisers(numberPage);
     }
 

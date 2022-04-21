@@ -1,7 +1,7 @@
 package br.com.dbc.devser.colabore.service;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
-import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
+import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
@@ -62,13 +62,13 @@ public class FundraiserService {
                 , FundraiserEntity.class));
     }
 
-    public Page<FundraiserDetailsDTO> findUserFundraisers(Integer numberPage) {
+    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) {
 
         String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return fundraiserRepository
                 .findFundraisersOfUser(Long.getLong(userId), getPageable(numberPage, 30))
-                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserDetailsDTO.class));
+                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
     }
 
     private FundraiserEntity findById(Long fundraiserId) throws BusinessRuleException {
@@ -78,11 +78,11 @@ public class FundraiserService {
 
     }
 
-    public Page<FundraiserDetailsDTO> findAllFundraisers(Integer numberPage) {
+    public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
 
         return fundraiserRepository
                 .findAllFundraisersActive(getPageable(numberPage, 20))
-                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserDetailsDTO.class));
+                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
 
     }
 
