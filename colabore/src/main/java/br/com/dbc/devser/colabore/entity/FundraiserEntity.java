@@ -33,7 +33,8 @@ public class FundraiserEntity {
     @Column(name = "cover_photo")
     private String coverPhoto;
 
-    private Boolean status;
+    @Column(name = "status")
+    private Boolean statusActive;
 
     //TODO: Decidir depois
     private Category category;
