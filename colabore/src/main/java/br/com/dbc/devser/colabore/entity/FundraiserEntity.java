@@ -3,6 +3,7 @@ package br.com.dbc.devser.colabore.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -22,16 +23,17 @@ public class FundraiserEntity {
 
     private String description;
 
-    private Double goal;
+    private BigDecimal goal;
 
     @Column(name = "current_value")
-    private Double currentValue;
+    private BigDecimal currentValue;
 
     @Column(name = "cover_photo")
     private String coverPhoto;
 
     private Boolean status;
 
+    //TODO: Decidir depois
     private Category category;
 
     @Column(name = "creation_date")

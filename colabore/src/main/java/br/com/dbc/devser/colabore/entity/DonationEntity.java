@@ -1,11 +1,35 @@
 package br.com.dbc.devser.colabore.entity;
 
-public class DonationEntity {
-    private Integer donationId;
-    private String message;
-    private Double value;
+import lombok.*;
 
-    //PEGAR DAS RESPECTIVAS ENTITIES
-    private Integer userId;
-    private Integer fundraiserId;
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity(name = "donation")
+public class DonationEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_DONATION")
+    @SequenceGenerator(name = "GEN_DONATION", sequenceName = "sequence_donation", allocationSize = 1)
+    @Column(name = "donation_id")
+    private Integer donationId;
+
+    private String message;
+
+    private BigDecimal value;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "donator_id", referencedColumnName = "user_id")
+    @Column(name = "donator_id")
+    private UserEntity donator;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
+    @Column(name = "fundraiser_id")
+    private FundraiserEntity fundraiser;
 }
