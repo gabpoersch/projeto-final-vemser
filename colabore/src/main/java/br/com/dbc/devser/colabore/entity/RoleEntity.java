@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "roles")
+@Entity(name = "roles_colabore")
 public class RoleEntity implements Serializable, GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_roles")
@@ -26,8 +26,8 @@ public class RoleEntity implements Serializable, GrantedAuthority {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "roles")
-    private Set<UserEntity> users;
+    @OneToOne
+    private UserEntity users;
 
     @Override
     public String getAuthority() {
