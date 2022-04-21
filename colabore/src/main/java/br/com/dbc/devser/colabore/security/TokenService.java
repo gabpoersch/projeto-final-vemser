@@ -33,9 +33,6 @@ public class TokenService {
         Date now = new Date();
         Date exp = new Date(now.getTime() + Long.parseLong(expiration));
 
-        List<String> regras = userEntity.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).toList();
-
         String token = Jwts.builder()
                 .setIssuer("PrimeiroProjetoSpring")
                 .setSubject(userEntity.getUserId().toString())
@@ -48,7 +45,7 @@ public class TokenService {
     }
 
     public Authentication getAuthentication(HttpServletRequest request) {
-        String tokenBearer = request.getHeader(HEADER_AUTHORIZATION); // Bearer hfUIfs
+        String tokenBearer = request.getHeader(HEADER_AUTHORIZATION);
 
         if (tokenBearer != null) {
             String token = tokenBearer.replace(PREFIX, "");
