@@ -5,5 +5,5 @@ public enum Category {
     DOACOES,
     RIFAS,
     PATROCINIOS,
-    OUTROS;
+    OUTROS
 }

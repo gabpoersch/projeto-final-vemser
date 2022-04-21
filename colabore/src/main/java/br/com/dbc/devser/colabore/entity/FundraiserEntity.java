@@ -36,8 +36,8 @@ public class FundraiserEntity {
     @Column(name = "status")
     private Boolean statusActive;
 
-    //TODO: Decidir depois
-    private Category category;
+    @Column(name = "category_list")
+    private String categories;
 
     @Column(name = "creation_date")
     private Long creationDate;

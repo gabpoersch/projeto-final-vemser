@@ -2,7 +2,6 @@ package br.com.dbc.devser.colabore.service;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
-import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
@@ -20,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -64,7 +62,9 @@ public class FundraiserService {
                 , FundraiserEntity.class));
     }
 
-    public Page<FundraiserDetailsDTO> findUserFundraisers(String userId, Integer numberPage) {
+    public Page<FundraiserDetailsDTO> findUserFundraisers(Integer numberPage) {
+
+        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return fundraiserRepository
                 .findFundraisersOfUser(Long.getLong(userId), getPageable(numberPage, 30))

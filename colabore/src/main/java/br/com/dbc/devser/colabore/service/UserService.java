@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,20 +21,20 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
 
-    public UserDTO create (UserCreateDTO userDTO) {
+    public UserDTO create(UserCreateDTO userDTO) {
         UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userEntity.getPassword()));
 
         return objectMapper.convertValue(userRepository.save(userEntity), UserDTO.class);
     }
 
-    public List<UserDTO> list () {
+    public List<UserDTO> list() {
         return userRepository.findAll().stream()
                 .map(user -> objectMapper.convertValue(user, UserDTO.class))
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update (UserCreateDTO updateUserDTO, Integer userId) throws BusinessRuleException {
+    public UserDTO update(UserCreateDTO updateUserDTO, Integer userId) throws BusinessRuleException {
         userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         UserEntity userEntity = userRepository.getById(userId);
         userEntity.setEmail(updateUserDTO.getEmail());
@@ -46,7 +45,7 @@ public class UserService {
         return objectMapper.convertValue((userRepository.save(userEntity)), UserDTO.class);
     }
 
-    public UserDTO delete (Integer userId) throws BusinessRuleException {
+    public UserDTO delete(Integer userId) throws BusinessRuleException {
         userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         userRepository.deleteById(userId);
         return null;

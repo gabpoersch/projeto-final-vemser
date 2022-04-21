@@ -11,7 +11,6 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +29,7 @@ public class SpringFoxConfig {
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo());
     }
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Projeto Final DBC VemSer 2022/1")

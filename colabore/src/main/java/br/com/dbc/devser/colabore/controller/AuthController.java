@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -20,8 +21,9 @@ import javax.validation.Valid;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+
     @PostMapping()
-    public String auth (@RequestBody @Valid AuthDTO authDTO) {
+    public String auth(@RequestBody @Valid AuthDTO authDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         authDTO.getLogin(),
