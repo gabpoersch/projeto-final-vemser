@@ -14,13 +14,13 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "ROLES")
+@Entity(name = "roles")
 public class RoleEntity implements Serializable, GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_roles")
     @SequenceGenerator(name = "sequence_roles", sequenceName = "sequence_roles", allocationSize = 1)
     @Column(name = "role_id")
-    private Integer idRole;
+    private Integer roleId;
 
     @Column(name = "name")
     private String name;
