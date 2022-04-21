@@ -2,6 +2,7 @@ package br.com.dbc.devser.colabore.controller;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
+import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.service.FundraiserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class FundraiserController {
     }
 
     @DeleteMapping("/delete/{fundraiserId}")
-    public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) {
+    public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) throws BusinessRuleException {
         fundraiserService.deleteFundraiser(fundraiserId);
     }
 }

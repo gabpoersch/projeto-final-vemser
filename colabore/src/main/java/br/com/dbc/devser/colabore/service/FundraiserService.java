@@ -1,9 +1,12 @@
 package br.com.dbc.devser.colabore.service;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
+import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
+import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserMyContributionsDTO;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,25 +34,32 @@ public class FundraiserService {
 
     private final ObjectMapper objectMapper;
     private final FundraiserRepository fundraiserRepository;
-    private final UserService userService;
+    private final DonationRepository donationRepository;
 
     //TODO: Adicionar logs
 
+    //TODO: Adicionar lógica do token para setar o usuário.
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) {
-        String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        UserEntity userEntity = userService.fin
 
-        FundraiserEntity fundEntity = objectMapper.convertValue(fundraiserCreate
-                , FundraiserEntity.class);
+        String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        FundraiserEntity fundEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
 
         long milliseconds = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli();
 
+        Set<String> categoriesSet = fundraiserCreate.getCategories();
+        StringBuilder categoriesFormed = new StringBuilder();
+        for (String s : categoriesSet) {
+            categoriesFormed.append(s.replace(",", "")).append(",");
+        }
+        categoriesFormed.deleteCharAt(categoriesFormed.length() - 1);
+
         fundEntity.setCreationDate(milliseconds);
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
-//        fundEntity.setFundraiserCreator();
+        fundEntity.setCategories(categoriesFormed.toString().replace(" ", ""));
 
         fundraiserRepository.save(fundEntity);
     }
@@ -58,9 +72,36 @@ public class FundraiserService {
             throw new BusinessRuleException("Fundraiser already have donations.");
         }
 
-        fundraiserRepository.save(objectMapper.convertValue(fundraiserUpdate
-                , FundraiserEntity.class));
+        fundraiserRepository.save(objectMapper.convertValue(fundraiserUpdate, FundraiserEntity.class));
     }
+
+
+    public FundraiserDetailsDTO fundraiserDetails(Long fundraiserId) throws BusinessRuleException {
+
+        FundraiserEntity fundraiserEntity = findById(fundraiserId);
+
+        FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
+
+        details.setCategories(convertStringToList(fundraiserEntity.getCategories()));
+
+        return details;
+
+    }
+
+    public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
+        return fundraiserRepository
+                .findAllFundraisersActive(getPageable(numberPage, 20))
+                .map(fEntity -> {
+                    String categories = fEntity.getCategories();
+
+                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+
+                    generic.setCategories(convertStringToList(categories));
+
+                    return generic;
+                });
+    }
+
 
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) {
 
@@ -71,24 +112,30 @@ public class FundraiserService {
                 .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
     }
 
+    public List<FundraiserMyContributionsDTO> findMyContributions() {
+
+        String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return donationRepository.findMyDonations(Long.getLong(authId))
+                .stream()
+                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserMyContributionsDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+
+    public void deleteFundraiser(Long fundraiserId) throws BusinessRuleException {
+
+        FundraiserEntity fundraiserEntity = findById(fundraiserId);
+        fundraiserEntity.setStatusActive(false);
+        fundraiserRepository.save(fundraiserEntity);
+
+    }
+
     private FundraiserEntity findById(Long fundraiserId) throws BusinessRuleException {
 
         return fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
-
-    }
-
-    public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
-
-        return fundraiserRepository
-                .findAllFundraisersActive(getPageable(numberPage, 20))
-                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
-
-    }
-
-    public void deleteFundraiser(Long fundraiserId) {
-
-        fundraiserRepository.deleteById(fundraiserId);
 
     }
 
@@ -97,6 +144,10 @@ public class FundraiserService {
         return PageRequest
                 .of(numberPage, numberItems, Sort.by("creationDate").ascending());
 
+    }
+
+    private List<String> convertStringToList(String categories) {
+        return Arrays.asList(categories.split(","));
     }
 
 }

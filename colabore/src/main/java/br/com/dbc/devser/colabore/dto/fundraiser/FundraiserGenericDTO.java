@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +25,11 @@ public class FundraiserGenericDTO {
 
     private String fundraiserCreator;
 
-    private String categories;
+    private List<String> categories;
 
-    private LocalDateTime lasUpdate;
+    private LocalDateTime lastUpdate;
+
+    //>>>>>>>> PLUS
+
+    private LocalDateTime creationDate;
 }
