@@ -1,9 +1,11 @@
 package br.com.dbc.devser.colabore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,6 +43,10 @@ public class FundraiserEntity {
 
     @Column(name = "automatic_close")
     private Boolean automaticClose;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "fundraiser")
+    private Set<DonationEntity> donations;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")
