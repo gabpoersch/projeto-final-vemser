@@ -33,14 +33,12 @@ public class UserController {
     }
 
     @PutMapping
-    public UserDTO update (@Valid @RequestBody UserDTO userDTO) throws BusinessRuleException {
-        String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userService.update(userDTO, Integer.parseInt(authUserId));
+    public UserCreateDTO update (@Valid @RequestBody UserCreateDTO userUpdateDTO) throws BusinessRuleException {
+        return userService.update(userUpdateDTO, userService.getLoggedUserId());
     }
 
     @DeleteMapping
-    public UserDTO delete (@PathVariable("idUser") Integer userDeleteId) throws BusinessRuleException {
-        userDeleteId = (Integer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userService.delete(userDeleteId);
+    public UserDTO delete () throws BusinessRuleException {
+        return userService.delete(userService.getLoggedUserId());
     }
 }

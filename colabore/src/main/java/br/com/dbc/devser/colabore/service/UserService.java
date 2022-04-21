@@ -7,10 +7,12 @@ import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +35,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update (UserDTO updateUserDTO, Integer userId) throws BusinessRuleException {
+    public UserDTO update (UserCreateDTO updateUserDTO, Integer userId) throws BusinessRuleException {
         userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         UserEntity userEntity = userRepository.getById(userId);
-
-        userEntity = objectMapper.convertValue(updateUserDTO, UserEntity.class);
         userEntity.setEmail(updateUserDTO.getEmail());
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
+        userEntity = objectMapper.convertValue(updateUserDTO, UserEntity.class);
 
         return objectMapper.convertValue((userRepository.save(userEntity)), UserDTO.class);
     }
@@ -53,5 +54,11 @@ public class UserService {
 
     public UserEntity findByLogin(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Integer getLoggedUserId() throws BusinessRuleException {
+        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity loggedUser = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new BusinessRuleException("User not found!"));
+        return loggedUser.getUserId();
     }
 }
