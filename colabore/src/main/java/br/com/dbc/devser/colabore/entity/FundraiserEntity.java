@@ -42,7 +42,7 @@ public class FundraiserEntity {
     @Column(name = "creation_date")
     private Long creationDate;
 
-    @Column (name = "last_update")
+    @Column(name = "last_update")
     private Long lastUpdate;
 
     @Column(name = "automatic_close")

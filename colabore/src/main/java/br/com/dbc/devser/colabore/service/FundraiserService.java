@@ -27,7 +27,6 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -52,7 +51,7 @@ public class FundraiserService {
                 .toEpochMilli();
 
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
-                .orElseThrow(()-> new BusinessRuleException("User not found.")));
+                .orElseThrow(() -> new BusinessRuleException("User not found.")));
         fundEntity.setCreationDate(milliseconds);
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
@@ -108,13 +107,11 @@ public class FundraiserService {
                 });
     }
 
-    public List<FundraiserUserContributionsDTO> findUserContributions() {
+    public Page<FundraiserUserContributionsDTO> findUserContributions(Integer numberPage) {
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return donationRepository.findMyDonations(Long.getLong(authId))
-                .stream()
-                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserUserContributionsDTO.class))
-                .collect(Collectors.toList());
+        return donationRepository.findMyDonations(Long.getLong(authId), getPageable(numberPage, 20))
+                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserUserContributionsDTO.class));
     }
 
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
@@ -127,7 +124,7 @@ public class FundraiserService {
                 });
     }
 
-    public Page<FundraiserGenericDTO> filterByFundraiserCompleted(Integer numberPage) {
+    public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
         return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage, 20))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
@@ -164,6 +161,7 @@ public class FundraiserService {
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
         generic.setCategories(convertStringToList(fEntity.getCategories()));
+        generic.setCurrentValue(calculateTotal(fEntity));
         generic.setCreationDate(convertLongToLocalDate(fEntity.getCreationDate()));
         generic.setLastUpdate(convertLongToLocalDate(fEntity.getLastUpdate()));
         generic.setFundraiserCreator(fEntity.getFundraiserCreator().getName());
@@ -181,6 +179,13 @@ public class FundraiserService {
         }
         return categoriesFormed.deleteCharAt(categoriesFormed.length() - 1)
                 .toString().replace(" ", "");
+    }
+
+    private BigDecimal calculateTotal(FundraiserEntity fEntity) {
+        return fEntity.getDonations().stream().map(dEntity -> dEntity.getValue())
+                .reduce((b1, b2) -> {
+                    return b1.add(b2);
+                }).orElse(null);
     }
 
 }
