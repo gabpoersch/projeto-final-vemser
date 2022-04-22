@@ -4,7 +4,8 @@ import br.com.dbc.devser.colabore.dto.donate.DonateCreateDTO;
 import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.exception.FundraiserException;
+import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -24,14 +25,14 @@ public class DonationService {
     private final FundraiserRepository fundraiserRepository;
     private final UserRepository userRepository;
 
-    public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws BusinessRuleException {
+    public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws UserColaboreException, FundraiserException {
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         UserEntity userEntity = userRepository.findById(Integer.parseInt(authId))
-                .orElseThrow(() -> new BusinessRuleException("User not found."));
+                .orElseThrow(() -> new UserColaboreException("User not found in database."));
 
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
-                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
+                .orElseThrow(() -> new FundraiserException("Fundraiser not found in database."));
 
         DonationEntity donationEntity = objectMapper.convertValue(donate, DonationEntity.class);
 

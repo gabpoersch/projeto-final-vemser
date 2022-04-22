@@ -1,7 +1,8 @@
 package br.com.dbc.devser.colabore.controller;
 
 import br.com.dbc.devser.colabore.dto.donate.DonateCreateDTO;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.exception.FundraiserException;
+import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.DonationService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,7 +22,8 @@ public class DonationController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/{fundraiserId}")
-    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody DonateCreateDTO donate) throws BusinessRuleException {
+    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody DonateCreateDTO donate)
+            throws UserColaboreException, FundraiserException {
         donationService.makeDonation(fundraiserId, donate);
     }
 }

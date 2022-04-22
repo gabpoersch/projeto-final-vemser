@@ -42,23 +42,29 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, headers, status);
     }
 
-    @ExceptionHandler(BusinessRuleException.class)
-    public ResponseEntity<Object> handleException(BusinessRuleException exception,
+    @ExceptionHandler(UserColaboreException.class)
+    public ResponseEntity<Object> handleException(UserColaboreException exception,
                                                   HttpServletRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("message", exception.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return getResponseException(exception);
+    }
+
+    @ExceptionHandler(FundraiserException.class)
+    public ResponseEntity<Object> handleException(FundraiserException exception,
+                                                  HttpServletRequest request) {
+        return getResponseException(exception);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleException(ConstraintViolationException exception,
                                                   HttpServletRequest request) {
+        return getResponseException(exception);
+    }
+
+    private ResponseEntity<Object> getResponseException(Exception ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("message", exception.getMessage());
+        body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
