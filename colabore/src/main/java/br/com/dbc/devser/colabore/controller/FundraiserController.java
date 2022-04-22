@@ -6,6 +6,9 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.service.FundraiserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,10 @@ public class FundraiserController {
 
     private final FundraiserService fundraiserService;
 
+    @ApiOperation(value = "Salva uma campanha no banco de dados.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "A campanha foi persistida com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping
     public void saveFundraiser(@RequestBody FundraiserCreateDTO newFund) throws BusinessRuleException {
         fundraiserService.saveFundraiser(newFund);

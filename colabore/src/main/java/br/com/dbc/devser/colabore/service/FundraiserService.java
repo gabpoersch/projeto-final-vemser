@@ -68,6 +68,11 @@ public class FundraiserService {
             throw new BusinessRuleException("Fundraiser already have donations.");
         }
 
+        long milliseconds = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+        fundraiserEntity.setLastUpdate(milliseconds);
+
         fundraiserRepository.save(objectMapper.convertValue(fundraiserUpdate, FundraiserEntity.class));
     }
 
