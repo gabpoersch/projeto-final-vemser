@@ -37,6 +37,8 @@ public class DonationService {
 
         donationEntity.setDonator(userEntity);
         donationEntity.setFundraiser(fundraiserEntity);
-        donationRepository.save(donationEntity);
+        DonationEntity donationSaved = donationRepository.save(donationEntity);
+
+        log.info("Donation {} registered with success.", donationSaved.getDonationId());
     }
 }

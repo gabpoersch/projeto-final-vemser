@@ -26,7 +26,7 @@ public class UserService {
     public UserDTO create(UserCreateDTO userDTO) throws BusinessRuleException {
         UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userEntity.getPassword()));
-        userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException ("Role not found!")));
+        userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException("Role not found!")));
 
         return objectMapper.convertValue(userRepository.save(userEntity), UserDTO.class);
     }

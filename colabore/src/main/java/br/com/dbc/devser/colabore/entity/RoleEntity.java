@@ -1,7 +1,6 @@
 package br.com.dbc.devser.colabore.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
