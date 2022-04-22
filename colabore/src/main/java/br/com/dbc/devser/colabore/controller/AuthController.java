@@ -1,6 +1,6 @@
 package br.com.dbc.devser.colabore.controller;
 
-import br.com.dbc.devser.colabore.dto.AuthDTO;
+import br.com.dbc.devser.colabore.dto.authentication.AuthDTO;
 import br.com.dbc.devser.colabore.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

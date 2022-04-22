@@ -1,4 +1,4 @@
-package br.com.dbc.devser.colabore.dto;
+package br.com.dbc.devser.colabore.dto.authentication;
 
 import lombok.Data;
 

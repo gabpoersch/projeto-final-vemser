@@ -14,7 +14,7 @@ public class DonationController {
     private final DonationService donationService;
 
     @PostMapping("/{fundraiserId}")
-    public void makeDonation(@PathVariable("fundraiserId")Long fundraiserId, @RequestBody DonateCreateDTO donate) throws BusinessRuleException {
-        donationService.makeDonation (fundraiserId, donate);
+    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody DonateCreateDTO donate) throws BusinessRuleException {
+        donationService.makeDonation(fundraiserId, donate);
     }
 }
