@@ -35,8 +35,6 @@ public class FundraiserService {
     private final DonationRepository donationRepository;
     private final UserRepository userRepository;
 
-    //TODO: Adicionar logs
-
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
 
         String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
