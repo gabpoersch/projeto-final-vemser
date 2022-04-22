@@ -4,7 +4,8 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.exception.FundraiserException;
+import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.FundraiserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -27,7 +28,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping
-    public void saveFundraiser(@RequestBody FundraiserCreateDTO fundraiser) throws BusinessRuleException {
+    public void saveFundraiser(@RequestBody FundraiserCreateDTO fundraiser) throws UserColaboreException {
         fundraiserService.saveFundraiser(fundraiser);
     }
 
@@ -36,7 +37,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping("/{fundraiserId}")
-    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody FundraiserCreateDTO fundUpdate) throws BusinessRuleException {
+    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody FundraiserCreateDTO fundUpdate) throws FundraiserException {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
 
@@ -55,7 +56,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/fundraiserDetails/{fundraiserId}")
-    public FundraiserDetailsDTO fundraiserDetails(@PathVariable("fundraiserId") Long fundraiserId) throws BusinessRuleException {
+    public FundraiserDetailsDTO fundraiserDetails(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException {
         return fundraiserService.fundraiserDetails(fundraiserId);
     }
 

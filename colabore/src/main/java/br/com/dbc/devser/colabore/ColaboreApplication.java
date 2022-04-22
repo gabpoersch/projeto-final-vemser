@@ -9,7 +9,7 @@ public class ColaboreApplication {
 // exceções personalidazadas,Adicionar validações,
 // refatorar e deixa perfomático, testar api, testes unitários
 
-//TODO: ideias: teste automatizado
+    //TODO: ideias: teste automatizado
     public static void main(String[] args) {
         SpringApplication.run(ColaboreApplication.class, args);
     }

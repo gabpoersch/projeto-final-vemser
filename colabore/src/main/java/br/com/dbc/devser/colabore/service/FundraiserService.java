@@ -5,7 +5,8 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.exception.FundraiserException;
+import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -36,14 +37,14 @@ public class FundraiserService {
 
     //TODO: Adicionar logs
 
-    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws BusinessRuleException {
+    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
 
         String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         FundraiserEntity fundEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
 
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
-                .orElseThrow(() -> new BusinessRuleException("User not found.")));
+                .orElseThrow(() -> new UserColaboreException("User not found.")));
         fundEntity.setCreationDate(LocalDateTime.now());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
@@ -52,12 +53,12 @@ public class FundraiserService {
         fundraiserRepository.save(fundEntity);
     }
 
-    public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws BusinessRuleException {
+    public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException {
 
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
 
         if (fundraiserEntity.getDonations().size() != 0) {
-            throw new BusinessRuleException("Fundraiser already have donations.");
+            throw new FundraiserException("Fundraiser already have donations.");
         }
 
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
@@ -66,7 +67,7 @@ public class FundraiserService {
     }
 
 
-    public FundraiserDetailsDTO fundraiserDetails(Long fundraiserId) throws BusinessRuleException {
+    public FundraiserDetailsDTO fundraiserDetails(Long fundraiserId) throws FundraiserException {
 
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
 
@@ -138,9 +139,9 @@ public class FundraiserService {
         fundraiserRepository.deleteById(fundraiserId);
     }
 
-    private FundraiserEntity findById(Long fundraiserId) throws BusinessRuleException {
+    private FundraiserEntity findById(Long fundraiserId) throws FundraiserException {
         return fundraiserRepository.findById(fundraiserId)
-                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
+                .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
     }
 
     private Pageable getPageable(Integer numberPage, Integer numberItems) {

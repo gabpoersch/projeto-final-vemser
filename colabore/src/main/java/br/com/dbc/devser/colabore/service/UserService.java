@@ -22,6 +22,8 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
+    //TODO: adicionar logs e exceções personalizadas
+
 
     public UserDTO create(UserCreateDTO userDTO) throws BusinessRuleException {
         UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
