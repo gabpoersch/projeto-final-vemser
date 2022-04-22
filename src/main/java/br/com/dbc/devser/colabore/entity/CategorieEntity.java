@@ -24,4 +24,8 @@ public class CategorieEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
     private Set<FundraiserEntity> fundraisers;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity user;
 }

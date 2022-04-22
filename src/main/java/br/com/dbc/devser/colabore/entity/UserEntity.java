@@ -38,12 +38,16 @@ public class UserEntity implements UserDetails {
     private String profilePhoto;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "donator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "donator", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<DonationEntity> donations;
 
     @JsonIgnore
     @OneToMany(mappedBy = "fundraiserCreator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FundraiserEntity> fundraisers;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CategorieEntity> categoriesUser;
 
     @JsonIgnore
     @OneToOne
