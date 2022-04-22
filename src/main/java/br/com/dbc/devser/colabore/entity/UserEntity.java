@@ -35,7 +35,7 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @Column(name = "profile_photo")
-    private String profilePhoto;
+    private byte[] profilePhoto;
 
     @JsonIgnore
     @OneToMany(mappedBy = "donator", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

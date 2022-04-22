@@ -8,22 +8,30 @@ import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
     public UserDTO create(UserCreateDTO userDTO) throws BusinessRuleException {
         UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
+        try {
+            userEntity.setProfilePhoto(FileUtils.readFileToByteArray(userDTO.getProfilePhoto()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userEntity.getPassword()));
         userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException("Role not found!")));
 

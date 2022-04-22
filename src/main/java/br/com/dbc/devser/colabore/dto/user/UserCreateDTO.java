@@ -3,6 +3,8 @@ package br.com.dbc.devser.colabore.dto.user;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.File;
+
 @Data
 public class UserCreateDTO {
 
@@ -16,5 +18,5 @@ public class UserCreateDTO {
     private String password;
 
     @ApiModelProperty(value = "Foto de perfil")
-    private String profilePhoto;
+    private File profilePhoto;
 }
