@@ -15,12 +15,12 @@ public class FundraiserController {
 
     private final FundraiserService fundraiserService;
 
-    @PostMapping("/save")
-    public void saveFundraiser(@RequestBody FundraiserCreateDTO newFund) {
+    @PostMapping
+    public void saveFundraiser(@RequestBody FundraiserCreateDTO newFund) throws BusinessRuleException {
         fundraiserService.saveFundraiser(newFund);
     }
 
-    @GetMapping("/user/{numberPage}")
+    @GetMapping("/userFundraisers/{numberPage}")
     public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) {
         return fundraiserService.findUserFundraisers(numberPage);
     }
@@ -30,7 +30,7 @@ public class FundraiserController {
         return fundraiserService.findAllFundraisers(numberPage);
     }
 
-    @DeleteMapping("/delete/{fundraiserId}")
+    @DeleteMapping("/{fundraiserId}")
     public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) throws BusinessRuleException {
         fundraiserService.deleteFundraiser(fundraiserId);
     }
