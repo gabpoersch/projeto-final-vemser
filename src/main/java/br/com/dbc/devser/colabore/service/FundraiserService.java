@@ -4,6 +4,7 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
+import br.com.dbc.devser.colabore.entity.CategorieEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,10 +45,13 @@ public class FundraiserService {
 
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
+
         fundEntity.setCreationDate(LocalDateTime.now());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
-        fundEntity.setCategories(convertListToString(fundraiserCreate.getCategories()));
+//        fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(str -> {
+//            return new CategorieEntity().builder().name(str).build();
+//        }).collect(Collectors.toSet()));
 
         fundraiserRepository.save(fundEntity);
     }
@@ -71,7 +76,7 @@ public class FundraiserService {
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-        details.setCategories(convertStringToList(fundraiserEntity.getCategories()));
+//        details.setCategories(fundraiserEntity.getCategories());
 
         return details;
 
@@ -149,7 +154,7 @@ public class FundraiserService {
 
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
-        generic.setCategories(convertStringToList(fEntity.getCategories()));
+//        generic.setCategories(convertStringToList(fEntity.getCategories()));
         generic.setCurrentValue(calculateTotal(fEntity));
         generic.setCreationDate(fEntity.getCreationDate());
         generic.setLastUpdate(fEntity.getLastUpdate());

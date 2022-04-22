@@ -22,10 +22,13 @@ public class FundraiserEntity {
     @Column(name = "fundraiser_id")
     private Long fundraiserId;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "goal")
     private BigDecimal goal;
 
     @Column(name = "current_value")
@@ -36,9 +39,6 @@ public class FundraiserEntity {
 
     @Column(name = "status")
     private Boolean statusActive;
-
-    @Column(name = "category_list")
-    private String categories;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -52,6 +52,10 @@ public class FundraiserEntity {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "fundraiser")
     private Set<DonationEntity> donations;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "fundraisers")
+    private Set<CategorieEntity> categories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -35,7 +35,7 @@ public class FundraiserGenericDTO {
     private String fundraiserCreator;
 
     @ApiModelProperty(value = "Lista de categorias")
-    private List<String> categories;
+    private Set<String> categories;
 
     @ApiModelProperty(value = "Última atualização")
     private LocalDateTime lastUpdate;
