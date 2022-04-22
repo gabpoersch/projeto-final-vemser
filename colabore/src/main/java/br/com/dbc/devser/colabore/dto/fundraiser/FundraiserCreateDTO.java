@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -24,5 +25,5 @@ public class FundraiserCreateDTO {
 
     private String coverPhoto;
 
-    private Set<String> categories;
+    private List<String> categories;
 }

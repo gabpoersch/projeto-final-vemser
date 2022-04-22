@@ -3,7 +3,7 @@ package br.com.dbc.devser.colabore.service;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
-import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserMyContributionsDTO;
+import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
@@ -24,7 +24,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,17 +48,10 @@ public class FundraiserService {
                 .toInstant()
                 .toEpochMilli();
 
-        Set<String> categoriesSet = fundraiserCreate.getCategories();
-        StringBuilder categoriesFormed = new StringBuilder();
-        for (String s : categoriesSet) {
-            categoriesFormed.append(s.replace(",", "")).append(",");
-        }
-        categoriesFormed.deleteCharAt(categoriesFormed.length() - 1);
-
         fundEntity.setCreationDate(milliseconds);
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
-        fundEntity.setCategories(categoriesFormed.toString().replace(" ", ""));
+        fundEntity.setCategories(convertListToString(fundraiserCreate.getCategories()));
 
         fundraiserRepository.save(fundEntity);
     }
@@ -112,17 +104,34 @@ public class FundraiserService {
                 .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
     }
 
-    public List<FundraiserMyContributionsDTO> findMyContributions() {
+    public List<FundraiserUserContributionsDTO> findUserContributions() {
 
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return donationRepository.findMyDonations(Long.getLong(authId))
                 .stream()
-                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserMyContributionsDTO.class))
+                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserUserContributionsDTO.class))
                 .collect(Collectors.toList());
 
     }
 
+    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
+
+        return fundraiserRepository
+                .findByCategoriesContainsIgnoreCase(convertListToString(categories), getPageable(numberPage, 20))
+                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
+
+    }
+
+    public Page<FundraiserGenericDTO> filterByFundraiserCompleted(Integer numberPage) {
+        return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage, 20))
+                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
+    }
+
+    public Page<FundraiserGenericDTO> filterByFundraiserIncomplete(Integer numberPage) {
+        return fundraiserRepository.findFundraiserIncomplete(getPageable(numberPage, 20))
+                .map(fEntity -> objectMapper.convertValue(fEntity, FundraiserGenericDTO.class));
+    }
 
     public void deleteFundraiser(Long fundraiserId) throws BusinessRuleException {
 
@@ -148,6 +157,15 @@ public class FundraiserService {
 
     private List<String> convertStringToList(String categories) {
         return Arrays.asList(categories.split(","));
+    }
+
+    private String convertListToString(List<String> listCategories) {
+        StringBuilder categoriesFormed = new StringBuilder();
+        for (String s : listCategories) {
+            categoriesFormed.append(s.replace(",", "")).append(",");
+        }
+        return categoriesFormed.deleteCharAt(categoriesFormed.length() - 1)
+                .toString().replace(" ", "");
     }
 
 }

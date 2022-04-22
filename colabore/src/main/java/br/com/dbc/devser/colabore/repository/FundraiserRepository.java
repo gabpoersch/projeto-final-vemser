@@ -16,4 +16,10 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
     Page<FundraiserEntity> findAllFundraisersActive(Pageable pageable);
 
     Page<FundraiserEntity> findByCategoriesContainsIgnoreCase (String categories, Pageable pageable);
+
+    @Query("select f from fundraiser f where f.currentValue >= f.goal")
+    Page<FundraiserEntity> findFundraiserCompleted (Pageable pageable);
+
+    @Query("select f from fundraiser f where f.currentValue < f.goal")
+    Page<FundraiserEntity> findFundraiserIncomplete (Pageable pageable);
 }

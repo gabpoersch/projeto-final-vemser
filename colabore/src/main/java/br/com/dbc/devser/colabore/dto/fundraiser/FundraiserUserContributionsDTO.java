@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FundraiserMyContributionsDTO extends FundraiserGenericDTO{
+public class FundraiserUserContributionsDTO extends FundraiserGenericDTO{
 
     private Boolean status;
     private BigDecimal totalContribution;
