@@ -1,10 +1,7 @@
 package br.com.dbc.devser.colabore.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +13,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity(name = "user_colabore")
 public class UserEntity implements UserDetails {
 
@@ -35,15 +33,19 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @Column(name = "profile_photo")
-    private String profilePhoto;
+    private byte[] profilePhoto;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "donator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "donator", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<DonationEntity> donations;
 
     @JsonIgnore
     @OneToMany(mappedBy = "fundraiserCreator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FundraiserEntity> fundraisers;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CategorieEntity> categoriesUser;
 
     @JsonIgnore
     @OneToOne

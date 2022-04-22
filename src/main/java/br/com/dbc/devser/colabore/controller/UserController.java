@@ -26,7 +26,7 @@ public class UserController {
         return userService.list();
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) throws BusinessRuleException {
         return userService.create(userCreateDTO);
     }

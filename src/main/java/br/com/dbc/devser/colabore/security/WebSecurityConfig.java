@@ -3,6 +3,7 @@ package br.com.dbc.devser.colabore.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,9 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable().and().cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth").permitAll()
-                .antMatchers("/").permitAll()
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/auth","/user/register").permitAll()
+                .antMatchers("/donation/**", "/fundraiser/**", "/user/**").hasAnyRole("USER")
+//                .antMatchers(HttpMethod.POST, ).permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }

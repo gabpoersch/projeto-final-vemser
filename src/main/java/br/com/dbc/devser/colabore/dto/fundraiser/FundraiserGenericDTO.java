@@ -1,5 +1,6 @@
 package br.com.dbc.devser.colabore.dto.fundraiser;
 
+import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +33,7 @@ public class FundraiserGenericDTO {
     private BigDecimal currentValue;
 
     @ApiModelProperty(value = "Criador/autor da campanha")
-    private String fundraiserCreator;
+    private UserDTO fundraiserCreator;
 
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;
