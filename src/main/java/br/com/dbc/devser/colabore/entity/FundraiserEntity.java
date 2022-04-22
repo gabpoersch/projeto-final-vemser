@@ -35,7 +35,7 @@ public class FundraiserEntity {
     private BigDecimal currentValue;
 
     @Column(name = "cover_photo")
-    private String coverPhoto;
+    private byte[] coverPhoto;
 
     @Column(name = "status")
     private Boolean statusActive;

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class FundraiserCreateDTO {
     private String description;
 
     @ApiModelProperty(value = "Foto de capa")
-    private String coverPhoto;
+    private File coverPhoto;
 
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;

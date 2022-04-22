@@ -5,6 +5,7 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.entity.CategorieEntity;
+import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
@@ -14,6 +15,7 @@ import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +23,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,12 +49,15 @@ public class FundraiserService {
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
 
+        try {
+            fundEntity.setCoverPhoto(FileUtils.readFileToByteArray(fundraiserCreate.getCoverPhoto()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         fundEntity.setCreationDate(LocalDateTime.now());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
-//        fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(str -> {
-//            return new CategorieEntity().builder().name(str).build();
-//        }).collect(Collectors.toSet()));
+        fundEntity.setCategories(convertCategoriesEntity(fundraiserCreate.getCategories()));
 
         fundraiserRepository.save(fundEntity);
     }
@@ -64,9 +70,19 @@ public class FundraiserService {
             throw new FundraiserException("Fundraiser already have donations.");
         }
 
+        fundraiserEntity.setTitle(fundraiserUpdate.getTitle());
+        fundraiserEntity.setGoal(fundraiserUpdate.getGoal());
+        fundraiserEntity.setDescription(fundraiserUpdate.getDescription());
+        fundraiserEntity.setCategories(convertCategoriesEntity(fundraiserUpdate.getCategories()));
+        fundraiserEntity.setAutomaticClose(fundraiserUpdate.getAutomaticClose());
+        try {
+            fundraiserEntity.setCoverPhoto(FileUtils.readFileToByteArray(fundraiserUpdate.getCoverPhoto()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
 
-        fundraiserRepository.save(objectMapper.convertValue(fundraiserUpdate, FundraiserEntity.class));
+        fundraiserRepository.save(fundraiserEntity);
     }
 
 
@@ -76,20 +92,17 @@ public class FundraiserService {
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-//        details.setCategories(fundraiserEntity.getCategories());
+        details.setCategories(convertCategories(fundraiserEntity.getCategories()));
 
         return details;
-
     }
 
     public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
         return fundraiserRepository
                 .findAllFundraisersActive(getPageable(numberPage, 20))
                 .map(fEntity -> {
-
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
-
                 });
     }
 
@@ -112,15 +125,15 @@ public class FundraiserService {
                 .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserUserContributionsDTO.class));
     }
 
-    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
-        return fundraiserRepository
-                .findByCategoriesContainsIgnoreCaseAndStatusActive(convertListToString(categories), true
-                        , getPageable(numberPage, 20))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
-    }
+//    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
+//        return fundraiserRepository
+//                .findByCategoriesContainsIgnoreCaseAndStatusActive(convertListToString(categories), true
+//                        , getPageable(numberPage, 20))
+//                .map(fEntity -> {
+//                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+//                    return completeFundraiser(generic, fEntity);
+//                });
+//    }
 
     public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
         return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage, 20))
@@ -154,7 +167,7 @@ public class FundraiserService {
 
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
-//        generic.setCategories(convertStringToList(fEntity.getCategories()));
+        generic.setCategories(convertCategories(fEntity.getCategories()));
         generic.setCurrentValue(calculateTotal(fEntity));
         generic.setCreationDate(fEntity.getCreationDate());
         generic.setLastUpdate(fEntity.getLastUpdate());
@@ -162,8 +175,16 @@ public class FundraiserService {
         return generic;
     }
 
-    private List<String> convertStringToList(String categories) {
-        return Arrays.asList(categories.split(","));
+    private Set<String> convertCategories(Set<CategorieEntity> categories) {
+        return categories.stream()
+                .map(CategorieEntity::getName)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<CategorieEntity> convertCategoriesEntity(Set<String> listCategories) {
+        return listCategories.stream()
+                .map(str -> CategorieEntity.builder().name(str).build())
+                .collect(Collectors.toSet());
     }
 
     private String convertListToString(List<String> listCategories) {
@@ -176,10 +197,8 @@ public class FundraiserService {
     }
 
     private BigDecimal calculateTotal(FundraiserEntity fEntity) {
-        return fEntity.getDonations().stream().map(dEntity -> dEntity.getValue())
-                .reduce((b1, b2) -> {
-                    return b1.add(b2);
-                }).orElse(null);
+        return fEntity.getDonations().stream().map(DonationEntity::getValue)
+                .reduce(BigDecimal::add).orElse(null);
     }
 
 }
