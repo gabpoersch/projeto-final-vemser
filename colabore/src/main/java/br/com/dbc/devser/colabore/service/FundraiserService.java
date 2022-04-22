@@ -101,7 +101,7 @@ public class FundraiserService {
                 });
     }
 
-    public Page<FundraiserUserContributionsDTO> findUserContributions(Integer numberPage) {
+    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) {
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return donationRepository.findMyDonations(Long.getLong(authId), getPageable(numberPage, 20))

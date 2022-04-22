@@ -27,8 +27,8 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping
-    public void saveFundraiser(@RequestBody FundraiserCreateDTO newFund) throws BusinessRuleException {
-        fundraiserService.saveFundraiser(newFund);
+    public void saveFundraiser(@RequestBody FundraiserCreateDTO fundraiser) throws BusinessRuleException {
+        fundraiserService.saveFundraiser(fundraiser);
     }
 
     @ApiOperation(value = "Atualiza as informações de uma campanha no banco de dados.")
@@ -66,7 +66,7 @@ public class FundraiserController {
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/userContributions/{numberPage}")
     public Page<FundraiserUserContributionsDTO> userContributions(@PathVariable("numberPage") Integer numberPage) {
-        return fundraiserService.findUserContributions(numberPage);
+        return fundraiserService.userContributions(numberPage);
     }
 
     @ApiOperation(value = "Filtra as campanhas a partir de categorias listadas. Passar número da página como parâmetro (Resultado paginado)")
