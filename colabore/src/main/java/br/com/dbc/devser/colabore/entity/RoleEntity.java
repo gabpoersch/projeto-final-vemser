@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "roles_colabore")
+@Entity(name = "roles")
 public class RoleEntity implements Serializable, GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_roles")

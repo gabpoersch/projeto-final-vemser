@@ -4,6 +4,7 @@ import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
+import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,13 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final RoleRepository roleRepository;
 
 
-    public UserDTO create(UserCreateDTO userDTO) {
+    public UserDTO create(UserCreateDTO userDTO) throws BusinessRuleException {
         UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userEntity.getPassword()));
+        userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException ("Role not found!")));
 
         return objectMapper.convertValue(userRepository.save(userEntity), UserDTO.class);
     }

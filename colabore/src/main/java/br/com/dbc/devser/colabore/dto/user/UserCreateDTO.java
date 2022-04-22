@@ -1,5 +1,6 @@
 package br.com.dbc.devser.colabore.dto.user;
 
+import br.com.dbc.devser.colabore.entity.RoleEntity;
 import lombok.Data;
 
 @Data
