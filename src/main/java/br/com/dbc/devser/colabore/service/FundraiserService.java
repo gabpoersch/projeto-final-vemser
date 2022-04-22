@@ -4,6 +4,7 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
+import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.CategorieEntity;
 import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
@@ -171,7 +172,7 @@ public class FundraiserService {
         generic.setCurrentValue(calculateTotal(fEntity));
         generic.setCreationDate(fEntity.getCreationDate());
         generic.setLastUpdate(fEntity.getLastUpdate());
-        generic.setFundraiserCreator(fEntity.getFundraiserCreator().getName());
+        generic.setFundraiserCreator(objectMapper.convertValue(fEntity.getFundraiserCreator(), UserDTO.class));
         return generic;
     }
 

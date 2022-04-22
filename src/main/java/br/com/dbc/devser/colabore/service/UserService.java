@@ -27,18 +27,18 @@ public class UserService {
 
     public UserDTO create(UserCreateDTO userDTO) throws BusinessRuleException {
 
-        UserEntity userEntity = UserEntity.builder()
-                .name(userDTO.getName())
-                .email(userDTO.getEmail())
-                .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
-                .roles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException("Role not found!")))
-                .build();
-//        UserEntity userEntity = objectMapper.convertValue(userDTO, UserEntity.class);
-//        try {
-//            userEntity.setProfilePhoto(FileUtils.readFileToByteArray(userDTO.getProfilePhoto()));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        UserEntity userEntity = null;
+        try{
+            userEntity = UserEntity.builder()
+                    .name(userDTO.getName())
+                    .email(userDTO.getEmail())
+                    .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
+                    .roles(roleRepository.findById(1).orElseThrow(() -> new BusinessRuleException("Role not found!")))
+                    .profilePhoto(FileUtils.readFileToByteArray(userDTO.getProfilePhoto()))
+                    .build();
+        }catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
         return objectMapper.convertValue(userRepository.save(userEntity), UserDTO.class);
     }
