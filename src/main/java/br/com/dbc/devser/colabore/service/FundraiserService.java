@@ -87,6 +87,11 @@ public class FundraiserService {
         fundraiserRepository.save(fundraiserEntity);
     }
 
+    public void updateFundraiserStatus(Long fundraiserId) throws FundraiserException {
+        FundraiserEntity fundraiserEntity = findById(fundraiserId);
+        fundraiserEntity.setStatusActive(!fundraiserEntity.getStatusActive());
+    }
+
 
     public FundraiserDetailsDTO fundraiserDetails(Long fundraiserId) throws FundraiserException {
 

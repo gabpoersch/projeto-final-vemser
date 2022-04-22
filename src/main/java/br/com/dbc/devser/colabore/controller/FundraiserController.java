@@ -41,6 +41,15 @@ public class FundraiserController {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
 
+    @ApiOperation(value = "Atualiza o status de uma campanha no banco de dados.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "O status da campanha foi atualizado com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @PutMapping("/{fundraiserId}")
+    public void updateFundraiserStatus(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException {
+        fundraiserService.updateFundraiserStatus(fundraiserId);
+    }
+
     @ApiOperation(value = "Lista as campanhas do usuário. Passar número da página como parâmetro (Resultado paginado).")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
