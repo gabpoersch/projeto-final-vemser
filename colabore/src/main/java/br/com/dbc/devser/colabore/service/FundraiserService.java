@@ -20,13 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimeZone;
 
 @Service
 @Slf4j
@@ -46,13 +42,9 @@ public class FundraiserService {
 
         FundraiserEntity fundEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
 
-        long milliseconds = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
                 .orElseThrow(() -> new BusinessRuleException("User not found.")));
-        fundEntity.setCreationDate(milliseconds);
+        fundEntity.setCreationDate(LocalDateTime.now());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
         fundEntity.setCategories(convertListToString(fundraiserCreate.getCategories()));
@@ -68,10 +60,7 @@ public class FundraiserService {
             throw new BusinessRuleException("Fundraiser already have donations.");
         }
 
-        long milliseconds = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-        fundraiserEntity.setLastUpdate(milliseconds);
+        fundraiserEntity.setLastUpdate(LocalDateTime.now());
 
         fundraiserRepository.save(objectMapper.convertValue(fundraiserUpdate, FundraiserEntity.class));
     }
@@ -159,16 +148,12 @@ public class FundraiserService {
                 .of(numberPage, numberItems, Sort.by("creationDate").ascending());
     }
 
-    private LocalDateTime convertLongToLocalDate(Long milliseconds) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(milliseconds),
-                TimeZone.getDefault().toZoneId());
-    }
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
         generic.setCategories(convertStringToList(fEntity.getCategories()));
         generic.setCurrentValue(calculateTotal(fEntity));
-        generic.setCreationDate(convertLongToLocalDate(fEntity.getCreationDate()));
-        generic.setLastUpdate(convertLongToLocalDate(fEntity.getLastUpdate()));
+        generic.setCreationDate(fEntity.getCreationDate());
+        generic.setLastUpdate(fEntity.getLastUpdate());
         generic.setFundraiserCreator(fEntity.getFundraiserCreator().getName());
         return generic;
     }

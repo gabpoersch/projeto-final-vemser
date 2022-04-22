@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -40,10 +41,10 @@ public class FundraiserEntity {
     private String categories;
 
     @Column(name = "creation_date")
-    private Long creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name = "last_update")
-    private Long lastUpdate;
+    private LocalDateTime lastUpdate;
 
     @Column(name = "automatic_close")
     private Boolean automaticClose;
