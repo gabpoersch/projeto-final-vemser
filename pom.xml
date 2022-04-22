@@ -15,10 +15,6 @@
 	<name>colabore</name>
 	<description>Projeto Final VemSer 2022/1</description>
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
-
 	<dependencies>
 		<!--Spring Jpa-->
 		<dependency>
