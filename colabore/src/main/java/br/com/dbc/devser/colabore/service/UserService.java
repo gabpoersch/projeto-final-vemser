@@ -38,12 +38,10 @@ public class UserService {
     }
 
     public UserDTO update(UserCreateDTO updateUserDTO, Integer userId) throws BusinessRuleException {
-        userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
-        UserEntity userEntity = userRepository.getById(userId);
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new BusinessRuleException("User not found!"));
         userEntity.setEmail(updateUserDTO.getEmail());
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
-        userEntity = objectMapper.convertValue(updateUserDTO, UserEntity.class);
 
         return objectMapper.convertValue((userRepository.save(userEntity)), UserDTO.class);
     }

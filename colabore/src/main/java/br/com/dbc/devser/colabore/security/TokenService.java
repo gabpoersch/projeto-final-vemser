@@ -6,10 +6,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.Date;
 
 @Service
@@ -52,6 +54,7 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
             String user = body.getSubject();
+            return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
         }
         return null;
     }

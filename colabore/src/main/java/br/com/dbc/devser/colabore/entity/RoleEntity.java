@@ -24,10 +24,6 @@ public class RoleEntity implements Serializable, GrantedAuthority {
     @Column(name = "name")
     private String name;
 
-    @JsonIgnore
-    @OneToOne
-    private UserEntity users;
-
     @Override
     public String getAuthority() {
         return name;
