@@ -1,7 +1,7 @@
 package br.com.dbc.devser.colabore.service;
 
-import br.com.dbc.devser.colabore.dto.CategorieDTO;
-import br.com.dbc.devser.colabore.repository.CategorieRepository;
+import br.com.dbc.devser.colabore.dto.category.CategoryDTO;
+import br.com.dbc.devser.colabore.repository.CategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CategorieService {
+public class CategoryService {
 
-    private final CategorieRepository categorieRepository;
+    private final CategoryRepository categoryRepository;
     private final ObjectMapper objectMapper;
 
-    public List<CategorieDTO> findAllCategories() {
-        return categorieRepository.findAll().stream()
-                .map(cEntity -> objectMapper.convertValue(cEntity, CategorieDTO.class))
+    public List<CategoryDTO> findAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(cEntity -> objectMapper.convertValue(cEntity, CategoryDTO.class))
                 .collect(Collectors.toList());
     }
 }

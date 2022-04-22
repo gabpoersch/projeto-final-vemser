@@ -10,13 +10,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "categorie")
-public class CategorieEntity {
+@Entity(name = "category")
+public class CategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_CATEGORIE")
-    @SequenceGenerator(name = "GEN_CATEGORIE", sequenceName = "sequence_categorie", allocationSize = 1)
-    @Column(name = "categorie_id")
-    private Long categorieId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_CATEGORY")
+    @SequenceGenerator(name = "GEN_CATEGORY", sequenceName = "sequence_category", allocationSize = 1)
+    @Column(name = "category_id")
+    private Long categoryId;
 
     @Column(name = "name")
     private String name;

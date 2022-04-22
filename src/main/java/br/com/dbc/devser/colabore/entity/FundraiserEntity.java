@@ -55,7 +55,7 @@ public class FundraiserEntity {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "fundraisers")
-    private Set<CategorieEntity> categories;
+    private Set<CategoryEntity> categories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")

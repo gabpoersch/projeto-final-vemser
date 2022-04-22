@@ -4,9 +4,10 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
-import br.com.dbc.devser.colabore.entity.CategorieEntity;
+import br.com.dbc.devser.colabore.entity.CategoryEntity;
 import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
+import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
@@ -67,7 +68,7 @@ public class FundraiserService {
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
 
         if (fundraiserEntity.getDonations().size() != 0) {
-            throw new FundraiserException("Fundraiser already have donations.");
+            throw new FundraiserException("Fundraiser already has donations.");
         }
 
         fundraiserEntity.setTitle(fundraiserUpdate.getTitle());
@@ -175,15 +176,15 @@ public class FundraiserService {
         return generic;
     }
 
-    private Set<String> convertCategories(Set<CategorieEntity> categories) {
+    private Set<String> convertCategories(Set<CategoryEntity> categories) {
         return categories.stream()
-                .map(CategorieEntity::getName)
+                .map(CategoryEntity::getName)
                 .collect(Collectors.toSet());
     }
 
-    private Set<CategorieEntity> convertCategoriesEntity(Set<String> listCategories) {
+    private Set<CategoryEntity> convertCategoriesEntity(Set<String> listCategories) {
         return listCategories.stream()
-                .map(str -> CategorieEntity.builder().name(str).build())
+                .map(str -> CategoryEntity.builder().name(str).build())
                 .collect(Collectors.toSet());
     }
 
@@ -199,6 +200,22 @@ public class FundraiserService {
     private BigDecimal calculateTotal(FundraiserEntity fEntity) {
         return fEntity.getDonations().stream().map(DonationEntity::getValue)
                 .reduce(BigDecimal::add).orElse(null);
+    }
+
+    public void checkClosed (Long idRequest) throws BusinessRuleException {
+        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
+                .orElseThrow(()-> new BusinessRuleException("Fundraiser not found."));
+
+        fundraiserEntity.setAutomaticClose(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
+
+        fundraiserRepository.save(fundraiserEntity);
+    }
+
+    public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal){
+        if (currentValue.compareTo(goal) <= 0) {
+            return false;
+        }
+        else {return true;}
     }
 
 }
