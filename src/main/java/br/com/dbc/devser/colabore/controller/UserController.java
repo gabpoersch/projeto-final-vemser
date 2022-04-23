@@ -39,9 +39,10 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi cadastrado com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PostMapping("/register")
-    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO, MultipartFile profilePhoto) throws UserColaboreException {
-        return userService.create(userCreateDTO, profilePhoto);
+    @PostMapping(value = "/register", consumes = { "multipart/form-data" })
+    public UserDTO create(@Valid @ModelAttribute UserCreateDTO userCreateDTO) throws UserColaboreException {
+        System.out.println(userCreateDTO.getProfilePhoto().getName()) ;
+        return userService.create(userCreateDTO);
     }
 
     @ApiOperation(value = "Atualiza um usuário no banco de dados.")
@@ -49,7 +50,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping("/update")
-    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, MultipartFile profilePhoto) throws UserColaboreException, BusinessRuleException {
+    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, @RequestParam MultipartFile profilePhoto) throws UserColaboreException, BusinessRuleException {
         return userService.update(userUpdateDTO, profilePhoto);
     }
 

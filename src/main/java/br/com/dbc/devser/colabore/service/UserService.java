@@ -29,7 +29,7 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
-    public UserDTO create(UserCreateDTO userDTO, MultipartFile profilePhoto) throws UserColaboreException {
+    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
 
         verifyIfEmailExists(userDTO);
 
@@ -39,7 +39,7 @@ public class UserService {
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, profilePhoto)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, userDTO)));
     }
 
     public List<UserDTO> list() {
@@ -59,7 +59,7 @@ public class UserService {
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, multipartFile)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
     }
 
     public void delete() {
@@ -83,11 +83,11 @@ public class UserService {
         }
     }
 
-    private UserEntity setPhotoBytes(UserEntity userEntity,MultipartFile multipartFile) {
-//        MultipartFile profilePhoto = userDTO.getProfilePhoto();
-        if (multipartFile != null) {
+    private UserEntity setPhotoBytes(UserEntity userEntity,UserCreateDTO userDTO) {
+        MultipartFile profilePhoto = userDTO.getProfilePhoto();
+        if (profilePhoto != null) {
             try {
-                userEntity.setProfilePhoto(multipartFile.getBytes());
+                userEntity.setProfilePhoto(profilePhoto.getBytes());
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
