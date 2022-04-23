@@ -49,7 +49,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping("/update")
-    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, UserCreateDTO profilePhoto) throws UserColaboreException, BusinessRuleException {
+    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, MultipartFile profilePhoto) throws UserColaboreException, BusinessRuleException {
         return userService.update(userUpdateDTO, profilePhoto);
     }
 

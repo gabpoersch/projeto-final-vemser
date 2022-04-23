@@ -39,7 +39,7 @@ public class UserService {
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, userDTO)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, profilePhoto)));
     }
 
     public List<UserDTO> list() {
@@ -48,7 +48,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserCreateDTO updateUserDTO, UserCreateDTO userCreateDTO) throws BusinessRuleException, UserColaboreException {
+    public UserDTO update(UserCreateDTO updateUserDTO, MultipartFile multipartFile) throws BusinessRuleException, UserColaboreException {
 
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
@@ -59,7 +59,7 @@ public class UserService {
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, userCreateDTO)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, multipartFile)));
     }
 
     public void delete() {
@@ -83,11 +83,11 @@ public class UserService {
         }
     }
 
-    private UserEntity setPhotoBytes(UserEntity userEntity,UserCreateDTO userDTO) {
-        MultipartFile profilePhoto = userDTO.getProfilePhoto();
-        if (profilePhoto != null) {
+    private UserEntity setPhotoBytes(UserEntity userEntity,MultipartFile multipartFile) {
+//        MultipartFile profilePhoto = userDTO.getProfilePhoto();
+        if (multipartFile != null) {
             try {
-                userEntity.setProfilePhoto(profilePhoto.getBytes());
+                userEntity.setProfilePhoto(multipartFile.getBytes());
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
