@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<CategorieEntity> categoriesUser;
+    private Set<CategoryEntity> categoriesUser;
 
     @JsonIgnore
     @OneToOne

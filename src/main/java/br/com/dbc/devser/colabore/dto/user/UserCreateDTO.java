@@ -2,6 +2,7 @@ package br.com.dbc.devser.colabore.dto.user;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -18,5 +19,5 @@ public class UserCreateDTO {
     private String password;
 
     @ApiModelProperty(value = "Foto de perfil")
-    private File profilePhoto;
+    private MultipartFile profilePhoto;
 }
