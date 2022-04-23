@@ -19,7 +19,6 @@ import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +49,7 @@ public class FundraiserService {
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
 
         String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        /*Depois colocar o objectMapper, pois a foto vai no headers (Tirar do DTO)*/
         FundraiserEntity fundEntity = new FundraiserEntity();
         fundEntity.setTitle(fundraiserCreate.getTitle());
         fundEntity.setDescription(fundraiserCreate.getDescription());
@@ -63,9 +62,10 @@ public class FundraiserService {
         fundEntity.setStatusActive(true);
         fundEntity.setAutomaticClose(fundraiserCreate.getAutomaticClose());
         fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(category -> {
+            //***Testando se existe***
             CategoryEntity categoryReference = categoryRepository.findByName(category);
-            if(categoryReference==null){
-
+            if (categoryReference != null) {
+                return categoryReference;
             }
             CategoryEntity categoryEntity = new CategoryEntity();
             categoryEntity.setName(category);
@@ -234,7 +234,8 @@ public class FundraiserService {
                 .reduce(BigDecimal::add).orElse(null);
     }
 
-    private FundraiserEntity setPhotoEntity (FundraiserEntity ent, FundraiserCreateDTO fundCreate){
+    //TODO: verificar se é pelo headers
+    private FundraiserEntity setPhotoEntity(FundraiserEntity ent, FundraiserCreateDTO fundCreate) {
         try {
             MultipartFile coverPhoto = fundCreate.getCoverPhoto();
             if (coverPhoto != null) {
@@ -246,16 +247,16 @@ public class FundraiserService {
         return ent;
     }
 
-    public void checkClosed (Long idRequest) throws BusinessRuleException {
+    public void checkClosed(Long idRequest) throws BusinessRuleException {
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
-                .orElseThrow(()-> new BusinessRuleException("Fundraiser not found."));
+                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
 
         fundraiserEntity.setAutomaticClose(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
 
         fundraiserRepository.save(fundraiserEntity);
     }
 
-    public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal){
+    public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
         return currentValue.compareTo(goal) > 0;
     }
 }

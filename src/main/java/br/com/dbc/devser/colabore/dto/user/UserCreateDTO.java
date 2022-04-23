@@ -18,6 +18,6 @@ public class UserCreateDTO {
     @ApiModelProperty(value = "Senha do usuário")
     private String password;
 
-//    @ApiModelProperty(value = "Foto de perfil")
-//    private MultipartFile profilePhoto;
+    @ApiModelProperty(value = "Foto de perfil")
+    private MultipartFile profilePhoto;
 }
