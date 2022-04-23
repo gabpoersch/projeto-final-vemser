@@ -43,6 +43,9 @@ public class FundraiserEntity {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+    @Column(name = "ending_date")
+    private LocalDateTime endingDate;
+
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
 

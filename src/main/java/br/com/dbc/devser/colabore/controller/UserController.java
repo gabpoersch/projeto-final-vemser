@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -39,8 +40,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/register")
-    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) throws UserColaboreException {
-        return userService.create(userCreateDTO);
+    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO, MultipartFile profilePhoto) throws UserColaboreException {
+        return userService.create(userCreateDTO, profilePhoto);
     }
 
     @ApiOperation(value = "Atualiza um usuário no banco de dados.")
@@ -48,8 +49,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping("/update")
-    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO) throws UserColaboreException, BusinessRuleException {
-        return userService.update(userUpdateDTO);
+    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, MultipartFile profilePhoto) throws UserColaboreException, BusinessRuleException {
+        return userService.update(userUpdateDTO, profilePhoto);
     }
 
     @ApiOperation(value = "Deleta um usuário do banco de dados.")

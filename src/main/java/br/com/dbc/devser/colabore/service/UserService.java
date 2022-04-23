@@ -29,7 +29,7 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
-    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
+    public UserDTO create(UserCreateDTO userDTO, MultipartFile profilePhoto) throws UserColaboreException {
 
         verifyIfEmailExists(userDTO);
 
@@ -39,7 +39,7 @@ public class UserService {
         userEntity.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, userDTO)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, profilePhoto)));
     }
 
     public List<UserDTO> list() {
@@ -48,7 +48,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserCreateDTO updateUserDTO) throws BusinessRuleException, UserColaboreException {
+    public UserDTO update(UserCreateDTO updateUserDTO, MultipartFile profilePhoto) throws BusinessRuleException, UserColaboreException {
 
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
@@ -59,7 +59,7 @@ public class UserService {
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, profilePhoto)));
     }
 
     public void delete() {
@@ -83,11 +83,8 @@ public class UserService {
         }
     }
 
-    private UserEntity setPhotoBytes(UserEntity userEntity, UserCreateDTO userDto) {
-        MultipartFile profilePhoto = userDto.getProfilePhoto();
-
-        System.out.println(profilePhoto.getName());
-
+    private UserEntity setPhotoBytes(UserEntity userEntity, MultipartFile profilePhoto) {
+//        MultipartFile profilePhoto = userDto.getProfilePhoto();
         if (profilePhoto != null) {
             try {
                 userEntity.setProfilePhoto(profilePhoto.getBytes());

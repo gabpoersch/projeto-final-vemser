@@ -51,24 +51,22 @@ public class FundraiserService {
 
         String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        FundraiserEntity fundEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
-
+        FundraiserEntity fundEntity = new FundraiserEntity();
+        fundEntity.setTitle(fundraiserCreate.getTitle());
+        fundEntity.setDescription(fundraiserCreate.getDescription());
+        fundEntity.setGoal(fundraiserCreate.getGoal());
         fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
-
-        try {
-            MultipartFile coverPhoto = fundraiserCreate.getCoverPhoto();
-            if (coverPhoto != null) {
-            fundEntity.setCoverPhoto(coverPhoto.getBytes());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         fundEntity.setCreationDate(LocalDateTime.now());
+        fundEntity.setEndingDate(fundraiserCreate.getEndingDate());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
+        fundEntity.setAutomaticClose(fundraiserCreate.getAutomaticClose());
         fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(category -> {
+            CategoryEntity categoryReference = categoryRepository.findByName(category);
+            if(categoryReference==null){
+
+            }
             CategoryEntity categoryEntity = new CategoryEntity();
             categoryEntity.setName(category);
 
@@ -234,6 +232,18 @@ public class FundraiserService {
     private BigDecimal calculateTotal(FundraiserEntity fEntity) {
         return fEntity.getDonations().stream().map(DonationEntity::getValue)
                 .reduce(BigDecimal::add).orElse(null);
+    }
+
+    private FundraiserEntity setPhotoEntity (FundraiserEntity ent, FundraiserCreateDTO fundCreate){
+        try {
+            MultipartFile coverPhoto = fundCreate.getCoverPhoto();
+            if (coverPhoto != null) {
+                ent.setCoverPhoto(coverPhoto.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ent;
     }
 
     public void checkClosed (Long idRequest) throws BusinessRuleException {
