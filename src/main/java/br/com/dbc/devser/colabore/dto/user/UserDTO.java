@@ -1,11 +1,15 @@
 package br.com.dbc.devser.colabore.dto.user;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     @ApiModelProperty(value = "Id do usuário")

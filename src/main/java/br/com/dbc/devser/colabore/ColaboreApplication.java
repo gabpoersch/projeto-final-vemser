@@ -18,6 +18,11 @@ public class ColaboreApplication {
             - Testar api no swagger
             - Refatorar e deixar perfomático
             - Testes unitários
+            - Voltar a foto p base64
+            - Mudar as entidades referentes à Categoria
+            - Fazer mapeamento das categorias com join table
+            - Validar e-mail e categoria (não ter duplicatas)
+            - Trocar name category pra unique
 
         IDEIAS
             - Testes automatizados

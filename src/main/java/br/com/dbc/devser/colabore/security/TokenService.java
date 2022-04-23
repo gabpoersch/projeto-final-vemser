@@ -8,11 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class TokenService {
 
     private static final String PREFIX = "Bearer ";
     private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String ROLE_KEY = "ROLES";
 
     @Value("${jwt.expiration}")
     private String expiration;
@@ -33,9 +38,14 @@ public class TokenService {
         Date now = new Date();
         Date exp = new Date(now.getTime() + Long.parseLong(expiration));
 
+        List<String> roles = userEntity.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
         String token = Jwts.builder()
                 .setIssuer("PrimeiroProjetoSpring")
                 .setSubject(userEntity.getUserId().toString())
+                .claim(ROLE_KEY, roles)
                 .setIssuedAt(now)
                 .setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS256, secret)
@@ -54,7 +64,14 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
             String user = body.getSubject();
-            return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+
+            if (user != null) {
+                List<String> roles = body.get(ROLE_KEY, List.class);
+                List<SimpleGrantedAuthority> role = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+                return new UsernamePasswordAuthenticationToken(user, null, role);
+            }
         }
         return null;
     }

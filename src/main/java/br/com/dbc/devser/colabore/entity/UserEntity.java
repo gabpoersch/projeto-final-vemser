@@ -44,10 +44,6 @@ public class UserEntity implements UserDetails {
     private Set<FundraiserEntity> fundraisers;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<CategoryEntity> categoriesUser;
-
-    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private RoleEntity roles;

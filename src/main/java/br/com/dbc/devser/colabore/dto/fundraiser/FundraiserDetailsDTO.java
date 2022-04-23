@@ -3,6 +3,7 @@ package br.com.dbc.devser.colabore.dto.fundraiser;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FundraiserDetailsDTO {
 
     @ApiModelProperty(value = "Id da campanha")

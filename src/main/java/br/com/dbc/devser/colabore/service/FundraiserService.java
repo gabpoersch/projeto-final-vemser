@@ -8,9 +8,11 @@ import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.CategoryEntity;
 import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
+import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
+import br.com.dbc.devser.colabore.repository.CategoryRepository;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -24,10 +26,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +45,7 @@ public class FundraiserService {
     private final FundraiserRepository fundraiserRepository;
     private final DonationRepository donationRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
 
@@ -52,14 +57,23 @@ public class FundraiserService {
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
 
         try {
-            fundEntity.setCoverPhoto(FileUtils.readFileToByteArray(fundraiserCreate.getCoverPhoto()));
+            MultipartFile coverPhoto = fundraiserCreate.getCoverPhoto();
+            if (coverPhoto != null) {
+            fundEntity.setCoverPhoto(coverPhoto.getBytes());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         fundEntity.setCreationDate(LocalDateTime.now());
         fundEntity.setCurrentValue(new BigDecimal("0.0"));
         fundEntity.setStatusActive(true);
-        fundEntity.setCategories(convertCategoriesEntity(fundraiserCreate.getCategories()));
+        fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(category -> {
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setName(category);
+
+            return categoryRepository.save(categoryEntity);
+        }).collect(Collectors.toSet()));
 
         fundraiserRepository.save(fundEntity);
     }
@@ -78,7 +92,7 @@ public class FundraiserService {
         fundraiserEntity.setCategories(convertCategoriesEntity(fundraiserUpdate.getCategories()));
         fundraiserEntity.setAutomaticClose(fundraiserUpdate.getAutomaticClose());
         try {
-            fundraiserEntity.setCoverPhoto(FileUtils.readFileToByteArray(fundraiserUpdate.getCoverPhoto()));
+            fundraiserEntity.setCoverPhoto(fundraiserUpdate.getCoverPhoto().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -99,7 +113,21 @@ public class FundraiserService {
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-        details.setCategories(convertCategories(fundraiserEntity.getCategories()));
+        FundraiserDetailsDTO.builder().fundraiserId(fundraiserEntity.getFundraiserId())
+                .title(fundraiserEntity.getTitle())
+                .goal(fundraiserEntity.getGoal())
+                .description(fundraiserEntity.getDescription())
+                .coverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCoverPhoto()))
+                .categories(convertCategories(fundraiserEntity.getCategories()))
+                .contributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
+                    UserEntity donatorEntity = donationEntity.getDonator();
+
+                    return UserDTO.builder()
+                            .userId(donatorEntity.getUserId())
+                            .email(donatorEntity.getEmail())
+                            .profilePhoto(Base64.getEncoder().encodeToString(donatorEntity.getProfilePhoto()))
+                            .build();
+                }).collect(Collectors.toSet()));
 
         return details;
     }
@@ -218,10 +246,6 @@ public class FundraiserService {
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal){
-        if (currentValue.compareTo(goal) <= 0) {
-            return false;
-        }
-        else {return true;}
+        return currentValue.compareTo(goal) > 0;
     }
-
 }

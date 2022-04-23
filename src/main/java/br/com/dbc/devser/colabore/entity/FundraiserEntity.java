@@ -53,11 +53,16 @@ public class FundraiserEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "fundraiser")
     private Set<DonationEntity> donations;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "fundraisers")
-    private Set<CategoryEntity> categories;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")
     private UserEntity fundraiserCreator;
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "fundraiser_category",
+            joinColumns = @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    )
+    private Set<CategoryEntity> categories;
 }

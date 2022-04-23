@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class FundraiserCreateDTO {
     private String description;
 
     @ApiModelProperty(value = "Foto de capa")
-    private File coverPhoto;
+    private MultipartFile coverPhoto;
 
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;

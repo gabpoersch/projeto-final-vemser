@@ -1,5 +1,6 @@
 package br.com.dbc.devser.colabore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,11 +22,12 @@ public class CategoryEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "fundraiser_category",
+            joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
+    )
     private Set<FundraiserEntity> fundraisers;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private UserEntity user;
 }
