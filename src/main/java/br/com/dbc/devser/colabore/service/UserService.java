@@ -85,6 +85,9 @@ public class UserService {
 
     private UserEntity setPhotoBytes(UserEntity userEntity, UserCreateDTO userDto) {
         MultipartFile profilePhoto = userDto.getProfilePhoto();
+
+        System.out.println(profilePhoto.getName());
+
         if (profilePhoto != null) {
             try {
                 userEntity.setProfilePhoto(profilePhoto.getBytes());

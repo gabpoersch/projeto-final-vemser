@@ -29,7 +29,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/register").permitAll()
                 .antMatchers("/donation/**", "/fundraiser/**", "/user/**").hasAnyRole("USER")
                 .antMatchers("/auth").permitAll()
-//                .antMatchers(HttpMethod.POST, ).permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
