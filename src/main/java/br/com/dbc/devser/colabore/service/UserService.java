@@ -66,9 +66,9 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public Integer getLoggedUserId() {
+    public Long getLoggedUserId() {
         String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return Integer.parseInt(userId);
+        return Long.getLong(userId);
     }
 
     private void verifyIfEmailExists(UserCreateDTO userDTO) throws UserColaboreException {

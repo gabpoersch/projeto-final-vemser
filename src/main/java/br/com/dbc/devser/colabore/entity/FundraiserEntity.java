@@ -35,7 +35,7 @@ public class FundraiserEntity {
     private BigDecimal currentValue;
 
     @Column(name = "cover_photo")
-    private byte[] coverPhoto;
+    private byte[] cover;
 
     @Column(name = "status")
     private Boolean statusActive;
@@ -67,5 +67,5 @@ public class FundraiserEntity {
             joinColumns = @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     )
-    private Set<CategoryEntity> categories;
+    private Set<CategoryEntity> categoriesFundraiser;
 }

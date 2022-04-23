@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
 
     @ApiModelProperty(value = "Id do usuário")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "Email do usuário")
     private String email;

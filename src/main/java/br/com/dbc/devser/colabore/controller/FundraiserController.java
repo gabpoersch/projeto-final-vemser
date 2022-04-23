@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/fundraiser")
 @RequiredArgsConstructor
@@ -27,8 +25,8 @@ public class FundraiserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A campanha foi persistida com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PostMapping
-    public void saveFundraiser(@RequestBody FundraiserCreateDTO fundraiser) throws UserColaboreException {
+    @PostMapping(value = "/save", consumes = {"multipart/form-data"})
+    public void saveFundraiser(@ModelAttribute FundraiserCreateDTO fundraiser) throws UserColaboreException {
         fundraiserService.saveFundraiser(fundraiser);
     }
 
@@ -36,8 +34,8 @@ public class FundraiserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A campanha foi atualizada com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PutMapping("/{fundraiserId}")
-    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody FundraiserCreateDTO fundUpdate) throws FundraiserException {
+    @PutMapping(value = "/{fundraiserId}", consumes = {"multipart/form-data"})
+    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @ModelAttribute FundraiserCreateDTO fundUpdate) throws FundraiserException {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
 

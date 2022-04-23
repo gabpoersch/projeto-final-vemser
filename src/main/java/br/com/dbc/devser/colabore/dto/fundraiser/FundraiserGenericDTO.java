@@ -43,6 +43,6 @@ public class FundraiserGenericDTO {
 
     //>>>>>>>> PLUS
 
-    @ApiModelProperty(value = "Data de criação")
-    private LocalDateTime creationDate;
+    @ApiModelProperty(value = "Data de encerramento")
+    private LocalDateTime endingDate;
 }

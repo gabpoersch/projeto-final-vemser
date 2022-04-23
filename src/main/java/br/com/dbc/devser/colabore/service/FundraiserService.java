@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,33 +46,18 @@ public class FundraiserService {
     private final CategoryRepository categoryRepository;
 
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
-
         String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        /*Depois colocar o objectMapper, pois a foto vai no headers (Tirar do DTO)*/
-        FundraiserEntity fundEntity = new FundraiserEntity();
-        fundEntity.setTitle(fundraiserCreate.getTitle());
-        fundEntity.setDescription(fundraiserCreate.getDescription());
-        fundEntity.setGoal(fundraiserCreate.getGoal());
-        fundEntity.setFundraiserCreator(userRepository.findById(Integer.parseInt(authUserId))
+
+        FundraiserEntity fundraiserEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
+
+        fundraiserEntity.setCreationDate(LocalDateTime.now());
+        fundraiserEntity.setCurrentValue(new BigDecimal("0.0"));
+        fundraiserEntity.setStatusActive(true);
+        fundraiserEntity.setFundraiserCreator(userRepository.findById(Long.getLong(authUserId))
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
-        fundEntity.setCreationDate(LocalDateTime.now());
-        fundEntity.setEndingDate(fundraiserCreate.getEndingDate());
-        fundEntity.setCurrentValue(new BigDecimal("0.0"));
-        fundEntity.setStatusActive(true);
-        fundEntity.setAutomaticClose(fundraiserCreate.getAutomaticClose());
-        fundEntity.setCategories(fundraiserCreate.getCategories().stream().map(category -> {
-            //***Testando se existe***
-            CategoryEntity categoryReference = categoryRepository.findByName(category);
-            if (categoryReference != null) {
-                return categoryReference;
-            }
-            CategoryEntity categoryEntity = new CategoryEntity();
-            categoryEntity.setName(category);
-
-            return categoryRepository.save(categoryEntity);
-        }).collect(Collectors.toSet()));
-
-        fundraiserRepository.save(fundEntity);
+        fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
+        /*Seta a foto e grava no banco*/
+        fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserCreate));
     }
 
     public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException {
@@ -86,17 +70,14 @@ public class FundraiserService {
 
         fundraiserEntity.setTitle(fundraiserUpdate.getTitle());
         fundraiserEntity.setGoal(fundraiserUpdate.getGoal());
-        fundraiserEntity.setDescription(fundraiserUpdate.getDescription());
-        fundraiserEntity.setCategories(convertCategoriesEntity(fundraiserUpdate.getCategories()));
         fundraiserEntity.setAutomaticClose(fundraiserUpdate.getAutomaticClose());
-        try {
-            fundraiserEntity.setCoverPhoto(fundraiserUpdate.getCoverPhoto().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fundraiserEntity.setDescription(fundraiserUpdate.getDescription());
+        fundraiserEntity.setEndingDate(fundraiserUpdate.getEndingDate());
+        fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserUpdate.getCategories()));
+
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
 
-        fundraiserRepository.save(fundraiserEntity);
+        fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserUpdate));
     }
 
     public void updateFundraiserStatus(Long fundraiserId) throws FundraiserException {
@@ -104,28 +85,37 @@ public class FundraiserService {
         fundraiserEntity.setStatusActive(!fundraiserEntity.getStatusActive());
     }
 
+    private Set<CategoryEntity> buildCategories(Set<String> categories) {
+        return categories.stream().map(category -> {
+            //***Testando se existe***
+            CategoryEntity categoryReference = categoryRepository.findByName(category);
+            if (categoryReference != null) {
+                return categoryReference;
+            }
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setName(category);
+
+            return categoryRepository.save(categoryEntity);
+        }).collect(Collectors.toSet());
+    }
 
     public FundraiserDetailsDTO fundraiserDetails(Long fundraiserId) throws FundraiserException {
-
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-        FundraiserDetailsDTO.builder().fundraiserId(fundraiserEntity.getFundraiserId())
-                .title(fundraiserEntity.getTitle())
-                .goal(fundraiserEntity.getGoal())
-                .description(fundraiserEntity.getDescription())
-                .coverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCoverPhoto()))
-                .categories(convertCategories(fundraiserEntity.getCategories()))
-                .contributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
-                    UserEntity donatorEntity = donationEntity.getDonator();
+        details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
+        details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
+        //TODO: Continuar daqui!!!
+        details.setContributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
+            UserEntity donatorEntity = donationEntity.getDonator();
 
-                    return UserDTO.builder()
-                            .userId(donatorEntity.getUserId())
-                            .email(donatorEntity.getEmail())
-                            .profilePhoto(Base64.getEncoder().encodeToString(donatorEntity.getProfilePhoto()))
-                            .build();
-                }).collect(Collectors.toSet()));
+            return UserDTO.builder()
+                    .userId(donatorEntity.getUserId())
+                    .email(donatorEntity.getEmail())
+                    .profilePhoto(Base64.getEncoder().encodeToString(donatorEntity.getPhoto()))
+                    .build();
+        }).collect(Collectors.toSet()));
 
         return details;
     }
@@ -200,9 +190,9 @@ public class FundraiserService {
 
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
-        generic.setCategories(convertCategories(fEntity.getCategories()));
+//        generic.setCategories(convertCategories(fEntity.getCategories()));
         generic.setCurrentValue(calculateTotal(fEntity));
-        generic.setCreationDate(fEntity.getCreationDate());
+//        generic.setCreationDate(fEntity.getCreationDate());
         generic.setLastUpdate(fEntity.getLastUpdate());
         generic.setFundraiserCreator(objectMapper.convertValue(fEntity.getFundraiserCreator(), UserDTO.class));
         return generic;
@@ -214,32 +204,16 @@ public class FundraiserService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<CategoryEntity> convertCategoriesEntity(Set<String> listCategories) {
-        return listCategories.stream()
-                .map(str -> CategoryEntity.builder().name(str).build())
-                .collect(Collectors.toSet());
-    }
-
-    private String convertListToString(List<String> listCategories) {
-        StringBuilder categoriesFormed = new StringBuilder();
-        for (String s : listCategories) {
-            categoriesFormed.append(s.replace(",", "")).append(",");
-        }
-        return categoriesFormed.deleteCharAt(categoriesFormed.length() - 1)
-                .toString().replace(" ", "");
-    }
-
     private BigDecimal calculateTotal(FundraiserEntity fEntity) {
         return fEntity.getDonations().stream().map(DonationEntity::getValue)
                 .reduce(BigDecimal::add).orElse(null);
     }
 
-    //TODO: verificar se é pelo headers
     private FundraiserEntity setPhotoEntity(FundraiserEntity ent, FundraiserCreateDTO fundCreate) {
         try {
             MultipartFile coverPhoto = fundCreate.getCoverPhoto();
             if (coverPhoto != null) {
-                ent.setCoverPhoto(coverPhoto.getBytes());
+                ent.setCover(coverPhoto.getBytes());
             }
         } catch (IOException e) {
             e.printStackTrace();
