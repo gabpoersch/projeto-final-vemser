@@ -33,7 +33,7 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @Column(name = "profile_photo")
-    private byte[] profilePhoto;
+    private byte[] photo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "donator", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

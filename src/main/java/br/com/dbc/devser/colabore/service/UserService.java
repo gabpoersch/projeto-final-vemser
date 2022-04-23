@@ -3,7 +3,6 @@ package br.com.dbc.devser.colabore.service;
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.UserEntity;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -30,26 +29,23 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
-
         verifyIfEmailExists(userDTO);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName(userDTO.getName());
-        userEntity.setEmail(userDTO.getEmail());
-        userEntity.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-        userEntity.setRoles(roleRepository.findById(1).orElseThrow(() -> new UserColaboreException("Role not found!")));
+        UserEntity user = objectMapper.convertValue(userDTO, UserEntity.class);
+        user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+        user.setRoles(roleRepository.findById(1)
+                .orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, userDTO)));
+        return buildExposedDTO(userRepository.save(setPhotoBytes(user, userDTO)));
     }
 
     public List<UserDTO> list() {
         return userRepository.findAll().stream()
-                .map(user -> buildExposedDTO(user))
+                .map(this::buildExposedDTO)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserCreateDTO updateUserDTO, MultipartFile multipartFile) throws BusinessRuleException, UserColaboreException {
-
+    public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
 
@@ -63,9 +59,7 @@ public class UserService {
     }
 
     public void delete() {
-
         userRepository.deleteById(getLoggedUserId());
-
     }
 
     public UserEntity findByLogin(String email) {
@@ -83,11 +77,11 @@ public class UserService {
         }
     }
 
-    private UserEntity setPhotoBytes(UserEntity userEntity,UserCreateDTO userDTO) {
+    private UserEntity setPhotoBytes(UserEntity userEntity, UserCreateDTO userDTO) {
         MultipartFile profilePhoto = userDTO.getProfilePhoto();
         if (profilePhoto != null) {
             try {
-                userEntity.setProfilePhoto(profilePhoto.getBytes());
+                userEntity.setPhoto(profilePhoto.getBytes());
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
@@ -102,7 +96,7 @@ public class UserService {
         exposedDTO.setUserId(newUser.getUserId());
         exposedDTO.setEmail(newUser.getEmail());
 
-        byte[] file = newUser.getProfilePhoto();
+        byte[] file = newUser.getPhoto();
         if (file != null) {
             exposedDTO.setProfilePhoto(Base64.getEncoder().encodeToString(file));
         }

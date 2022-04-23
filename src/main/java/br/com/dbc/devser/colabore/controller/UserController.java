@@ -41,7 +41,6 @@ public class UserController {
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping(value = "/register", consumes = { "multipart/form-data" })
     public UserDTO create(@Valid @ModelAttribute UserCreateDTO userCreateDTO) throws UserColaboreException {
-        System.out.println(userCreateDTO.getProfilePhoto().getName()) ;
         return userService.create(userCreateDTO);
     }
 
@@ -49,9 +48,9 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi atualizado com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PutMapping("/update")
-    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO, @RequestParam MultipartFile profilePhoto) throws UserColaboreException, BusinessRuleException {
-        return userService.update(userUpdateDTO, profilePhoto);
+    @PutMapping(value = "/update", consumes = {"multipart/form-data"})
+    public UserDTO update(@Valid @ModelAttribute UserCreateDTO userUpdateDTO) throws UserColaboreException, BusinessRuleException {
+        return userService.update(userUpdateDTO);
     }
 
     @ApiOperation(value = "Deleta um usuário do banco de dados.")
