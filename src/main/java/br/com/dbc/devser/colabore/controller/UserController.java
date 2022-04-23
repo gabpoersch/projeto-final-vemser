@@ -5,6 +5,9 @@ import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -22,23 +25,39 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
+    @ApiOperation(value = "Retorna a lista completa de usuários do sistema.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Os usuários foram listados com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @GetMapping("/findAll")
     public List<UserDTO> list() {
         return userService.list();
     }
 
+    @ApiOperation(value = "Cadastra um usuário no banco de dados.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi cadastrado com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/register")
-    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) throws BusinessRuleException, UserColaboreException {
+    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) throws UserColaboreException {
         return userService.create(userCreateDTO);
     }
 
-    @PutMapping
-    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO) throws BusinessRuleException, UserColaboreException {
-        return userService.update(userUpdateDTO, userService.getLoggedUserId());
+    @ApiOperation(value = "Atualiza um usuário no banco de dados.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi atualizado com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @PutMapping("/update")
+    public UserDTO update(@Valid @RequestBody UserCreateDTO userUpdateDTO) throws UserColaboreException, BusinessRuleException {
+        return userService.update(userUpdateDTO);
     }
 
-    @DeleteMapping
-    public UserDTO delete() throws BusinessRuleException, UserColaboreException {
-        return userService.delete(userService.getLoggedUserId());
+    @ApiOperation(value = "Deleta um usuário do banco de dados.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi deletado com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @DeleteMapping("/delete")
+    public void delete() {
+        userService.delete();
     }
 }

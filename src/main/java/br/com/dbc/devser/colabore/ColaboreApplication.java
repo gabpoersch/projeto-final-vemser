@@ -23,6 +23,7 @@ public class ColaboreApplication {
             - Fazer mapeamento das categorias com join table
             - Validar e-mail e categoria (não ter duplicatas)
             - Trocar name category pra unique
+            - mudar campo para endingdate
 
         IDEIAS
             - Testes automatizados
