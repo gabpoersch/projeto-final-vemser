@@ -144,7 +144,17 @@ public class FundraiserService {
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return donationRepository.findMyDonations(Long.getLong(authId), getPageable(numberPage, 20))
-                .map(dEntity -> objectMapper.convertValue(dEntity, FundraiserUserContributionsDTO.class));
+                .map(dEntity -> {
+                    FundraiserEntity fEntity = dEntity.getFundraiser();
+                    FundraiserGenericDTO fundraiserGeneric = objectMapper
+                            .convertValue(fEntity, FundraiserGenericDTO.class);
+                    FundraiserUserContributionsDTO userContributions = objectMapper
+                            .convertValue(completeFundraiser(fundraiserGeneric, fEntity)
+                                    , FundraiserUserContributionsDTO.class);
+                    userContributions.setStatus(fEntity.getStatusActive());
+                    userContributions.setTotalContribution(dEntity.getValue());
+                    return userContributions;
+                });
     }
 
 //    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
@@ -196,7 +206,7 @@ public class FundraiserService {
 
     private Set<CategoryDTO> convertCategories(Set<CategoryEntity> categories) {
         return categories.stream()
-                .map(cEntity-> objectMapper.convertValue(cEntity, CategoryDTO.class))
+                .map(cEntity -> objectMapper.convertValue(cEntity, CategoryDTO.class))
                 .collect(Collectors.toSet());
     }
 

@@ -10,6 +10,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DonationRepository extends JpaRepository<DonationEntity, Long> {
 
-    @Query("select d from donation d where d.donator.userId = :userId")
+    @Query("select d.fundraiser, sum(d.value) from donation d where d.donator.userId = :userId group by d.fundraiser.fundraiserId")
     Page<DonationEntity> findMyDonations(Long userId, Pageable pageable);
+
+    /*
+        Solução caso dê erro da maneira acima:
+            @Repository
+            public interface MyRepository extends JpaRepository<MyEntity, ID> {
+                @Query("SELECT new com.NewPojo(SUM(m.totalDays)) FROM MyEntity m")
+                NewPojo selectTotals();
+                }
+
+                class NewPojo {
+                    Float days;
+                    public NewPojo(Float days) {
+                        this.days = days;
+                    }
+        }
+     */
 }
