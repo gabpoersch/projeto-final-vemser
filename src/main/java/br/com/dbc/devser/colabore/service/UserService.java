@@ -49,14 +49,15 @@ public class UserService {
     }
 
     public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException, BusinessRuleException {
+        verifyIfEmailExists(updateUserDTO);
+
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
-
-        verifyIfEmailExists(updateUserDTO);
 
         userEntity.setEmail(updateUserDTO.getEmail());
         userEntity.setName(updateUserDTO.getName());
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
+        userEntity.setRoles(userEntity.getRoles());
 
         return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
     }
