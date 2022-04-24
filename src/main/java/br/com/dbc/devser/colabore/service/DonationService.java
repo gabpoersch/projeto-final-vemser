@@ -30,7 +30,7 @@ public class DonationService {
     public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws UserColaboreException, FundraiserException, BusinessRuleException {
         String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        UserEntity userEntity = userRepository.findById(Integer.parseInt(authId))
+        UserEntity userEntity = userRepository.findById(Long.getLong(authId))
                 .orElseThrow(() -> new UserColaboreException("User not found in database."));
 
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
@@ -38,14 +38,20 @@ public class DonationService {
 
         DonationEntity donationEntity = objectMapper.convertValue(donate, DonationEntity.class);
 
+        /*Setando o donate no banco*/
         donationEntity.setDonator(userEntity);
         donationEntity.setFundraiser(fundraiserEntity);
         DonationEntity donationSaved = donationRepository.save(donationEntity);
+
+        log.info("Donation {} registered with success.", donationSaved.getDonationId());
+
+        /*Atualizando o currentValue no banco*/
+        fundraiserEntity.setCurrentValue(fundraiserEntity.getCurrentValue().add(donate.getValue()));
+        fundraiserRepository.save(fundraiserEntity);
 
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserId);
         }
 
-        log.info("Donation {} registered with success.", donationSaved.getDonationId());
     }
 }

@@ -1,5 +1,6 @@
 package br.com.dbc.devser.colabore.dto.fundraiser;
 
+import br.com.dbc.devser.colabore.dto.category.CategoryDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class FundraiserDetailsDTO {
     private String coverPhoto;
 
     @ApiModelProperty(value = "Lista de categorias")
-    private Set<String> categories;
+    private Set<CategoryDTO> categories;
 
     @ApiModelProperty(value = "Lista dos contribuidores da campanha")
     private Set<UserDTO> contributors;

@@ -1,12 +1,12 @@
 package br.com.dbc.devser.colabore.service;
 
+import br.com.dbc.devser.colabore.dto.category.CategoryDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.CategoryEntity;
-import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.BusinessRuleException;
@@ -106,7 +106,6 @@ public class FundraiserService {
 
         details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
-        //TODO: Continuar daqui!!!
         details.setContributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
             UserEntity donatorEntity = donationEntity.getDonator();
 
@@ -185,28 +184,20 @@ public class FundraiserService {
 
     private Pageable getPageable(Integer numberPage, Integer numberItems) {
         return PageRequest
-                .of(numberPage, numberItems, Sort.by("creationDate").ascending());
+                .of(numberPage, numberItems, Sort.by("endingDate").ascending());
     }
 
-
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
-//        generic.setCategories(convertCategories(fEntity.getCategories()));
-        generic.setCurrentValue(calculateTotal(fEntity));
-//        generic.setCreationDate(fEntity.getCreationDate());
-        generic.setLastUpdate(fEntity.getLastUpdate());
+        generic.setCategories(convertCategories(fEntity.getCategoriesFundraiser()));
         generic.setFundraiserCreator(objectMapper.convertValue(fEntity.getFundraiserCreator(), UserDTO.class));
+        generic.setCoverPhoto(Base64.getEncoder().encodeToString(fEntity.getCover()));
         return generic;
     }
 
-    private Set<String> convertCategories(Set<CategoryEntity> categories) {
+    private Set<CategoryDTO> convertCategories(Set<CategoryEntity> categories) {
         return categories.stream()
-                .map(CategoryEntity::getName)
+                .map(cEntity-> objectMapper.convertValue(cEntity, CategoryDTO.class))
                 .collect(Collectors.toSet());
-    }
-
-    private BigDecimal calculateTotal(FundraiserEntity fEntity) {
-        return fEntity.getDonations().stream().map(DonationEntity::getValue)
-                .reduce(BigDecimal::add).orElse(null);
     }
 
     private FundraiserEntity setPhotoEntity(FundraiserEntity ent, FundraiserCreateDTO fundCreate) {
