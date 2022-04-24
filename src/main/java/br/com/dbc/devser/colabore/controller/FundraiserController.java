@@ -4,6 +4,7 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
+import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.FundraiserService;
@@ -28,7 +29,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping(value = "/save", consumes = {"multipart/form-data"})
-    public void saveFundraiser(@ModelAttribute FundraiserCreateDTO fundraiser) throws UserColaboreException {
+    public void saveFundraiser(@ModelAttribute FundraiserCreateDTO fundraiser) throws UserColaboreException, BusinessRuleException {
         fundraiserService.saveFundraiser(fundraiser);
     }
 

@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -29,8 +31,9 @@ public class FundraiserCreateDTO {
     @ApiModelProperty(value = "Descrição")
     private String description;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "Data de encerramento")
-    private LocalDateTime endingDate;
+    private LocalDate endingDate;
 
     @ApiModelProperty(value = "Foto de capa")
     private MultipartFile coverPhoto;

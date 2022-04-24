@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,16 +43,20 @@ public class FundraiserService {
     private final DonationRepository donationRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
-    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
-        String authUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        FundraiserEntity fundraiserEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
-
-        fundraiserEntity.setCreationDate(LocalDateTime.now());
+    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException, BusinessRuleException {
+        FundraiserEntity fundraiserEntity = new FundraiserEntity();
+        fundraiserEntity.setTitle(fundraiserCreate.getTitle());
+        fundraiserEntity.setDescription(fundraiserCreate.getDescription());
+        fundraiserEntity.setGoal(fundraiserCreate.getGoal());
         fundraiserEntity.setCurrentValue(new BigDecimal("0.0"));
         fundraiserEntity.setStatusActive(true);
-        fundraiserEntity.setFundraiserCreator(userRepository.findById(Long.getLong(authUserId))
+        fundraiserEntity.setCreationDate(LocalDateTime.now());
+        fundraiserEntity.setEndingDate(fundraiserCreate.getEndingDate());
+        fundraiserEntity.setLastUpdate(LocalDateTime.now());
+        fundraiserEntity.setAutomaticClose(fundraiserCreate.getAutomaticClose());
+        fundraiserEntity.setFundraiserCreator(userRepository.findById(userService.getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
         fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
         /*Seta a foto e grava no banco*/

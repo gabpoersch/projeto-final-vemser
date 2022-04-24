@@ -8,7 +8,7 @@ public class ColaboreApplication {
     /*
         TODO:
             - Logs
-            - Validar e-mail e categoria (não ter duplicatas)
+            - Validar categoria (não ter duplicatas)
             - Adequar classes as exceções personalizadas
             - Adicionar validações
             - Testar api no swagger

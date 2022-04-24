@@ -57,7 +57,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @DeleteMapping("/delete")
-    public void delete() {
+    public void delete() throws BusinessRuleException {
         userService.delete();
     }
 }

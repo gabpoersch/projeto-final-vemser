@@ -3,6 +3,7 @@ package br.com.dbc.devser.colabore.service;
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.UserEntity;
+import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -31,7 +32,9 @@ public class UserService {
     public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
         verifyIfEmailExists(userDTO);
 
-        UserEntity user = objectMapper.convertValue(userDTO, UserEntity.class);
+        UserEntity user = new UserEntity();
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         user.setRoles(roleRepository.findById(1)
                 .orElseThrow(() -> new UserColaboreException("Role not found!")));
@@ -45,7 +48,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {
+    public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException, BusinessRuleException {
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
 
@@ -58,7 +61,7 @@ public class UserService {
         return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
     }
 
-    public void delete() {
+    public void delete() throws BusinessRuleException {
         userRepository.deleteById(getLoggedUserId());
     }
 
@@ -66,9 +69,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public Long getLoggedUserId() {
-        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return Long.getLong(userId);
+    public Long getLoggedUserId() throws BusinessRuleException {
+        String findUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity loggedUser = userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() -> new BusinessRuleException("User not found!"));
+        return loggedUser.getUserId();
     }
 
     private void verifyIfEmailExists(UserCreateDTO userDTO) throws UserColaboreException {

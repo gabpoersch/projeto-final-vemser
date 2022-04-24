@@ -2,9 +2,11 @@ package br.com.dbc.devser.colabore.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -43,8 +45,9 @@ public class FundraiserEntity {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "ending_date")
-    private LocalDateTime endingDate;
+    private LocalDate endingDate;
 
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
