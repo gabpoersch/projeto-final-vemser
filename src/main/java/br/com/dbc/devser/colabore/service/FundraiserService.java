@@ -19,10 +19,7 @@ import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -157,15 +155,17 @@ public class FundraiserService {
                 });
     }
 
-//    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
-//        return fundraiserRepository
-//                .findByCategoriesContainsIgnoreCaseAndStatusActive(convertListToString(categories), true
-//                        , getPageable(numberPage, 20))
-//                .map(fEntity -> {
-//                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-//                    return completeFundraiser(generic, fEntity);
-//                });
-//    }
+    public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
+        List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
+                .findAll(getPageable(numberPage, 20)).stream()
+                .filter(fEntity -> fEntity.getCategoriesFundraiser().stream().allMatch(cEntity -> categories.stream()
+                        .anyMatch(categoryStr -> categoryStr.equalsIgnoreCase(cEntity.getName()))))
+                .map(fundraiserEntity -> {
+                    FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
+                    return completeFundraiser(generic, fundraiserEntity);
+                }).collect(Collectors.toList());
+        return new PageImpl<>(listFundGeneric);
+    }
 
     public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
         return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage, 20))
