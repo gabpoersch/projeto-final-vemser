@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-
 @Data
 public class UserCreateDTO {
 
@@ -20,4 +18,5 @@ public class UserCreateDTO {
 
     @ApiModelProperty(value = "Foto de perfil")
     private MultipartFile profilePhoto;
+
 }

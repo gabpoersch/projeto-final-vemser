@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class AuthDTO {
+
     @NotNull
     @NotEmpty
     @ApiModelProperty(value = "Email do usuário")
@@ -17,4 +18,5 @@ public class AuthDTO {
     @NotEmpty
     @ApiModelProperty(value = "Senha do usuário")
     private String password;
+
 }

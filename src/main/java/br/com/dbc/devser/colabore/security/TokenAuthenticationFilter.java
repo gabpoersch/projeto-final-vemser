@@ -13,6 +13,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
+
     private final TokenService tokenService;
 
     @Override

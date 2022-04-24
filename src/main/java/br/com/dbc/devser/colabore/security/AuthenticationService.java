@@ -12,6 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements UserDetailsService {
+
     private final UserService userService;
 
     @Override
@@ -22,4 +23,5 @@ public class AuthenticationService implements UserDetailsService {
         }
         throw new UsernameNotFoundException("User not found!");
     }
+
 }

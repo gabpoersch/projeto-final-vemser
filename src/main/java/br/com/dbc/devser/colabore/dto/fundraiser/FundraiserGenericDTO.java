@@ -46,4 +46,5 @@ public class FundraiserGenericDTO {
 
     @ApiModelProperty(value = "Data de encerramento")
     private LocalDateTime endingDate;
+
 }

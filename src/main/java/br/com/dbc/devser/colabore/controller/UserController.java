@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -39,7 +38,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi cadastrado com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PostMapping(value = "/register", consumes = { "multipart/form-data" })
+    @PostMapping(value = "/register", consumes = {"multipart/form-data"})
     public UserDTO create(@Valid @ModelAttribute UserCreateDTO userCreateDTO) throws UserColaboreException {
         return userService.create(userCreateDTO);
     }

@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 @Entity(name = "category")
 public class CategoryEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_CATEGORY")
     @SequenceGenerator(name = "GEN_CATEGORY", sequenceName = "sequence_category", allocationSize = 1)
@@ -30,4 +31,5 @@ public class CategoryEntity {
             inverseJoinColumns = @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
     )
     private Set<FundraiserEntity> fundraisers;
+
 }

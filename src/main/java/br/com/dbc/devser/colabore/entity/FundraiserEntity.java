@@ -68,4 +68,5 @@ public class FundraiserEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     )
     private Set<CategoryEntity> categoriesFundraiser;
+
 }

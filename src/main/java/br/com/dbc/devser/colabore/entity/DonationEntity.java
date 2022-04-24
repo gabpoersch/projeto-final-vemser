@@ -30,4 +30,5 @@ public class DonationEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_id", referencedColumnName = "fundraiser_id")
     private FundraiserEntity fundraiser;
+
 }

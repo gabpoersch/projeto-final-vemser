@@ -30,4 +30,5 @@ public class DonationController {
         donationService.makeDonation(fundraiserId, donate);
         fundraiserService.checkClosed(fundraiserId);
     }
+
 }

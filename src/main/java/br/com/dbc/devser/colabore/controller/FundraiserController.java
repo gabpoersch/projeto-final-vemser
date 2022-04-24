@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/fundraiser")
 @RequiredArgsConstructor
@@ -77,14 +79,14 @@ public class FundraiserController {
         return fundraiserService.userContributions(numberPage);
     }
 
-//    @ApiOperation(value = "Filtra as campanhas a partir de categorias listadas. Passar número da página como parâmetro (Resultado paginado)")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanha foram listadas com sucesso."),
-//            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
-//            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-//    @GetMapping("/byCategories/{numberPage}")
-//    public Page<FundraiserGenericDTO> filterByCategories(@RequestBody List<String> categories, @PathVariable("numberPage") Integer numberPage) {
-//        return fundraiserService.filterByCategories(categories, numberPage);
-//    }
+    @ApiOperation(value = "Filtra as campanhas a partir de categorias listadas. Passar número da página como parâmetro (Resultado paginado)")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanha foram listadas com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @GetMapping("/byCategories/{numberPage}")
+    public Page<FundraiserGenericDTO> filterByCategories(@RequestBody List<String> categories, @PathVariable("numberPage") Integer numberPage) {
+        return fundraiserService.filterByCategories(categories, numberPage);
+    }
 
     @ApiOperation(value = "Filtra as campanhas que atingiram a meta. Passar número da página como parâmetro (Resultado paginado)")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
@@ -121,4 +123,5 @@ public class FundraiserController {
     public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) {
         fundraiserService.deleteFundraiser(fundraiserId);
     }
+
 }

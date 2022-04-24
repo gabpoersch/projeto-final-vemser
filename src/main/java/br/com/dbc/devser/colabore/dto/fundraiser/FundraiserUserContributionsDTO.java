@@ -19,4 +19,5 @@ public class FundraiserUserContributionsDTO extends FundraiserGenericDTO {
 
     @ApiModelProperty(value = "Total de doações do usuário")
     private BigDecimal totalContribution;
+
 }

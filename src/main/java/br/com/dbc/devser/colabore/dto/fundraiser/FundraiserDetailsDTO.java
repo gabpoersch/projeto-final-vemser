@@ -37,4 +37,5 @@ public class FundraiserDetailsDTO {
 
     @ApiModelProperty(value = "Lista dos contribuidores da campanha")
     private Set<UserDTO> contributors;
+
 }

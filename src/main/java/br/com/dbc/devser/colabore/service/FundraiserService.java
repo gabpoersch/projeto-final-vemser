@@ -234,4 +234,5 @@ public class FundraiserService {
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
         return currentValue.compareTo(goal) > 0;
     }
+
 }

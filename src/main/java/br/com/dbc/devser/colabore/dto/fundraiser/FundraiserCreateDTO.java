@@ -37,4 +37,5 @@ public class FundraiserCreateDTO {
 
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;
+
 }

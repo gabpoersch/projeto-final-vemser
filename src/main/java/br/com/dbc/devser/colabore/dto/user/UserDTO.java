@@ -20,4 +20,5 @@ public class UserDTO {
 
     @ApiModelProperty(value = "Foto de perfil")
     private String profilePhoto;
+
 }

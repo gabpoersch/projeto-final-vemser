@@ -7,23 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ColaboreApplication {
     /*
         TODO:
-            - Trocar lógica de categorias
-            - Trocar lógica da foto
-            - No método de salvar fundraiser, adicionar um save para categorias (verificar se já existe)
-            - Verificar se já existe um email no cadastro de usuário
-            - Retirar a senha do UserDto, pois ele retorna na listagem das campanhas
             - Logs
+            - Validar e-mail e categoria (não ter duplicatas)
             - Adequar classes as exceções personalizadas
             - Adicionar validações
             - Testar api no swagger
             - Refatorar e deixar perfomático
             - Testes unitários
-            - Voltar a foto p base64
-            - Mudar as entidades referentes à Categoria
-            - Fazer mapeamento das categorias com join table
-            - Validar e-mail e categoria (não ter duplicatas)
-            - Trocar name category pra unique
-            - mudar campo para endingdate
 
         IDEIAS
             - Testes automatizados

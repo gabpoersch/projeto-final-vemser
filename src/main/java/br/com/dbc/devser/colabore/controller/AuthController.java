@@ -22,6 +22,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Validated
 public class AuthController {
+
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
@@ -40,4 +41,5 @@ public class AuthController {
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         return tokenService.getToken(authenticate);
     }
+
 }

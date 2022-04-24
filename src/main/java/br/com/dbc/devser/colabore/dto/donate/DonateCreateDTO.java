@@ -19,4 +19,5 @@ public class DonateCreateDTO {
 
     @ApiModelProperty(value = "Valor doado")
     private BigDecimal value;
+
 }
