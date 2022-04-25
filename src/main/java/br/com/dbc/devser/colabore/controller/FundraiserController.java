@@ -56,7 +56,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/userFundraisers/{numberPage}")
-    public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException {
+    public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException, UserColaboreException {
         return fundraiserService.findUserFundraisers(numberPage);
     }
 
@@ -76,7 +76,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/userContributions/{numberPage}")
-    public Page<FundraiserUserContributionsDTO> userContributions(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException {
+    public Page<FundraiserUserContributionsDTO> userContributions(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException, UserColaboreException {
         return fundraiserService.userContributions(numberPage);
     }
 

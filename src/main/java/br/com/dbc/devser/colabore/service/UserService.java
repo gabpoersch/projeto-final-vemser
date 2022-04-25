@@ -63,7 +63,7 @@ public class UserService {
         return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
     }
 
-    public void delete() throws BusinessRuleException {
+    public void delete() throws UserColaboreException {
         userRepository.deleteById(getLoggedUserId());
     }
 
@@ -71,9 +71,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public Long getLoggedUserId() throws BusinessRuleException {
+    public Long getLoggedUserId() throws UserColaboreException {
         String findUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity loggedUser = userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() -> new BusinessRuleException("User not found!"));
+        UserEntity loggedUser = userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() ->
+                new UserColaboreException("User not found!"));
         return loggedUser.getUserId();
     }
 

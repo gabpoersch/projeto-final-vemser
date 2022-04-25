@@ -30,7 +30,7 @@ public class AuthController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Token gerado!"),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PostMapping()
+    @PostMapping
     public String auth(@RequestBody @Valid AuthDTO authDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(

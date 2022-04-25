@@ -132,7 +132,7 @@ public class FundraiserService {
     }
 
 
-    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws BusinessRuleException {
+    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws BusinessRuleException, UserColaboreException {
         return fundraiserRepository
                 .findFundraisersOfUser(userService.getLoggedUserId(), getPageableWithEndingDate(numberPage, 30))
                 .map(fEntity -> {
@@ -141,7 +141,7 @@ public class FundraiserService {
                 });
     }
 
-    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws BusinessRuleException {
+    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws BusinessRuleException, UserColaboreException {
         return donationRepository.findMyDonations(userService.getLoggedUserId(), getPageableForDonations(numberPage))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
@@ -217,9 +217,9 @@ public class FundraiserService {
                 });
     }
 
-    public void checkClosed(Long idRequest) throws BusinessRuleException {
+    public void checkClosed(Long idRequest) throws FundraiserException {
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
-                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
+                .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
 
         fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
 
