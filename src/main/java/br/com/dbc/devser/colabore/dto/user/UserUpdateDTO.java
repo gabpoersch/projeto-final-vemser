@@ -1,10 +1,15 @@
 package br.com.dbc.devser.colabore.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserUpdateDTO {
 
     @ApiModelProperty(value = "Nome do usuário")
