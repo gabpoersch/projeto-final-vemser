@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,18 +22,22 @@ import java.util.Set;
 @NoArgsConstructor
 public class FundraiserCreateDTO {
 
+    @NotBlank
     @ApiModelProperty(value = "Título da campanha")
     private String title;
 
+    @NotNull
     @ApiModelProperty(value = "Meta da campanha")
     private BigDecimal goal;
 
+    @NotNull
     @ApiModelProperty(value = "Fechar automaticamente quando atigir a meta")
     private Boolean automaticClose;
 
     @ApiModelProperty(value = "Descrição")
     private String description;
 
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "Data de encerramento")
     private LocalDate endingDate;
@@ -39,6 +46,7 @@ public class FundraiserCreateDTO {
     @ApiModelProperty(value = "Foto de capa")
     private MultipartFile coverPhoto;
 
+    @NotEmpty
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;
 

@@ -8,10 +8,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/donation")
+@Validated
 @RequiredArgsConstructor
 public class DonationController {
 
@@ -22,7 +26,7 @@ public class DonationController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/{fundraiserId}")
-    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody DonateCreateDTO donate)
+    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId,@Valid @RequestBody DonateCreateDTO donate)
             throws UserColaboreException, FundraiserException {
         donationService.makeDonation(fundraiserId, donate);
     }

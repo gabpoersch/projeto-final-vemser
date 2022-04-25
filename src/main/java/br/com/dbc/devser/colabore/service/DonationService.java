@@ -51,6 +51,8 @@ public class DonationService {
         fundraiserEntity.setCurrentValue(fundraiserEntity.getCurrentValue().add(donate.getValue()));
         fundraiserRepository.save(fundraiserEntity);
 
+        log.info("Current value up to date, value add = {}.", donate.getValue());
+
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserId);
         }

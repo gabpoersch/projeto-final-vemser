@@ -57,7 +57,9 @@ public class FundraiserService {
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
         fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
         /*Seta a foto e grava no banco*/
-        fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserCreate));
+        FundraiserEntity fundSaved = fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserCreate));
+
+        log.info("Fundraiser with id number {} registered with success.", fundSaved.getFundraiserId());
     }
 
     public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException {
@@ -77,12 +79,14 @@ public class FundraiserService {
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
 
         fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserUpdate));
+
+        log.info("Fundraiser with id number {} updated with success.", fundraiserEntity.getFundraiserId());
     }
 
     private Set<CategoryEntity> buildCategories(Set<String> categories) {
         return categories.stream().map(category -> {
             //***Testando se existe***
-            CategoryEntity categoryReference = categoryRepository.findByName(category);
+            CategoryEntity categoryReference = categoryRepository.findByNameContainsIgnoreCase(category);
             if (categoryReference != null) {
                 return categoryReference;
             }
@@ -98,7 +102,9 @@ public class FundraiserService {
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-        details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
+        if(fundraiserEntity.getCover()!=null){
+            details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
+        }
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
         details.setContributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
             UserEntity donatorEntity = donationEntity.getDonator();
@@ -150,6 +156,7 @@ public class FundraiserService {
                 });
     }
 
+    /*Procurar uma maneira mais performática.*/
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
                 .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
@@ -183,6 +190,7 @@ public class FundraiserService {
 
     public void deleteFundraiser(Long fundraiserId) {
         fundraiserRepository.deleteById(fundraiserId);
+        log.info("Fundaraiser with id number {} deleted.", fundraiserId);
     }
 
     private FundraiserEntity findById(Long fundraiserId) throws FundraiserException {
@@ -197,6 +205,8 @@ public class FundraiserService {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void setStatusFundraiser() {
+        log.info("Scheduled method running on {}", LocalDate.now());
+
         fundraiserRepository.finishedFundraisers(LocalDate.now())
                 .forEach(fEntity -> {
                     fEntity.setStatusActive(false);
@@ -204,8 +214,8 @@ public class FundraiserService {
                 });
     }
 
-    public void checkClosed(Long idRequest) throws FundraiserException {
-        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
+    public void checkClosed(Long fundraiserId) throws FundraiserException {
+        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
 
         fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));

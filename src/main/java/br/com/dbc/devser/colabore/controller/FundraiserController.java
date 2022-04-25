@@ -12,13 +12,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/fundraiser")
 @RequiredArgsConstructor
+@Validated
 public class FundraiserController {
 
     private final FundraiserService fundraiserService;
@@ -28,7 +31,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping(value = "/save", consumes = {"multipart/form-data"})
-    public void saveFundraiser(@ModelAttribute FundraiserCreateDTO fundraiser) throws UserColaboreException {
+    public void saveFundraiser(@Valid @ModelAttribute FundraiserCreateDTO fundraiser) throws UserColaboreException {
         fundraiserService.saveFundraiser(fundraiser);
     }
 
@@ -37,18 +40,10 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping(value = "/{fundraiserId}", consumes = {"multipart/form-data"})
-    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @ModelAttribute FundraiserCreateDTO fundUpdate) throws FundraiserException {
+    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId,@Valid @ModelAttribute FundraiserCreateDTO fundUpdate)
+            throws FundraiserException {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
-
-//    @ApiOperation(value = "Atualiza o status de uma campanha no banco de dados.")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "O status da campanha foi atualizado com sucesso."),
-//            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
-//            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-//    @PutMapping("/status/{fundraiserId}")
-//    public void updateFundraiserStatus(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException {
-//        fundraiserService.updateFundraiserStatus(fundraiserId);
-//    }
 
     @ApiOperation(value = "Lista as campanhas do usuário. Passar número da página como parâmetro (Resultado paginado).")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
