@@ -25,7 +25,7 @@ public class CategoryService {
     }
 
     public CategoryDTO findByName(String name) {
-        return objectMapper.convertValue(categoryRepository.findByName(name), CategoryDTO.class);
+        return objectMapper.convertValue(categoryRepository.findByNameContainsIgnoreCase(name), CategoryDTO.class);
     }
 
 }

@@ -2,7 +2,6 @@ package br.com.dbc.devser.colabore.service;
 
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
-import br.com.dbc.devser.colabore.dto.user.UserUpdateDTO;
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.RoleRepository;

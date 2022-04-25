@@ -40,7 +40,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PutMapping(value = "/{fundraiserId}", consumes = {"multipart/form-data"})
-    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId,@Valid @ModelAttribute FundraiserCreateDTO fundUpdate)
+    public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @Valid @ModelAttribute FundraiserCreateDTO fundUpdate)
             throws FundraiserException {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }

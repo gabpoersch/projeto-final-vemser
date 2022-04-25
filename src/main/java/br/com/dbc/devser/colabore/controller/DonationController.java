@@ -26,7 +26,7 @@ public class DonationController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/{fundraiserId}")
-    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId,@Valid @RequestBody DonateCreateDTO donate)
+    public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @Valid @RequestBody DonateCreateDTO donate)
             throws UserColaboreException, FundraiserException {
         donationService.makeDonation(fundraiserId, donate);
     }

@@ -102,7 +102,7 @@ public class FundraiserService {
 
         FundraiserDetailsDTO details = objectMapper.convertValue(fundraiserEntity, FundraiserDetailsDTO.class);
 
-        if(fundraiserEntity.getCover()!=null){
+        if (fundraiserEntity.getCover() != null) {
             details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
         }
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
