@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,7 +45,6 @@ public class FundraiserCreateDTO {
     @ApiModelProperty(value = "Foto de capa")
     private MultipartFile coverPhoto;
 
-    @NotEmpty
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;
 

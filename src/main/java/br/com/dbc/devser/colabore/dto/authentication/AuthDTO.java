@@ -3,19 +3,16 @@ package br.com.dbc.devser.colabore.dto.authentication;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class AuthDTO {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @ApiModelProperty(value = "Email do usuário")
     private String login;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @ApiModelProperty(value = "Senha do usuário")
     private String password;
 

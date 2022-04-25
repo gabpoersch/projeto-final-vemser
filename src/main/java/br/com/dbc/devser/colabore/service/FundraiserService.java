@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,8 +63,10 @@ public class FundraiserService {
         log.info("Fundraiser with id number {} registered with success.", fundSaved.getFundraiserId());
     }
 
-    public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException {
+    public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException, UserColaboreException {
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
+
+        verifyIfFundraiserIsYours(fundraiserEntity);
 
         if (fundraiserEntity.getDonations().size() != 0) {
             throw new FundraiserException("Fundraiser already has donations.");
@@ -188,9 +191,14 @@ public class FundraiserService {
                 });
     }
 
-    public void deleteFundraiser(Long fundraiserId) {
-        fundraiserRepository.deleteById(fundraiserId);
-        log.info("Fundaraiser with id number {} deleted.", fundraiserId);
+    public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {
+        FundraiserEntity fundraiserEntity = findById(fundraiserId);
+
+        verifyIfFundraiserIsYours(fundraiserEntity);
+
+        fundraiserRepository.delete(fundraiserEntity);
+
+        log.info("Fundraiser with id number {} deleted.", fundraiserId);
     }
 
     private FundraiserEntity findById(Long fundraiserId) throws FundraiserException {
@@ -203,6 +211,7 @@ public class FundraiserService {
                 .of(numberPage, numberItems, Sort.by("endingDate").ascending());
     }
 
+    /*Falta testar*/
     @Scheduled(cron = "0 0 0 * * *")
     public void setStatusFundraiser() {
         log.info("Scheduled method running on {}", LocalDate.now());
@@ -252,6 +261,13 @@ public class FundraiserService {
             e.printStackTrace();
         }
         return ent;
+    }
+
+    private void verifyIfFundraiserIsYours(FundraiserEntity fEntity) throws FundraiserException, UserColaboreException {
+        /*Não permite a atualização de um fundraiser que não é do usuário.*/
+        if (!Objects.equals(userService.getLoggedUserId(), fEntity.getFundraiserCreator().getUserId())) {
+            throw new FundraiserException("You are not the owner.");
+        }
     }
 
 }

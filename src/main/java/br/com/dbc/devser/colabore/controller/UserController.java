@@ -46,7 +46,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi atualizado com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PutMapping(value = "/update", consumes = {"*/*"})
+    @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public UserDTO update(@Valid @ModelAttribute UserCreateDTO userUpdateDTO) throws UserColaboreException {
         return userService.update(userUpdateDTO);
     }

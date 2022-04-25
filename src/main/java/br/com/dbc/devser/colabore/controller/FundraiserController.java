@@ -39,9 +39,9 @@ public class FundraiserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A campanha foi atualizada com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PutMapping(value = "/{fundraiserId}", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/{fundraiserId}", consumes = {"multipart/form-data"})
     public void updateFundraiser(@PathVariable("fundraiserId") Long fundraiserId, @Valid @ModelAttribute FundraiserCreateDTO fundUpdate)
-            throws FundraiserException {
+            throws FundraiserException, UserColaboreException {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
 
@@ -115,7 +115,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @DeleteMapping("/{fundraiserId}")
-    public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) {
+    public void deleteFundraiser(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException, UserColaboreException {
         fundraiserService.deleteFundraiser(fundraiserId);
     }
 

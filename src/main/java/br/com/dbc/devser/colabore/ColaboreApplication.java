@@ -7,18 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ColaboreApplication {
     /*
         TODO:
-            - Logs
-            - Adicionar validações
-            - Testar api no swagger
-            - Refatorar e deixar perfomático
-            - Testes unitários
-            - User @PutMapping
-            - Fundraiser @PutMapping
-            - Fazer lógica de verificação do id nos updates e rquisições
-            - Testar rotas de segurança
+            - Testes unitários;
+            - Testar rotas de segurança (Consertar);
+            - Refatorar e deixar perfomático;
 
         IDEIAS
-            - Testes automatizados
+            - Serviço de email para criador da fundraiser e doador;
+            - Testes automatizados;
      */
     public static void main(String[] args) {
         SpringApplication.run(ColaboreApplication.class, args);
