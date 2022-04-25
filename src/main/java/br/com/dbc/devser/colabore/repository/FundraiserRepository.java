@@ -25,6 +25,6 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
     Page<FundraiserEntity> findFundraiserIncomplete(Pageable pageable);
 
     @Query("select f from fundraiser f where f.endingDate = :end")
-    List<FundraiserEntity> finishedFundraisers (LocalDate end);
+    List<FundraiserEntity> finishedFundraisers(LocalDate end);
 
 }

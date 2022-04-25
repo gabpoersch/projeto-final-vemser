@@ -1,7 +1,10 @@
 package br.com.dbc.devser.colabore.entity;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -9,7 +12,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "roles")

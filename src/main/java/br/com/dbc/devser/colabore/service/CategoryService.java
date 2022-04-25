@@ -24,4 +24,8 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    public CategoryDTO findByName(String name) {
+        return objectMapper.convertValue(categoryRepository.findByName(name), CategoryDTO.class);
+    }
+
 }

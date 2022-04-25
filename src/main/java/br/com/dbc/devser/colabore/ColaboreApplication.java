@@ -8,7 +8,6 @@ public class ColaboreApplication {
     /*
         TODO:
             - Logs
-            - Adequar classes as exceções personalizadas
             - Adicionar validações
             - Testar api no swagger
             - Refatorar e deixar perfomático
@@ -16,6 +15,7 @@ public class ColaboreApplication {
             - User @PutMapping
             - Fundraiser @PutMapping
             - Fazer lógica de verificação do id nos updates e rquisições
+            - Testar rotas de segurança
 
         IDEIAS
             - Testes automatizados

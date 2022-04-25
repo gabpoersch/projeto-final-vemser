@@ -9,7 +9,6 @@ import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.CategoryEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.CategoryRepository;
@@ -47,17 +46,13 @@ public class FundraiserService {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
 
-    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException, BusinessRuleException {
-        FundraiserEntity fundraiserEntity = new FundraiserEntity();
-        fundraiserEntity.setTitle(fundraiserCreate.getTitle());
-        fundraiserEntity.setDescription(fundraiserCreate.getDescription());
-        fundraiserEntity.setGoal(fundraiserCreate.getGoal());
+    public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
+        FundraiserEntity fundraiserEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
+
+        fundraiserEntity.setCreationDate(LocalDateTime.now());
         fundraiserEntity.setCurrentValue(new BigDecimal("0.0"));
         fundraiserEntity.setStatusActive(true);
-        fundraiserEntity.setCreationDate(LocalDateTime.now());
-        fundraiserEntity.setEndingDate(fundraiserCreate.getEndingDate());
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
-        fundraiserEntity.setAutomaticClose(fundraiserCreate.getAutomaticClose());
         fundraiserEntity.setFundraiserCreator(userRepository.findById(userService.getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found.")));
         fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
@@ -66,7 +61,6 @@ public class FundraiserService {
     }
 
     public void updateFundraiser(Long fundraiserId, FundraiserCreateDTO fundraiserUpdate) throws FundraiserException {
-
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
 
         if (fundraiserEntity.getDonations().size() != 0) {
@@ -132,7 +126,7 @@ public class FundraiserService {
     }
 
 
-    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws BusinessRuleException, UserColaboreException {
+    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository
                 .findFundraisersOfUser(userService.getLoggedUserId(), getPageableWithEndingDate(numberPage, 30))
                 .map(fEntity -> {
@@ -141,8 +135,8 @@ public class FundraiserService {
                 });
     }
 
-    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws BusinessRuleException, UserColaboreException {
-        return donationRepository.findMyDonations(userService.getLoggedUserId(), getPageableForDonations(numberPage))
+    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws UserColaboreException {
+        return donationRepository.findMyDonations(userService.getLoggedUserId(), PageRequest.of(numberPage, 20))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
                     FundraiserGenericDTO fundraiserGeneric = objectMapper
@@ -160,11 +154,9 @@ public class FundraiserService {
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
                 .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
                 .filter(fEntity -> {
-                    Set<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream().map(categoryEntity -> categoryEntity.getName()).collect(Collectors.toSet());
-                    if (categoriesEnt.containsAll(categories)) {
-                        return true;
-                    }
-                    return false;
+                    Set<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream()
+                            .map(CategoryEntity::getName).collect(Collectors.toSet());
+                    return categoriesEnt.containsAll(categories);
                 })
                 .map(fundraiserEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
@@ -203,11 +195,6 @@ public class FundraiserService {
                 .of(numberPage, numberItems, Sort.by("endingDate").ascending());
     }
 
-    private Pageable getPageableForDonations(Integer numberPage) {
-        return PageRequest
-                .of(numberPage, 20);
-    }
-
     @Scheduled(cron = "0 0 0 * * *")
     public void setStatusFundraiser() {
         fundraiserRepository.finishedFundraisers(LocalDate.now())
@@ -227,10 +214,7 @@ public class FundraiserService {
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
-        if (currentValue.compareTo(goal) >= 0) {
-            return false;
-        }
-        return true;
+        return currentValue.compareTo(goal) < 0;
     }
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {

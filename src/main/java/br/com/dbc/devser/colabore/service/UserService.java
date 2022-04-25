@@ -3,7 +3,6 @@ package br.com.dbc.devser.colabore.service;
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.UserEntity;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
@@ -30,12 +29,10 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
-    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException, BusinessRuleException {
+    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
         verifyIfEmailExists(userDTO, false);
 
-        UserEntity user = new UserEntity();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
+        UserEntity user = objectMapper.convertValue(userDTO, UserEntity.class);
         user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         user.setRoles(roleRepository.findById(1)
                 .orElseThrow(() -> new UserColaboreException("Role not found!")));
@@ -49,19 +46,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException, BusinessRuleException {
-        verifyIfEmailExists(updateUserDTO, true);
-
-        UserEntity userEntity = userRepository.findById(getLoggedUserId())
-                .orElseThrow(() -> new UserColaboreException("User not found!"));
-
-        userEntity.setEmail(updateUserDTO.getEmail());
-        userEntity.setName(updateUserDTO.getName());
-        userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
-        userEntity.setRoles(userEntity.getRoles());
-
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
-    }
+//    public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {
+//        verifyIfEmailExists(updateUserDTO, true);
+//
+//        UserEntity userEntity = userRepository.findById(getLoggedUserId())
+//                .orElseThrow(() -> new UserColaboreException("User not found!"));
+//
+//        userEntity.setEmail(updateUserDTO.getEmail());
+//        userEntity.setName(updateUserDTO.getName());
+//        userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
+//        userEntity.setRoles(userEntity.getRoles());
+//
+//        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
+//    }
 
     public void delete() throws UserColaboreException {
         userRepository.deleteById(getLoggedUserId());
@@ -78,7 +75,7 @@ public class UserService {
         return loggedUser.getUserId();
     }
 
-    private void verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException, BusinessRuleException {
+    private void verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException {
         if (verificationFlag) {
             UserEntity oldUser = userRepository.findById(getLoggedUserId()).orElseThrow(() ->
                     new UserColaboreException("User not found."));

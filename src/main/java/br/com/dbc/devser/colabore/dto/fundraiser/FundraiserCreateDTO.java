@@ -1,5 +1,6 @@
 package br.com.dbc.devser.colabore.dto.fundraiser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,7 @@ public class FundraiserCreateDTO {
     @ApiModelProperty(value = "Data de encerramento")
     private LocalDate endingDate;
 
+    @JsonIgnore
     @ApiModelProperty(value = "Foto de capa")
     private MultipartFile coverPhoto;
 

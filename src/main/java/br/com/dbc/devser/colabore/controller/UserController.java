@@ -2,7 +2,6 @@ package br.com.dbc.devser.colabore.controller;
 
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
-import br.com.dbc.devser.colabore.exception.BusinessRuleException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -39,7 +38,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping(value = "/register", consumes = {"multipart/form-data"})
-    public UserDTO create(@Valid @ModelAttribute UserCreateDTO userCreateDTO) throws UserColaboreException, BusinessRuleException {
+    public UserDTO create(@Valid @ModelAttribute UserCreateDTO userCreateDTO) throws UserColaboreException {
         return userService.create(userCreateDTO);
     }
 
