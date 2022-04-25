@@ -26,15 +26,18 @@ public class DonationService {
     private final FundraiserRepository fundraiserRepository;
     private final FundraiserService fundraiserService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws UserColaboreException, FundraiserException, BusinessRuleException {
-        String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        UserEntity userEntity = userRepository.findById(Long.getLong(authId))
+                UserEntity userEntity = userRepository.findById(userService.getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found in database."));
 
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found in database."));
+
+        if (!fundraiserEntity.getStatusActive()) {
+            throw new FundraiserException("You can not donate to a closed fundraiser.");
+        }
 
         DonationEntity donationEntity = objectMapper.convertValue(donate, DonationEntity.class);
 

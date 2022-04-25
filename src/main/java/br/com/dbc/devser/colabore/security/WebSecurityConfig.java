@@ -27,10 +27,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable().and().cors().and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/auth").permitAll()
                 .antMatchers("/user/register").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/**").hasAnyRole("ADMIN")
                 .antMatchers("/donation/**", "/fundraiser/**", "/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/auth").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DonationRepository extends JpaRepository<DonationEntity, Long> {
 
-    @Query("select d.fundraiser, sum(d.value) from donation d where d.donator.userId = :userId group by d.fundraiser.fundraiserId")
+    @Query("select d.fundraiser, sum(d.value) from donation d where d.donator.userId = :userId group by d.fundraiser.fundraiserId, d.value")
+//    @Query("select sum (d.value), d.fundraiser from donation d join fetch fundraiser f on d.fundraiser.fundraiserId = f.fundraiserId " +
+//            "where d.donator.userId :userId group by d.fundraiser.fundraiserId, f")
     Page<DonationEntity> findMyDonations(Long userId, Pageable pageable);
 
     /*

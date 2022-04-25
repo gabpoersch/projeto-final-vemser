@@ -28,7 +28,6 @@ public class DonationController {
     public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @RequestBody DonateCreateDTO donate)
             throws UserColaboreException, FundraiserException, BusinessRuleException {
         donationService.makeDonation(fundraiserId, donate);
-        fundraiserService.checkClosed(fundraiserId);
     }
 
 }

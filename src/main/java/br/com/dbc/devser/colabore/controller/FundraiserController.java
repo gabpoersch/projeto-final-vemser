@@ -42,21 +42,21 @@ public class FundraiserController {
         fundraiserService.updateFundraiser(fundraiserId, fundUpdate);
     }
 
-    @ApiOperation(value = "Atualiza o status de uma campanha no banco de dados.")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "O status da campanha foi atualizado com sucesso."),
-            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
-            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @PutMapping("/status/{fundraiserId}")
-    public void updateFundraiserStatus(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException {
-        fundraiserService.updateFundraiserStatus(fundraiserId);
-    }
+//    @ApiOperation(value = "Atualiza o status de uma campanha no banco de dados.")
+//    @ApiResponses(value = {@ApiResponse(code = 200, message = "O status da campanha foi atualizado com sucesso."),
+//            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+//            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+//    @PutMapping("/status/{fundraiserId}")
+//    public void updateFundraiserStatus(@PathVariable("fundraiserId") Long fundraiserId) throws FundraiserException {
+//        fundraiserService.updateFundraiserStatus(fundraiserId);
+//    }
 
     @ApiOperation(value = "Lista as campanhas do usuário. Passar número da página como parâmetro (Resultado paginado).")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/userFundraisers/{numberPage}")
-    public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) {
+    public Page<FundraiserGenericDTO> findUserFundraisers(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException {
         return fundraiserService.findUserFundraisers(numberPage);
     }
 
@@ -76,7 +76,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/userContributions/{numberPage}")
-    public Page<FundraiserUserContributionsDTO> userContributions(@PathVariable("numberPage") Integer numberPage) {
+    public Page<FundraiserUserContributionsDTO> userContributions(@PathVariable("numberPage") Integer numberPage) throws BusinessRuleException {
         return fundraiserService.userContributions(numberPage);
     }
 

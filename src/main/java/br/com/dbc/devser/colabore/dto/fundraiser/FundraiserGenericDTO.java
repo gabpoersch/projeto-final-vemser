@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -45,6 +46,6 @@ public class FundraiserGenericDTO {
     //>>>>>>>> PLUS
 
     @ApiModelProperty(value = "Data de encerramento")
-    private LocalDateTime endingDate;
+    private LocalDate endingDate;
 
 }

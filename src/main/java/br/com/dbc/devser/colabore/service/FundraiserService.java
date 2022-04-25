@@ -20,8 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,10 +81,10 @@ public class FundraiserService {
         fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserUpdate));
     }
 
-    public void updateFundraiserStatus(Long fundraiserId) throws FundraiserException {
-        FundraiserEntity fundraiserEntity = findById(fundraiserId);
-        fundraiserEntity.setStatusActive(!fundraiserEntity.getStatusActive());
-    }
+//    public void updateFundraiserStatus(Long fundraiserId) throws FundraiserException {
+//        FundraiserEntity fundraiserEntity = findById(fundraiserId);
+//        fundraiserEntity.setStatusActive(!fundraiserEntity.getStatusActive());
+//    }
 
     private Set<CategoryEntity> buildCategories(Set<String> categories) {
         return categories.stream().map(category -> {
@@ -124,7 +122,7 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
         return fundraiserRepository
-                .findAllFundraisersActive(getPageable(numberPage, 20))
+                .findAllFundraisersActive(getPageableWithEndingDate(numberPage, 20))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -132,21 +130,17 @@ public class FundraiserService {
     }
 
 
-    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) {
-        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws BusinessRuleException {
         return fundraiserRepository
-                .findFundraisersOfUser(Long.getLong(userId), getPageable(numberPage, 30))
+                .findFundraisersOfUser(userService.getLoggedUserId(), getPageableWithEndingDate(numberPage, 30))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
                 });
     }
 
-    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) {
-        String authId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return donationRepository.findMyDonations(Long.getLong(authId), getPageable(numberPage, 20))
+    public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws BusinessRuleException {
+        return donationRepository.findMyDonations(userService.getLoggedUserId(), getPageableForDonations(numberPage))
                 .map(dEntity -> {
                     FundraiserEntity fEntity = dEntity.getFundraiser();
                     FundraiserGenericDTO fundraiserGeneric = objectMapper
@@ -162,7 +156,7 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
-                .findAll(getPageable(numberPage, 20)).stream()
+                .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
                 .filter(fEntity -> fEntity.getCategoriesFundraiser().stream().allMatch(cEntity -> categories.stream()
                         .anyMatch(categoryStr -> categoryStr.equalsIgnoreCase(cEntity.getName()))))
                 .map(fundraiserEntity -> {
@@ -173,7 +167,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage, 20))
+        return fundraiserRepository.findFundraiserCompleted(getPageableWithEndingDate(numberPage, 20))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -181,12 +175,22 @@ public class FundraiserService {
     }
 
     public Page<FundraiserGenericDTO> filterByFundraiserIncomplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserIncomplete(getPageable(numberPage, 20))
+        return fundraiserRepository.findFundraiserIncomplete(getPageableWithEndingDate(numberPage, 20))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
                 });
     }
+
+//    public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws BusinessRuleException {
+//        return fundraiserRepository
+//                .findFundraisersOfUser(userService.getLoggedUserId(), getPageable(numberPage, 30))
+//                .map(fEntity -> {
+//                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+//                    return completeFundraiser(generic, fEntity);
+//                });
+//    }
+
 
     public void deleteFundraiser(Long fundraiserId) {
         fundraiserRepository.deleteById(fundraiserId);
@@ -197,9 +201,14 @@ public class FundraiserService {
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
     }
 
-    private Pageable getPageable(Integer numberPage, Integer numberItems) {
+    private Pageable getPageableWithEndingDate(Integer numberPage, Integer numberItems) {
         return PageRequest
                 .of(numberPage, numberItems, Sort.by("endingDate").ascending());
+    }
+
+    private Pageable getPageableForDonations(Integer numberPage) {
+        return PageRequest
+                .of(numberPage, 20);
     }
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
@@ -231,13 +240,16 @@ public class FundraiserService {
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
                 .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
 
-        fundraiserEntity.setAutomaticClose(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
+        fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
 
         fundraiserRepository.save(fundraiserEntity);
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
-        return currentValue.compareTo(goal) > 0;
+        if (currentValue.compareTo(goal) >= 0) {
+            return false;
+        }
+        return true;
     }
 
 }
