@@ -85,7 +85,7 @@ public class FundraiserController {
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/byCategories/{numberPage}")
-    public Page<FundraiserGenericDTO> filterByCategories(@RequestBody List<String> categories, @PathVariable("numberPage") Integer numberPage) {
+    public Page<FundraiserGenericDTO> filterByCategories(@RequestParam List<String> categories, @PathVariable("numberPage") Integer numberPage) {
         return fundraiserService.filterByCategories(categories, numberPage);
     }
 

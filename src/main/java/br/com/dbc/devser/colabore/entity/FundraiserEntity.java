@@ -1,6 +1,7 @@
 package br.com.dbc.devser.colabore.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "fundraiser")
 public class FundraiserEntity {
 
@@ -59,6 +61,7 @@ public class FundraiserEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "fundraiser")
     private Set<DonationEntity> donations;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundraiser_creator", referencedColumnName = "user_id")
     private UserEntity fundraiserCreator;
@@ -73,3 +76,4 @@ public class FundraiserEntity {
     private Set<CategoryEntity> categoriesFundraiser;
 
 }
+
