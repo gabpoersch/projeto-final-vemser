@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,8 +30,8 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
 
-    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
-        verifyIfEmailExists(userDTO);
+    public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException, BusinessRuleException {
+        verifyIfEmailExists(userDTO, false);
 
         UserEntity user = new UserEntity();
         user.setName(userDTO.getName());
@@ -49,7 +50,7 @@ public class UserService {
     }
 
     public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException, BusinessRuleException {
-        verifyIfEmailExists(updateUserDTO);
+        verifyIfEmailExists(updateUserDTO, true);
 
         UserEntity userEntity = userRepository.findById(getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found!"));
@@ -76,7 +77,20 @@ public class UserService {
         return loggedUser.getUserId();
     }
 
-    private void verifyIfEmailExists(UserCreateDTO userDTO) throws UserColaboreException {
+    private void verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException, BusinessRuleException {
+        if (verificationFlag){
+            UserEntity oldUser = userRepository.findById(getLoggedUserId()).orElseThrow(()->
+                    new UserColaboreException("User not found."));
+
+            if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())){
+                verificationEmail(userDTO);
+            }
+        } else {
+            verificationEmail(userDTO);
+        }
+    }
+
+    private void verificationEmail (UserCreateDTO userDTO) throws UserColaboreException {
         if (userRepository.findByEmail(userDTO.getEmail()) != null) {
             throw new UserColaboreException("Email already exists.");
         }
