@@ -78,11 +78,11 @@ public class UserService {
     }
 
     private void verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException, BusinessRuleException {
-        if (verificationFlag){
-            UserEntity oldUser = userRepository.findById(getLoggedUserId()).orElseThrow(()->
+        if (verificationFlag) {
+            UserEntity oldUser = userRepository.findById(getLoggedUserId()).orElseThrow(() ->
                     new UserColaboreException("User not found."));
 
-            if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())){
+            if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())) {
                 verificationEmail(userDTO);
             }
         } else {
@@ -90,7 +90,7 @@ public class UserService {
         }
     }
 
-    private void verificationEmail (UserCreateDTO userDTO) throws UserColaboreException {
+    private void verificationEmail(UserCreateDTO userDTO) throws UserColaboreException {
         if (userRepository.findByEmail(userDTO.getEmail()) != null) {
             throw new UserColaboreException("Email already exists.");
         }

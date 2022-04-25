@@ -20,11 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -34,6 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@EnableScheduling
 public class FundraiserService {
 
     private final ObjectMapper objectMapper;
@@ -81,11 +85,6 @@ public class FundraiserService {
         fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserUpdate));
     }
 
-//    public void updateFundraiserStatus(Long fundraiserId) throws FundraiserException {
-//        FundraiserEntity fundraiserEntity = findById(fundraiserId);
-//        fundraiserEntity.setStatusActive(!fundraiserEntity.getStatusActive());
-//    }
-
     private Set<CategoryEntity> buildCategories(Set<String> categories) {
         return categories.stream().map(category -> {
             //***Testando se existe***
@@ -114,7 +113,7 @@ public class FundraiserService {
                     .userId(donatorEntity.getUserId())
                     .email(donatorEntity.getEmail())
                     .build();
-            if (donatorEntity.getPhoto()!=null){
+            if (donatorEntity.getPhoto() != null) {
                 userDTO.setProfilePhoto(Base64.getEncoder().encodeToString(donatorEntity.getPhoto()));
             }
             return userDTO;
@@ -160,9 +159,9 @@ public class FundraiserService {
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
                 .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
-                .filter(fEntity ->{
+                .filter(fEntity -> {
                     Set<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream().map(categoryEntity -> categoryEntity.getName()).collect(Collectors.toSet());
-                    if (categoriesEnt.containsAll(categories)){
+                    if (categoriesEnt.containsAll(categories)) {
                         return true;
                     }
                     return false;
@@ -209,6 +208,31 @@ public class FundraiserService {
                 .of(numberPage, 20);
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
+    public void setStatusFundraiser() {
+        fundraiserRepository.finishedFundraisers(LocalDate.now())
+                .forEach(fEntity -> {
+                    fEntity.setStatusActive(false);
+                    fundraiserRepository.save(fEntity);
+                });
+    }
+
+    public void checkClosed(Long idRequest) throws BusinessRuleException {
+        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
+                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
+
+        fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
+
+        fundraiserRepository.save(fundraiserEntity);
+    }
+
+    public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
+        if (currentValue.compareTo(goal) >= 0) {
+            return false;
+        }
+        return true;
+    }
+
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
         generic.setCategories(convertCategories(fEntity.getCategoriesFundraiser()));
         generic.setFundraiserCreator(objectMapper.convertValue(fEntity.getFundraiserCreator(), UserDTO.class));
@@ -234,22 +258,6 @@ public class FundraiserService {
             e.printStackTrace();
         }
         return ent;
-    }
-
-    public void checkClosed(Long idRequest) throws BusinessRuleException {
-        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(idRequest)
-                .orElseThrow(() -> new BusinessRuleException("Fundraiser not found."));
-
-        fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
-
-        fundraiserRepository.save(fundraiserEntity);
-    }
-
-    public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
-        if (currentValue.compareTo(goal) >= 0) {
-            return false;
-        }
-        return true;
     }
 
 }

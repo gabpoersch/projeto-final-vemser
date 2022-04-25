@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Long> {
     @Query("select f from fundraiser f where f.fundraiserCreator.userId = :userId and f.statusActive=true")
@@ -20,4 +23,8 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
 
     @Query("select f from fundraiser f where f.currentValue < f.goal and f.statusActive = true")
     Page<FundraiserEntity> findFundraiserIncomplete(Pageable pageable);
+
+    @Query("select f from fundraiser f where f.endingDate = :end")
+    List<FundraiserEntity> finishedFundraisers (LocalDate end);
+
 }

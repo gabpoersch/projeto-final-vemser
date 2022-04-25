@@ -13,7 +13,6 @@ import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +28,7 @@ public class DonationService {
     private final UserService userService;
 
     public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws UserColaboreException, FundraiserException, BusinessRuleException {
-                UserEntity userEntity = userRepository.findById(userService.getLoggedUserId())
+        UserEntity userEntity = userRepository.findById(userService.getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found in database."));
 
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
