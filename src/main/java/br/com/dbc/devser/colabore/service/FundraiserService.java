@@ -141,15 +141,15 @@ public class FundraiserService {
 
     public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws BusinessRuleException {
         return donationRepository.findMyDonations(userService.getLoggedUserId(), getPageableForDonations(numberPage))
-                .map(dEntity -> {
-                    FundraiserEntity fEntity = dEntity.getFundraiser();
+                .map(userContribution -> {
+                    FundraiserEntity fEntity = userContribution.getFundraiserEntity();
                     FundraiserGenericDTO fundraiserGeneric = objectMapper
                             .convertValue(fEntity, FundraiserGenericDTO.class);
                     FundraiserUserContributionsDTO userContributions = objectMapper
                             .convertValue(completeFundraiser(fundraiserGeneric, fEntity)
                                     , FundraiserUserContributionsDTO.class);
                     userContributions.setStatus(fEntity.getStatusActive());
-                    userContributions.setTotalContribution(dEntity.getValue());
+                    userContributions.setTotalContribution(userContribution.getValue());
                     return userContributions;
                 });
     }
