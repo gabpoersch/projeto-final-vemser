@@ -45,7 +45,6 @@ public class UserServiceTests {
 
     private SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    private final UserDetails userDetails =  Mockito.mock(UserDetails.class);
 
     @Mock
     private UserEntity userEntity;
@@ -107,7 +106,7 @@ public class UserServiceTests {
         verify(userEntity, times(0)).setPhoto(any());
 
     }
-//
+
 //    @Test
 //    public void shouldThrowUserNotFound() throws UserColaboreException {
 //
@@ -124,18 +123,17 @@ public class UserServiceTests {
 //
 //
 //        SecurityContextHolder.setContext(securityContext);
-////        Long id = Long.getLong(userDetails.toString());
+//
 //        /*Fluxo*/
 //
 //        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        when(authentication.getPrincipal()).thenReturn(userDetails);
-//        when(userRepository.findById(Long.getLong(userDetails.toString()))).thenReturn(Optional.of(userMock));
-//        when(userRepository.findByEmail(userCreateMock.getEmail())).thenReturn(userMock2);
+//        when(authentication.getPrincipal()).thenReturn(userMock.getUserId());
+//        when(userRepository.findById(Long.valueOf(any()))).thenReturn(Optional.of(userMock));
+//        when(userService.getLoggedUserId()).thenReturn(userMock.getUserId());
 //
-//        Exception ex = assertThrows(UserColaboreException.class,
-//                () -> userService.update(userCreateMock));
-//        assertEquals("Email already exists.", ex.getMessage());
 //
+//
+//        assertThrows(UserColaboreException.class, () -> userService.update(userCreateMock));
 //    }
 //
 //    public UserCreateDTO dtoMock() {
@@ -162,6 +160,4 @@ public class UserServiceTests {
 //        user.setPassword("123");
 //        return user;
 //    }
-
-
 }
