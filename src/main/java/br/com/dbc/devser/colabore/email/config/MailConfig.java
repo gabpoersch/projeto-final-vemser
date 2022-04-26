@@ -1,8 +1,5 @@
 package br.com.dbc.devser.colabore.email.config;
 
-import java.util.Objects;
-import java.util.Properties;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import java.util.Objects;
+import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:application.properties")

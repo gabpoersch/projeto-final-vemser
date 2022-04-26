@@ -1,8 +1,6 @@
 package br.com.dbc.devser.colabore.controller;
 
 import br.com.dbc.devser.colabore.dto.donate.DonateCreateDTO;
-import br.com.dbc.devser.colabore.exception.FundraiserException;
-import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.service.DonationService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

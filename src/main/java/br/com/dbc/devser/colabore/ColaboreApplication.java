@@ -12,7 +12,6 @@ public class ColaboreApplication {
             - Refatorar e deixar perfomático;
 
         IDEIAS
-            - Serviço de email para criador da fundraiser e doador;
             - Testes automatizados;
      */
     public static void main(String[] args) {
