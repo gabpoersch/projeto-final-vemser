@@ -27,7 +27,7 @@ public class DonationController {
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @PostMapping("/{fundraiserId}")
     public void makeDonation(@PathVariable("fundraiserId") Long fundraiserId, @Valid @RequestBody DonateCreateDTO donate)
-            throws UserColaboreException, FundraiserException {
+            throws Exception {
         donationService.makeDonation(fundraiserId, donate);
     }
 

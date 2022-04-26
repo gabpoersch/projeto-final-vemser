@@ -1,6 +1,7 @@
 package br.com.dbc.devser.colabore.service;
 
 import br.com.dbc.devser.colabore.dto.donate.DonateCreateDTO;
+import br.com.dbc.devser.colabore.email.service.MailService;
 import br.com.dbc.devser.colabore.entity.DonationEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
@@ -25,8 +26,9 @@ public class DonationService {
     private final FundraiserService fundraiserService;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final MailService mailService;
 
-    public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws UserColaboreException, FundraiserException {
+    public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws Exception {
 
         UserEntity userEntity = userRepository.findById(userService.getLoggedUserId())
                 .orElseThrow(() -> new UserColaboreException("User not found in database."));
@@ -52,6 +54,9 @@ public class DonationService {
         fundraiserRepository.save(fundraiserEntity);
 
         log.info("Current value up to date, value add = {}.", donate.getValue());
+
+        mailService.donatorMailService(donationSaved, fundraiserEntity);
+
 
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserId);

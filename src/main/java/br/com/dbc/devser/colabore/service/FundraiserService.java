@@ -6,6 +6,7 @@ import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserDetailsDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserGenericDTO;
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserUserContributionsDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
+import br.com.dbc.devser.colabore.email.service.MailService;
 import br.com.dbc.devser.colabore.entity.CategoryEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
@@ -46,6 +47,7 @@ public class FundraiserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
+    private final MailService mailService;
 
     public void saveFundraiser(FundraiserCreateDTO fundraiserCreate) throws UserColaboreException {
         FundraiserEntity fundraiserEntity = objectMapper.convertValue(fundraiserCreate, FundraiserEntity.class);
@@ -223,13 +225,17 @@ public class FundraiserService {
                 });
     }
 
-    public void checkClosed(Long fundraiserId) throws FundraiserException {
+    public void checkClosed(Long fundraiserId) throws Exception {
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
 
         fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
 
         fundraiserRepository.save(fundraiserEntity);
+
+        if (!fundraiserEntity.getStatusActive()) {
+            mailService.fundraiserMailService(fundraiserEntity);
+        }
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
