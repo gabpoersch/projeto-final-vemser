@@ -1,4 +1,4 @@
-package java.br.com.dbc.devser.colabore;
+package br.com.dbc.devser.colabore;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,8 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ColaboreApplicationTests {
 
 	@Test
-	void contextLoads()  {
-
+	void contextLoads() {
 	}
 
 }

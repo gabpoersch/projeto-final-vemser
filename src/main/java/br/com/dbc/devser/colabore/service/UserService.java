@@ -37,7 +37,7 @@ public class UserService {
         user.setRoles(roleRepository.findById(1)
                 .orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(user, userDTO)));
+        return buildExposedDTO(setPhotoBytes(user, userDTO));
     }
 
     public List<UserDTO> list() {
