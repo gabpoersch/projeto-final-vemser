@@ -8,12 +8,18 @@ import br.com.dbc.devser.colabore.repository.RoleRepository;
 import br.com.dbc.devser.colabore.repository.UserRepository;
 import br.com.dbc.devser.colabore.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -23,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@RequiredArgsConstructor
 public class UserServiceTests {
 
     @InjectMocks
@@ -33,6 +40,12 @@ public class UserServiceTests {
 
     @Mock
     private RoleRepository roleRepository;
+
+    private Authentication authentication = Mockito.mock(Authentication.class);
+
+    private SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+
+    private final UserDetails userDetails =  Mockito.mock(UserDetails.class);
 
     @Mock
     private UserEntity userEntity;
@@ -47,6 +60,7 @@ public class UserServiceTests {
     /*Create user (UserService)*/
     @Test
     public void shouldThrowAnErrorWithDuplicatedEmail() {
+
         UserCreateDTO dto = UserCreateDTO
                 .builder().name("José")
                 .email("josesilva@gmail.com").build();
@@ -58,9 +72,9 @@ public class UserServiceTests {
         assertEquals("Email already exists.", ex.getMessage());
     }
 
-
     @Test
     public void shouldCreationUserWork() {
+
         UserCreateDTO dto = UserCreateDTO
                 .builder()
                 .name("José")
@@ -93,9 +107,61 @@ public class UserServiceTests {
         verify(userEntity, times(0)).setPhoto(any());
 
     }
-
+//
 //    @Test
-//    public void shouldCall
+//    public void shouldThrowUserNotFound() throws UserColaboreException {
+//
+//        UserCreateDTO userCreateMock = dtoMock();
+//        RoleEntity roleMock = roleMock();
+//
+//        UserEntity userMock = userMock();
+//        userMock.setPhoto(null);
+//        userMock.setRoles(roleMock);
+//
+//        UserEntity userMock2 = userMock();
+//        userMock2.setUserId(3L);
+//        userMock2.setEmail(userCreateMock.getEmail());
+//
+//
+//        SecurityContextHolder.setContext(securityContext);
+////        Long id = Long.getLong(userDetails.toString());
+//        /*Fluxo*/
+//
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        when(authentication.getPrincipal()).thenReturn(userDetails);
+//        when(userRepository.findById(Long.getLong(userDetails.toString()))).thenReturn(Optional.of(userMock));
+//        when(userRepository.findByEmail(userCreateMock.getEmail())).thenReturn(userMock2);
+//
+//        Exception ex = assertThrows(UserColaboreException.class,
+//                () -> userService.update(userCreateMock));
+//        assertEquals("Email already exists.", ex.getMessage());
+//
+//    }
+//
+//    public UserCreateDTO dtoMock() {
+//        return UserCreateDTO
+//                .builder()
+//                .name("José")
+//                .email("josesilva@gmail.com")
+//                .password("123")
+//                .profilePhoto(null).build();
+//    }
+//
+//    public RoleEntity roleMock() {
+//        RoleEntity roleEntity = new RoleEntity();
+//        roleEntity.setRoleId(1);
+//        roleEntity.setName("ROLE_USER");
+//        return roleEntity;
+//    }
+//
+//    public UserEntity userMock() {
+//        UserEntity user = new UserEntity();
+//        user.setUserId(1L);
+//        user.setName("exemplo");
+//        user.setEmail("exemplo@gmail.com");
+//        user.setPassword("123");
+//        return user;
+//    }
 
 
 }

@@ -47,10 +47,8 @@ public class UserService {
     }
 
     public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {
-        verifyIfEmailExists(updateUserDTO, true);
 
-        UserEntity userEntity = userRepository.findById(getLoggedUserId())
-                .orElseThrow(() -> new UserColaboreException("User not found!"));
+        UserEntity userEntity = verifyIfEmailExists(updateUserDTO, true);
 
         userEntity.setEmail(updateUserDTO.getEmail());
         userEntity.setName(updateUserDTO.getName());
@@ -75,10 +73,11 @@ public class UserService {
         return loggedUser.getUserId();
     }
 
-    private void verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException {
+    private UserEntity verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException {
+        UserEntity oldUser = null;
         if (verificationFlag) {
-            UserEntity oldUser = userRepository.findById(getLoggedUserId()).orElseThrow(() ->
-                    new UserColaboreException("User not found."));
+            /*Faz a verificação do usuário apenas uma vez*/
+            oldUser = userRepository.findById(getLoggedUserId()).get();
 
             if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())) {
                 verificationEmail(userDTO);
@@ -86,6 +85,7 @@ public class UserService {
         } else {
             verificationEmail(userDTO);
         }
+        return oldUser;
     }
 
     private void verificationEmail(UserCreateDTO userDTO) throws UserColaboreException {

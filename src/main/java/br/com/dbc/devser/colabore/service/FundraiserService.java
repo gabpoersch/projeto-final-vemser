@@ -164,7 +164,7 @@ public class FundraiserService {
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<String> categoriesLower = new ArrayList<>();
         /*Passa a entrada para lower case (Comparação)*/
-        for (String str: categories){
+        for (String str : categories) {
             categoriesLower.add(str.toLowerCase());
         }
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository

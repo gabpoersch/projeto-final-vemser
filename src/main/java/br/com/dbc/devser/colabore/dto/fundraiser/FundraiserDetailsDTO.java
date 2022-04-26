@@ -32,6 +32,9 @@ public class FundraiserDetailsDTO {
     @ApiModelProperty(value = "Foto de capa")
     private String coverPhoto;
 
+    @ApiModelProperty(value = "Valor total arrecadado")
+    private BigDecimal currentValue;
+
     @ApiModelProperty(value = "Lista de categorias")
     private Set<CategoryDTO> categories;
 
