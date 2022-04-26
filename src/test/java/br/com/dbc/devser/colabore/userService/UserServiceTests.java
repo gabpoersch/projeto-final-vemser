@@ -34,6 +34,9 @@ public class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private UserEntity userEntity;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -57,7 +60,7 @@ public class UserServiceTests {
 
 
     @Test
-    public void shouldThrowUserNotFound() {
+    public void shouldCreationUserWork() {
         UserCreateDTO dto = UserCreateDTO
                 .builder()
                 .name("José")
@@ -69,17 +72,17 @@ public class UserServiceTests {
         roleEntity.setRoleId(1);
         roleEntity.setName("ROLE_USER");
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserId(1L);
-        userEntity.setName("exemplo");
-        userEntity.setEmail("exemplo@gmail.com");
-        userEntity.setPassword("123");
-        userEntity.setPhoto(null);
-        userEntity.setRoles(roleEntity);
+        UserEntity user = new UserEntity();
+        user.setUserId(1L);
+        user.setName("exemplo");
+        user.setEmail("exemplo@gmail.com");
+        user.setPassword("123");
+        user.setPhoto(null);
+        user.setRoles(roleEntity);
 
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
         when(roleRepository.findById(1)).thenReturn(Optional.of(roleEntity));
-        when(userRepository.save(any())).thenReturn(userEntity);
+        when(userRepository.save(any())).thenReturn(user);
 
 
         assertDoesNotThrow(() -> userService.create(dto));
@@ -87,9 +90,12 @@ public class UserServiceTests {
         verify(userRepository, times(1)).save(any());
         verify(roleRepository, times(1)).findById(1);
         verify(userRepository, times(1)).findByEmail(dto.getEmail());
+        verify(userEntity, times(0)).setPhoto(any());
 
     }
 
+//    @Test
+//    public void shouldCall
 
 
 }

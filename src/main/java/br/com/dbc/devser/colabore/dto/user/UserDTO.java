@@ -15,6 +15,9 @@ public class UserDTO {
     @ApiModelProperty(value = "Id do usuário")
     private Long userId;
 
+    @ApiModelProperty(value = "Nome do usuário")
+    private String name;
+
     @ApiModelProperty(value = "Email do usuário")
     private String email;
 

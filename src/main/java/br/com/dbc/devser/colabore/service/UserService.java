@@ -111,6 +111,7 @@ public class UserService {
 
         UserDTO exposedDTO = new UserDTO();
         exposedDTO.setUserId(newUser.getUserId());
+        exposedDTO.setName(newUser.getName());
         exposedDTO.setEmail(newUser.getEmail());
 
         byte[] file = newUser.getPhoto();
