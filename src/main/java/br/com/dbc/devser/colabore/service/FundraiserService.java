@@ -116,6 +116,7 @@ public class FundraiserService {
 
             UserDTO userDTO = UserDTO.builder()
                     .userId(donatorEntity.getUserId())
+                    .name(donatorEntity.getName())
                     .email(donatorEntity.getEmail())
                     .build();
             if (donatorEntity.getPhoto() != null) {
