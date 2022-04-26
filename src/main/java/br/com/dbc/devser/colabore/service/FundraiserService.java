@@ -91,6 +91,7 @@ public class FundraiserService {
     private Set<CategoryEntity> buildCategories(Set<String> categories) {
         return categories.stream().map(category -> {
             //***Testando se existe***
+            //TODO: retirar espaços em branco
             CategoryEntity categoryReference = categoryRepository.findByNameContainsIgnoreCase(category);
             if (categoryReference != null) {
                 return categoryReference;

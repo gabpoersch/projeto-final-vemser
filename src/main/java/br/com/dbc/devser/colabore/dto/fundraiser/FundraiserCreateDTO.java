@@ -21,22 +21,22 @@ import java.util.Set;
 @NoArgsConstructor
 public class FundraiserCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "You must provide a title")
     @ApiModelProperty(value = "Título da campanha")
     private String title;
 
-    @NotNull
+    @NotNull(message = "The goal field cannot be null")
     @ApiModelProperty(value = "Meta da campanha")
     private BigDecimal goal;
 
-    @NotNull
+    @NotNull(message = "The field automatic close cannot be null")
     @ApiModelProperty(value = "Fechar automaticamente quando atigir a meta")
     private Boolean automaticClose;
 
     @ApiModelProperty(value = "Descrição")
     private String description;
 
-    @NotNull
+    @NotNull(message = "The fundraiser must have a ending date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "Data de encerramento")
     private LocalDate endingDate;

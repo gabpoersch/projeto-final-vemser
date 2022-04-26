@@ -17,15 +17,15 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UserCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "You must provide a name")
     @ApiModelProperty(value = "Nome do usuário")
     private String name;
 
-    @Email
+    @Email(message = "The email field is not valid")
     @ApiModelProperty(value = "Email do usuário")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "You must provide a password")
     @ApiModelProperty(value = "Senha do usuário")
     private String password;
 

@@ -18,7 +18,7 @@ public class DonateCreateDTO {
     @ApiModelProperty(value = "Mensagem do doador")
     private String message;
 
-    @NotNull
+    @NotNull(message = "Value field cannot be null")
     @ApiModelProperty(value = "Valor doado")
     private BigDecimal value;
 
