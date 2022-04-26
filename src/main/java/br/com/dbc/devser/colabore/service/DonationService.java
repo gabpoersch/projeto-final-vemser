@@ -55,8 +55,8 @@ public class DonationService {
 
         log.info("Current value up to date, value add = {}.", donate.getValue());
 
+        /*Enviando email para doador*/
         mailService.donatorMailService(donationSaved, fundraiserEntity);
-
 
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserId);

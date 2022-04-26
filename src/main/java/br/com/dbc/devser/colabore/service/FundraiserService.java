@@ -29,10 +29,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,14 +87,16 @@ public class FundraiserService {
 
     private Set<CategoryEntity> buildCategories(Set<String> categories) {
         return categories.stream().map(category -> {
+            //***Retirando espaços do final e do começo da string***
+            String categoryFormated = category.trim();
+            CategoryEntity categoryReference = categoryRepository.findByNameContainsIgnoreCase(categoryFormated);
+
             //***Testando se existe***
-            //TODO: retirar espaços em branco
-            CategoryEntity categoryReference = categoryRepository.findByNameContainsIgnoreCase(category);
             if (categoryReference != null) {
                 return categoryReference;
             }
             CategoryEntity categoryEntity = new CategoryEntity();
-            categoryEntity.setName(category);
+            categoryEntity.setName(categoryFormated);
 
             return categoryRepository.save(categoryEntity);
         }).collect(Collectors.toSet());
@@ -162,14 +161,20 @@ public class FundraiserService {
                 });
     }
 
-    /*Procurar uma maneira mais performática.*/
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
+        List<String> categoriesLower = new ArrayList<>();
+        /*Passa a entrada para lower case (Comparação)*/
+        for (String str: categories){
+            categoriesLower.add(str.toLowerCase());
+        }
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
                 .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
                 .filter(fEntity -> {
+                    /*Retira os espaço finais e do começo e joga tudo para lower case (Comparação)*/
                     Set<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream()
-                            .map(CategoryEntity::getName).collect(Collectors.toSet());
-                    return categoriesEnt.containsAll(categories);
+                            .map(categoryEntity -> categoryEntity.getName().toLowerCase().trim()).collect(Collectors.toSet());
+
+                    return categoriesEnt.containsAll(categoriesLower);
                 })
                 .map(fundraiserEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
