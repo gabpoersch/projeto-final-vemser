@@ -219,7 +219,6 @@ public class FundraiserService {
                 .of(numberPage, numberItems, Sort.by("endingDate").ascending());
     }
 
-    /*Falta testar*/
     @Scheduled(cron = "0 0 0 * * *")
     public void setStatusFundraiser() {
         log.info("Scheduled method running on {}", LocalDate.now());

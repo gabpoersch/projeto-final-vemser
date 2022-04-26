@@ -8,7 +8,6 @@ public class ColaboreApplication {
     /*
         TODO:
             - Testes unitários;
-            - Refatorar e deixar perfomático;
 
         IDEIAS
             - Testes automatizados;

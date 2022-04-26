@@ -19,7 +19,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTests {
@@ -31,24 +32,18 @@ public class UserServiceTests {
     private UserRepository userRepository;
 
     @Mock
-    private RoleEntity roleEntity;
-
-    @Mock
-    private UserEntity userEntity;
-
-    @Mock
     private RoleRepository roleRepository;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void BeforeEach() {
         ReflectionTestUtils.setField(userService, "objectMapper", objectMapper);
     }
 
-    /*Start tests create user (UserService)*/
+    /*Create user (UserService)*/
     @Test
-    public void shouldThrowAnErrorWithDuplicatedEmail() throws UserColaboreException {
+    public void shouldThrowAnErrorWithDuplicatedEmail() {
         UserCreateDTO dto = UserCreateDTO
                 .builder().name("José")
                 .email("josesilva@gmail.com").build();
@@ -60,53 +55,41 @@ public class UserServiceTests {
         assertEquals("Email already exists.", ex.getMessage());
     }
 
-    /*Update*/
 
-//    @Test
-//    public void shouldThrowUserNotFound () throws UserColaboreException {
-//        UserCreateDTO dto = UserCreateDTO
-//                .builder().name("José")
-//                .email("josesilva@gmail.com").build();
-//        UserEntity userEntity = new UserEntity();
-//
-//        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(userEntity));
-//
-//        Exception ex = assertThrows(UserColaboreException.class,
-//                () -> userService.update(dto));
-//        assertEquals("User not found.", ex.getMessage());
-//    }
-//
+    @Test
+    public void shouldThrowUserNotFound() {
+        UserCreateDTO dto = UserCreateDTO
+                .builder()
+                .name("José")
+                .email("josesilva@gmail.com")
+                .password("123")
+                .profilePhoto(null).build();
 
-//    @Test
-//    public void shouldNotThrowAnErrorWithNewEmail() throws UserColaboreException {
-//        UserCreateDTO dto = UserCreateDTO
-//                .builder()
-//                .name("José")
-//                .email("jose@gmail.com")
-//                .password("123")
-//                .profilePhoto(null)
-//                .build();
-//
-//        UserEntity user = new UserEntity();
-//        user.setName("José");
-//        user.setEmail("jose@gmail.com");
-//        user.setPassword("123");
-//
-//        RoleEntity roleEntity = new RoleEntity();
-//        roleEntity.setRoleId(1);
-//        roleEntity.setName("ROLE_USER");
-//
-//        userEntity.setRoles(roleEntity);
-//
-//        assertDoesNotThrow(() -> userService.create(dto));
-//
-//        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
-//        when(roleRepository.findById(1)).then(Optional.of(roleEntity)).;
-//        when(userRepository.save(user)).thenReturn(user);
-//        when(user.getUserId()).thenReturn(2L);
-//        when(user.getEmail()).thenReturn("anyString()");
-//        when(user.getPhoto()).thenReturn(new byte[2]);
-//
-//    }
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleId(1);
+        roleEntity.setName("ROLE_USER");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserId(1L);
+        userEntity.setName("exemplo");
+        userEntity.setEmail("exemplo@gmail.com");
+        userEntity.setPassword("123");
+        userEntity.setPhoto(null);
+        userEntity.setRoles(roleEntity);
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
+        when(roleRepository.findById(1)).thenReturn(Optional.of(roleEntity));
+        when(userRepository.save(any())).thenReturn(userEntity);
+
+
+        assertDoesNotThrow(() -> userService.create(dto));
+
+        verify(userRepository, times(1)).save(any());
+        verify(roleRepository, times(1)).findById(1);
+        verify(userRepository, times(1)).findByEmail(dto.getEmail());
+
+    }
+
+
 
 }
