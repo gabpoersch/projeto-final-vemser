@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -113,34 +114,32 @@ public class UserServiceTests {
 
     /* >>>>>>>>>> CREATE USER - SET PHOTO ENTITY <<<<<<<<**/
 
-//    @Test
-//    public void shouldSetPhotoEntity() throws UserColaboreException, IOException {
-////        MockMultipartFile multipartFile = getMockMultipart();
-//
-//        UserCreateDTO dto = dtoMock();
-////        dto.setProfilePhoto(multipartFile);
-//
-//        RoleEntity role = roleMock();
-//
-//        UserEntity user = userMock();
-//
-//        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
-//        when(roleRepository.findById(1)).thenReturn(Optional.of(role));
-//        when(userCreateDTO.getProfilePhoto()).thenReturn(any());
-//        when(userRepository.save(any())).thenReturn(user);
-//
-//
-//        /*Método chamado no setPhotoEntity*/
-//        verify(userEntity, times(1)).setPhoto(any(), eq(multipartFile));
-//        userService.create(dtoMock());
-//        /*Método chamado no buildExposedDTO*/
-////        verify(userExposedDTO, times(1)).setProfilePhoto(any());
-//    }
+    @Test
+    public void shouldSetPhotoEntity() throws UserColaboreException, IOException {
 
+        UserCreateDTO dto = dtoMock();
+        dto.setProfilePhoto(multipartFile);
+
+        System.out.println(dto.getProfilePhoto().getBytes());
+
+        RoleEntity role = roleMock();
+
+        UserEntity user = userMock();
+        user.setPhoto(multipartFile.getBytes());
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
+        when(roleRepository.findById(1)).thenReturn(Optional.of(role));
+        when(userRepository.save(any())).thenReturn(user);
+
+        userService.create(dtoMock());
+
+        /*Método chamado no setPhotoEntity*/
+        verify(userEntity, times(1)).setPhoto(any());
+
+    }
 
 
     /* ############## CREATE USER - SET PHOTO ENTITY ########### */
-
 
 
 

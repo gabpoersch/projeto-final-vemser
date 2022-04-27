@@ -56,8 +56,9 @@ public class DonationService {
         /*Enviando email para doador*/
         mailService.donatorMailService(donationSaved, fundraiserEntity);
 
+        /*Mini alteração*/
         if (fundraiserEntity.getAutomaticClose()) {
-            fundraiserService.checkClosed(fundraiserId);
+            fundraiserService.checkClosed(fundraiserEntity);
         }
 
     }

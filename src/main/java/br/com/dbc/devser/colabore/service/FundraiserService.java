@@ -231,9 +231,7 @@ public class FundraiserService {
                 });
     }
 
-    public void checkClosed(Long fundraiserId) throws Exception {
-        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
-                .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
+    public void checkClosed(FundraiserEntity fundraiserEntity) {
 
         fundraiserEntity.setStatusActive(checkClosedValue(fundraiserEntity.getCurrentValue(), fundraiserEntity.getGoal()));
 
