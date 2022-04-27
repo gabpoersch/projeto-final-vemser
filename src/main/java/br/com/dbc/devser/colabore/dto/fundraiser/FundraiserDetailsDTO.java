@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -39,13 +38,15 @@ public class FundraiserDetailsDTO {
     @ApiModelProperty(value = "Lista de categorias")
     private Set<CategoryDTO> categories;
 
+    @ApiModelProperty(value = "Lista dos contribuidores da campanha")
+    private Set<UserDTO> contributors;
+
+    //>> Plus
+
     @ApiModelProperty(value = "Criador/autor da campanha")
     private UserDTO fundraiserCreator;
 
     @ApiModelProperty(value = "Fechar automaticamente quando atigir a meta")
     private Boolean automaticClose;
-
-    @ApiModelProperty(value = "Lista dos contribuidores da campanha")
-    private Set<UserDTO> contributors;
 
 }

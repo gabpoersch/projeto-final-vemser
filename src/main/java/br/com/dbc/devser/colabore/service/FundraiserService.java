@@ -51,7 +51,7 @@ public class FundraiserService {
         fundraiserEntity.setCurrentValue(new BigDecimal("0.0"));
         fundraiserEntity.setStatusActive(true);
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
-        fundraiserEntity.setFundraiserCreator(userService.getLoggedUserId());
+        fundraiserEntity.setFundraiserCreator(userService.getLoggedUser());
         fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
         /*Seta a foto e grava no banco*/
         FundraiserEntity fundSaved = fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserCreate));
@@ -118,7 +118,7 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
         return fundraiserRepository
-                .findAllFundraisersActive(getPageableWithEndingDate(numberPage, 20))
+                .findAllFundraisersActive(getPageable(numberPage))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -128,7 +128,7 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository
-                .findFundraisersOfUser(userService.getLoggedUserId().getUserId(), getPageableWithEndingDate(numberPage, 30))
+                .findFundraisersOfUser(userService.getLoggedUser().getUserId(), getPageable(numberPage))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -136,7 +136,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws UserColaboreException {
-        return donationRepository.findMyDonations(userService.getLoggedUserId().getUserId(), PageRequest.of(numberPage, 20))
+        return donationRepository.findMyDonations(userService.getLoggedUser().getUserId(), PageRequest.of(numberPage, 20))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
                     FundraiserGenericDTO fundraiserGeneric = objectMapper
@@ -157,13 +157,18 @@ public class FundraiserService {
             categoriesLower.add(str.toLowerCase());
         }
         List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
-                .findAll(getPageableWithEndingDate(numberPage, 20)).stream()
+                .findAll(getPageable(numberPage)).stream()
                 .filter(fEntity -> {
                     /*Retira os espaço finais e do começo e joga tudo para lower case (Comparação)*/
-                    Set<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream()
-                            .map(categoryEntity -> categoryEntity.getName().toLowerCase().trim()).collect(Collectors.toSet());
+                    List<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream()
+                            .map(categoryEntity -> categoryEntity.getName().toLowerCase().trim()).collect(Collectors.toList());
 
-                    return categoriesEnt.containsAll(categoriesLower);
+                    for (String s : categoriesEnt) {
+                        if (categoriesLower.contains(s)) {
+                            return true;
+                        }
+                    }
+                    return false;
                 })
                 .map(fundraiserEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
@@ -173,7 +178,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserCompleted(getPageableWithEndingDate(numberPage, 20))
+        return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -181,7 +186,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserGenericDTO> filterByFundraiserIncomplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserIncomplete(getPageableWithEndingDate(numberPage, 20))
+        return fundraiserRepository.findFundraiserIncomplete(getPageable(numberPage))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -203,9 +208,9 @@ public class FundraiserService {
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
     }
 
-    private Pageable getPageableWithEndingDate(Integer numberPage, Integer numberItems) {
+    private Pageable getPageable(Integer numberPage) {
         return PageRequest
-                .of(numberPage, numberItems, Sort.by("endingDate").ascending());
+                .of(numberPage, 12, Sort.by("endingDate").ascending());
     }
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -263,7 +268,7 @@ public class FundraiserService {
 
     private void verifyIfFundraiserIsYours(FundraiserEntity fEntity) throws FundraiserException, UserColaboreException {
         /*Não permite a atualização de um fundraiser que não é do usuário.*/
-        if (!Objects.equals(userService.getLoggedUserId().getUserId(), fEntity.getFundraiserCreator().getUserId())) {
+        if (!Objects.equals(userService.getLoggedUser().getUserId(), fEntity.getFundraiserCreator().getUserId())) {
             throw new FundraiserException("You are not the owner.");
         }
     }

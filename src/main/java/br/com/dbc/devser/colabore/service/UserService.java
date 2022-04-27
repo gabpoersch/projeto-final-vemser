@@ -60,14 +60,14 @@ public class UserService {
     }
 
     public void delete() throws UserColaboreException {
-        userRepository.deleteById(getLoggedUserId().getUserId());
+        userRepository.deleteById(getLoggedUser().getUserId());
     }
 
     public UserEntity findByLogin(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public UserEntity getLoggedUserId() throws UserColaboreException {
+    public UserEntity getLoggedUser() throws UserColaboreException {
         String findUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() ->
                 new UserColaboreException("User not found!"));
@@ -77,7 +77,7 @@ public class UserService {
         UserEntity oldUser = null;
         if (verificationFlag) {
             /*Faz a verificação do usuário apenas uma vez*/
-            oldUser = getLoggedUserId();
+            oldUser = getLoggedUser();
 
             if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())) {
                 verificationEmail(userDTO);

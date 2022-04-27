@@ -57,7 +57,7 @@ public class DonationServiceTests {
         DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
         UserEntity userMock = userMock();
 
-        when(userService.getLoggedUserId()).thenReturn(userMock);
+        when(userService.getLoggedUser()).thenReturn(userMock);
         when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         donationService.makeDonation(1L, donateCreateDTO);
@@ -74,7 +74,7 @@ public class DonationServiceTests {
         FundraiserEntity fundEntity = new FundraiserEntity();
         fundEntity.setStatusActive(false);
 
-        when(userService.getLoggedUserId()).thenReturn(userMock);
+        when(userService.getLoggedUser()).thenReturn(userMock);
         when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
 
         donationService.makeDonation(1L, donateCreateDTO);
