@@ -55,7 +55,7 @@ public class UserService {
         userEntity.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
         userEntity.setRoles(userEntity.getRoles());
 
-        return buildExposedDTO(userRepository.save(setPhotoBytes(userEntity, updateUserDTO)));
+        return buildExposedDTO(setPhotoBytes(userEntity, updateUserDTO));
     }
 
     public void delete() throws UserColaboreException {
