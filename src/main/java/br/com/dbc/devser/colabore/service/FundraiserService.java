@@ -192,7 +192,7 @@ public class FundraiserService {
         log.info("Fundraiser with id number {} deleted.", fundraiserId);
     }
 
-    private FundraiserEntity findById(Long fundraiserId) throws FundraiserException {
+    public FundraiserEntity findById(Long fundraiserId) throws FundraiserException {
         return fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found."));
     }

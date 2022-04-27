@@ -47,7 +47,7 @@ public class DonationService {
 
         /*Atualizando o currentValue no banco*/
         fundraiserEntity.setCurrentValue(fundraiserEntity.getCurrentValue().add(donate.getValue()));
-        fundraiserRepository.save(fundraiserEntity);
+        FundraiserEntity fundraiserUpdated = fundraiserRepository.save(fundraiserEntity);
 
         log.info("Current value up to date, value add = {}.", donate.getValue());
 
@@ -56,7 +56,7 @@ public class DonationService {
 
         /*Agora está se passando a referência ao invés do próprio ID*/
         if (fundraiserEntity.getAutomaticClose()) {
-            fundraiserService.checkClosed(fundraiserEntity);
+            fundraiserService.checkClosed(fundraiserUpdated);
         }
 
     }
