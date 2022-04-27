@@ -8,7 +8,6 @@ import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
-import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ public class DonationService {
     private final DonationRepository donationRepository;
     private final FundraiserRepository fundraiserRepository;
     private final FundraiserService fundraiserService;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final MailService mailService;
 
@@ -56,7 +54,7 @@ public class DonationService {
         /*Enviando email para doador*/
         mailService.donatorMailService(donationSaved, fundraiserEntity);
 
-        /*Mini alteração*/
+        /*Agora está se passando a referência ao invés do próprio ID*/
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserEntity);
         }

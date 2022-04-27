@@ -5,7 +5,6 @@ import br.com.dbc.devser.colabore.entity.FundraiserEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
-import br.com.dbc.devser.colabore.repository.UserRepository;
 import br.com.dbc.devser.colabore.service.DonationService;
 import br.com.dbc.devser.colabore.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,9 +34,6 @@ public class DonationServiceTests {
     private UserService userService;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private FundraiserRepository fundraiserRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -53,34 +49,36 @@ public class DonationServiceTests {
         when(authentication.getPrincipal()).thenReturn("1");
     }
 
-//    @Test(expected = FundraiserException.class)
-//    public void shouldThrowFundraiserNotFound() throws Exception {
-//        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
-//
-//        UserEntity userMock = userMock();
-//
-//        when(userService.getLoggedUserId()).thenReturn(1L);
-//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
-//        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
-//
-//        donationService.makeDonation(1L, donateCreateDTO);
-//    }
+    /* >>>>>>>>>>>>>   SHOULD THROW FUNDRAISER NOT FOUND  <<<<<<<<<<<<<< */
 
-//    @Test(expected = FundraiserException.class)
-//    public void shouldThrowAnErrorForAClosedFundraiser() throws Exception {
-//        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
-//
-//        UserEntity userMock = userMock();
-//
-//        FundraiserEntity fundEntity = new FundraiserEntity();
-//        fundEntity.setStatusActive(false);
-//
-//        when(userService.getLoggedUserId()).thenReturn(1L);
-//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
-//        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
-//
-//        donationService.makeDonation(1L, donateCreateDTO);
-//    }
+    @Test(expected = FundraiserException.class)
+    public void shouldThrowFundraiserNotFound() throws Exception {
+
+        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
+        UserEntity userMock = userMock();
+
+        when(userService.getLoggedUserId()).thenReturn(userMock);
+        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        donationService.makeDonation(1L, donateCreateDTO);
+    }
+
+    /* >>>>>>>>>>>>>   SHOULD THROW FUNDRAISER ERROR CLOSED  <<<<<<<<<<<<<< */
+
+    @Test(expected = FundraiserException.class)
+    public void shouldThrowAnErrorForAClosedFundraiser() throws Exception {
+
+        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
+        UserEntity userMock = userMock();
+
+        FundraiserEntity fundEntity = new FundraiserEntity();
+        fundEntity.setStatusActive(false);
+
+        when(userService.getLoggedUserId()).thenReturn(userMock);
+        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
+
+        donationService.makeDonation(1L, donateCreateDTO);
+    }
 
     public UserEntity userMock() {
         UserEntity user = new UserEntity();

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,7 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public UserDTO create(UserCreateDTO userDTO) throws UserColaboreException {
+        /*Retorna null, pois ainda não existe usuário cadastrado*/
         verifyIfEmailExists(userDTO, false);
 
         UserEntity user = objectMapper.convertValue(userDTO, UserEntity.class);

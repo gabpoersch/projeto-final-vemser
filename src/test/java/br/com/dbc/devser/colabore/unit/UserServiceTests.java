@@ -55,9 +55,6 @@ public class UserServiceTests {
     @Mock
     private UserCreateDTO userCreateDTO;
 
-    @Mock
-    private UserDTO userExposedDTO;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -74,6 +71,7 @@ public class UserServiceTests {
         UserCreateDTO dto = dtoMock();
         UserEntity userEntity = userMock();
 
+        /*Retorna um resultado não nulo, portanto existe um registro no banco.*/
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(userEntity);
 
         userService.create(dto);
@@ -87,9 +85,9 @@ public class UserServiceTests {
     @Test
     public void shouldCreationUserWork() throws UserColaboreException {
 
-        UserCreateDTO dto = dtoMock();
+        UserCreateDTO dto = dtoMock(); //Multipartfile null
         RoleEntity roleEntity = roleMock();
-        UserEntity user = userMock();
+        UserEntity user = userMock(); //Photo bytes null
 
         /*Não tem email duplicado*/
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
@@ -118,9 +116,7 @@ public class UserServiceTests {
     public void shouldSetPhotoEntity() throws UserColaboreException, IOException {
 
         UserCreateDTO dto = dtoMock();
-        dto.setProfilePhoto(multipartFile);
-
-        System.out.println(dto.getProfilePhoto().getBytes());
+        dto.setProfilePhoto(multipartFile); // Multipartfile continua como null?
 
         RoleEntity role = roleMock();
 
@@ -153,9 +149,8 @@ public class UserServiceTests {
 
         SecurityContextHolder.setContext(securityContext);
 
-        /*Fluxo*/
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
-        when(userRepository.findByEmail(any())).thenReturn(userMock);
+        /*Método do getLoggedUser retorna nulo ao procurar pelo id recuperado pelo SecurityContext*/
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         userService.update(userCreateMock);
     }
