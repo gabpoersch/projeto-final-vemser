@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,25 +60,24 @@ public class UserService {
     }
 
     public void delete() throws UserColaboreException {
-        userRepository.deleteById(getLoggedUserId());
+        userRepository.deleteById(getLoggedUserId().getUserId());
     }
 
     public UserEntity findByLogin(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public Long getLoggedUserId() throws UserColaboreException {
+    public UserEntity getLoggedUserId() throws UserColaboreException {
         String findUserId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity loggedUser = userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() ->
+        return userRepository.findById(Long.valueOf(findUserId)).orElseThrow(() ->
                 new UserColaboreException("User not found!"));
-        return loggedUser.getUserId();
     }
 
     private UserEntity verifyIfEmailExists(UserCreateDTO userDTO, boolean verificationFlag) throws UserColaboreException {
         UserEntity oldUser = null;
         if (verificationFlag) {
             /*Faz a verificação do usuário apenas uma vez*/
-            oldUser = userRepository.findById(getLoggedUserId()).get();
+            oldUser = getLoggedUserId();
 
             if (!Objects.equals(oldUser.getEmail(), userDTO.getEmail())) {
                 verificationEmail(userDTO);

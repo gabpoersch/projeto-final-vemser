@@ -29,7 +29,7 @@ public class DonationService {
 
     public void makeDonation(Long fundraiserId, DonateCreateDTO donate) throws Exception {
 
-        UserEntity userEntity = userRepository.findById(userService.getLoggedUserId()).get();
+        UserEntity userEntity = userService.getLoggedUserId();
 
         FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
                 .orElseThrow(() -> new FundraiserException("Fundraiser not found in database."));

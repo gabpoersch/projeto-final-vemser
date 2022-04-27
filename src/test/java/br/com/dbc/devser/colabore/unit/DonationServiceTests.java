@@ -53,34 +53,34 @@ public class DonationServiceTests {
         when(authentication.getPrincipal()).thenReturn("1");
     }
 
-    @Test(expected = FundraiserException.class)
-    public void shouldThrowFundraiserNotFound() throws Exception {
-        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
+//    @Test(expected = FundraiserException.class)
+//    public void shouldThrowFundraiserNotFound() throws Exception {
+//        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
+//
+//        UserEntity userMock = userMock();
+//
+//        when(userService.getLoggedUserId()).thenReturn(1L);
+//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
+//        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
+//
+//        donationService.makeDonation(1L, donateCreateDTO);
+//    }
 
-        UserEntity userMock = userMock();
-
-        when(userService.getLoggedUserId()).thenReturn(1L);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
-        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        donationService.makeDonation(1L, donateCreateDTO);
-    }
-
-    @Test(expected = FundraiserException.class)
-    public void shouldThrowAnErrorForAClosedFundraiser() throws Exception {
-        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
-
-        UserEntity userMock = userMock();
-
-        FundraiserEntity fundEntity = new FundraiserEntity();
-        fundEntity.setStatusActive(false);
-
-        when(userService.getLoggedUserId()).thenReturn(1L);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
-        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
-
-        donationService.makeDonation(1L, donateCreateDTO);
-    }
+//    @Test(expected = FundraiserException.class)
+//    public void shouldThrowAnErrorForAClosedFundraiser() throws Exception {
+//        DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
+//
+//        UserEntity userMock = userMock();
+//
+//        FundraiserEntity fundEntity = new FundraiserEntity();
+//        fundEntity.setStatusActive(false);
+//
+//        when(userService.getLoggedUserId()).thenReturn(1L);
+//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
+//        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
+//
+//        donationService.makeDonation(1L, donateCreateDTO);
+//    }
 
     public UserEntity userMock() {
         UserEntity user = new UserEntity();

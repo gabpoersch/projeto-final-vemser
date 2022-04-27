@@ -53,8 +53,7 @@ public class FundraiserService {
         fundraiserEntity.setCurrentValue(new BigDecimal("0.0"));
         fundraiserEntity.setStatusActive(true);
         fundraiserEntity.setLastUpdate(LocalDateTime.now());
-        fundraiserEntity.setFundraiserCreator(userRepository.findById(userService.getLoggedUserId())
-                .orElseThrow(() -> new UserColaboreException("User not found.")));
+        fundraiserEntity.setFundraiserCreator(userService.getLoggedUserId());
         fundraiserEntity.setCategoriesFundraiser(buildCategories(fundraiserCreate.getCategories()));
         /*Seta a foto e grava no banco*/
         FundraiserEntity fundSaved = fundraiserRepository.save(setPhotoEntity(fundraiserEntity, fundraiserCreate));
@@ -140,7 +139,7 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository
-                .findFundraisersOfUser(userService.getLoggedUserId(), getPageableWithEndingDate(numberPage, 30))
+                .findFundraisersOfUser(userService.getLoggedUserId().getUserId(), getPageableWithEndingDate(numberPage, 30))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
@@ -148,7 +147,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws UserColaboreException {
-        return donationRepository.findMyDonations(userService.getLoggedUserId(), PageRequest.of(numberPage, 20))
+        return donationRepository.findMyDonations(userService.getLoggedUserId().getUserId(), PageRequest.of(numberPage, 20))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
                     FundraiserGenericDTO fundraiserGeneric = objectMapper
