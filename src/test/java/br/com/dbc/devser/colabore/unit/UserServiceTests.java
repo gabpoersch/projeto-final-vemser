@@ -1,4 +1,4 @@
-package br.com.dbc.devser.colabore.userService;
+package br.com.dbc.devser.colabore.unit;
 
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserDTO;
@@ -24,7 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -169,7 +168,7 @@ public class UserServiceTests {
     /* >>>>>>>>>>>>>> UPDATE USER - SHOULD UPDATE USER <<<<<<< */
 
     @Test
-    public void shouldUpdateUser () throws UserColaboreException {
+    public void shouldUpdateUser() throws UserColaboreException {
         UserCreateDTO dto = dtoMock();
         dto.setEmail("exemplo@gmail.com");
 

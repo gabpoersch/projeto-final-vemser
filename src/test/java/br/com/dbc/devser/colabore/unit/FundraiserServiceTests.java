@@ -1,4 +1,4 @@
-package br.com.dbc.devser.colabore.userService;
+package br.com.dbc.devser.colabore.unit;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
