@@ -91,7 +91,7 @@ public class FundraiserServiceTests {
 
         SecurityContextHolder.setContext(securityContext);
 
-        when(userService.getLoggedUserId()).thenReturn(user);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(fundraiserRepository.save(any())).thenReturn(fundraiser);
 
