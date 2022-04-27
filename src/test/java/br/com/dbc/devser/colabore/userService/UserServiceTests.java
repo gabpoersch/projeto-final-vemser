@@ -54,6 +54,8 @@ public class UserServiceTests {
     @Before
     public void BeforeEach() {
         ReflectionTestUtils.setField(userService, "objectMapper", objectMapper);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn("1");
     }
 
     /*Create user (UserService)*/
@@ -107,57 +109,45 @@ public class UserServiceTests {
 
     }
 
-//    @Test
-//    public void shouldThrowUserNotFound() throws UserColaboreException {
-//
-//        UserCreateDTO userCreateMock = dtoMock();
-//        RoleEntity roleMock = roleMock();
-//
-//        UserEntity userMock = userMock();
-//        userMock.setPhoto(null);
-//        userMock.setRoles(roleMock);
-//
-//        UserEntity userMock2 = userMock();
-//        userMock2.setUserId(3L);
-//        userMock2.setEmail(userCreateMock.getEmail());
-//
-//
-//        SecurityContextHolder.setContext(securityContext);
-//
-//        /*Fluxo*/
-//
-//        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        when(authentication.getPrincipal()).thenReturn(userMock.getUserId());
-//        when(userRepository.findById(Long.valueOf(any()))).thenReturn(Optional.of(userMock));
-//        when(userService.getLoggedUserId()).thenReturn(userMock.getUserId());
-//
-//
-//
-//        assertThrows(UserColaboreException.class, () -> userService.update(userCreateMock));
-//    }
-//
-//    public UserCreateDTO dtoMock() {
-//        return UserCreateDTO
-//                .builder()
-//                .name("José")
-//                .email("josesilva@gmail.com")
-//                .password("123")
-//                .profilePhoto(null).build();
-//    }
-//
-//    public RoleEntity roleMock() {
-//        RoleEntity roleEntity = new RoleEntity();
-//        roleEntity.setRoleId(1);
-//        roleEntity.setName("ROLE_USER");
-//        return roleEntity;
-//    }
-//
-//    public UserEntity userMock() {
-//        UserEntity user = new UserEntity();
-//        user.setUserId(1L);
-//        user.setName("exemplo");
-//        user.setEmail("exemplo@gmail.com");
-//        user.setPassword("123");
-//        return user;
-//    }
+    @Test(expected = UserColaboreException.class)
+    public void shouldThrowUserNotFound() throws UserColaboreException {
+
+        UserCreateDTO userCreateMock = dtoMock();
+        UserEntity userMock = userMock();
+
+        SecurityContextHolder.setContext(securityContext);
+
+        /*Fluxo*/
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userMock));
+        when(userRepository.findByEmail(any())).thenReturn(userMock);
+        when(userRepository.save(any())).thenReturn(userMock);
+
+
+        userService.update(userCreateMock);
+    }
+
+    public UserCreateDTO dtoMock() {
+        return UserCreateDTO
+                .builder()
+                .name("José")
+                .email("josesilva@gmail.com")
+                .password("123")
+                .profilePhoto(null).build();
+    }
+
+    public RoleEntity roleMock() {
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleId(1);
+        roleEntity.setName("ROLE_USER");
+        return roleEntity;
+    }
+
+    public UserEntity userMock() {
+        UserEntity user = new UserEntity();
+        user.setUserId(1L);
+        user.setName("exemplo");
+        user.setEmail("exemplo@gmail.com");
+        user.setPassword("123");
+        return user;
+    }
 }
