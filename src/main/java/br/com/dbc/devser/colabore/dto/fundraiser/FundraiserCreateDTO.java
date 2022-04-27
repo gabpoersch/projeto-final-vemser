@@ -45,6 +45,7 @@ public class FundraiserCreateDTO {
     @ApiModelProperty(value = "Foto de capa")
     private MultipartFile coverPhoto;
 
+    @JsonIgnore
     @ApiModelProperty(value = "Lista de categorias")
     private Set<String> categories;
 
