@@ -29,8 +29,7 @@ public class DonationService {
 
         UserEntity userEntity = userService.getLoggedUser();
 
-        FundraiserEntity fundraiserEntity = fundraiserRepository.findById(fundraiserId)
-                .orElseThrow(() -> new FundraiserException("Fundraiser not found in database."));
+        FundraiserEntity fundraiserEntity = fundraiserService.findById(fundraiserId);
 
         if (!fundraiserEntity.getStatusActive()) {
             throw new FundraiserException("You can not donate to a closed fundraiser.");

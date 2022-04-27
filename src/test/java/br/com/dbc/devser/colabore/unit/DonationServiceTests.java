@@ -6,6 +6,7 @@ import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import br.com.dbc.devser.colabore.service.DonationService;
+import br.com.dbc.devser.colabore.service.FundraiserService;
 import br.com.dbc.devser.colabore.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -36,6 +37,9 @@ public class DonationServiceTests {
     @Mock
     private FundraiserRepository fundraiserRepository;
 
+    @Mock
+    private FundraiserService fundraiserService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Authentication authentication = Mockito.mock(Authentication.class);
@@ -58,7 +62,8 @@ public class DonationServiceTests {
         UserEntity userMock = userMock();
 
         when(userService.getLoggedUser()).thenReturn(userMock);
-        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        when(fundraiserRepository.findById(anyLong())).thenReturn(null);
 
         donationService.makeDonation(1L, donateCreateDTO);
     }
@@ -75,7 +80,7 @@ public class DonationServiceTests {
         fundEntity.setStatusActive(false);
 
         when(userService.getLoggedUser()).thenReturn(userMock);
-        when(fundraiserRepository.findById(anyLong())).thenReturn(Optional.of(fundEntity));
+//        when(fundraiserService.findById(anyLong())).thenReturn(fundEntity);
 
         donationService.makeDonation(1L, donateCreateDTO);
     }
