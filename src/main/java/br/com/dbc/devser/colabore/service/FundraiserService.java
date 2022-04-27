@@ -18,7 +18,10 @@ import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -154,27 +157,13 @@ public class FundraiserService {
         List<String> categoriesLower = new ArrayList<>();
         /*Passa a entrada para lower case (Comparação)*/
         for (String str : categories) {
-            categoriesLower.add(str.toLowerCase());
+            categoriesLower.add(str.toLowerCase().trim());
         }
-        List<FundraiserGenericDTO> listFundGeneric = fundraiserRepository
-                .findAll(getPageable(numberPage)).stream()
-                .filter(fEntity -> {
-                    /*Retira os espaço finais e do começo e joga tudo para lower case (Comparação)*/
-                    List<String> categoriesEnt = fEntity.getCategoriesFundraiser().stream()
-                            .map(categoryEntity -> categoryEntity.getName().toLowerCase().trim()).collect(Collectors.toList());
-
-                    for (String s : categoriesEnt) {
-                        if (categoriesLower.contains(s)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                })
+        return fundraiserRepository.filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
                 .map(fundraiserEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fundraiserEntity);
-                }).collect(Collectors.toList());
-        return new PageImpl<>(listFundGeneric);
+                });
     }
 
     public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
