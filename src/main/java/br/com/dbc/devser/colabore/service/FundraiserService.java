@@ -15,7 +15,6 @@ import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.CategoryRepository;
 import br.com.dbc.devser.colabore.repository.DonationRepository;
 import br.com.dbc.devser.colabore.repository.FundraiserRepository;
-import br.com.dbc.devser.colabore.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,6 @@ public class FundraiserService {
     private final ObjectMapper objectMapper;
     private final FundraiserRepository fundraiserRepository;
     private final DonationRepository donationRepository;
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final MailService mailService;
@@ -110,19 +108,10 @@ public class FundraiserService {
             details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
         }
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
-        details.setContributors(fundraiserEntity.getDonations().stream().map(donationEntity -> {
-            UserEntity donatorEntity = donationEntity.getDonator();
-
-            UserDTO userDTO = UserDTO.builder()
-                    .userId(donatorEntity.getUserId())
-                    .name(donatorEntity.getName())
-                    .email(donatorEntity.getEmail())
-                    .build();
-            if (donatorEntity.getPhoto() != null) {
-                userDTO.setProfilePhoto(Base64.getEncoder().encodeToString(donatorEntity.getPhoto()));
-            }
-            return userDTO;
-        }).collect(Collectors.toSet()));
+        details.setFundraiserCreator(buildExposedUser(fundraiserEntity.getFundraiserCreator()));
+        details.setAutomaticClose(fundraiserEntity.getAutomaticClose());
+        details.setContributors(fundraiserEntity.getDonations().stream()
+                .map(donationEntity -> buildExposedUser(donationEntity.getDonator())).collect(Collectors.toSet()));
 
         return details;
     }
@@ -274,9 +263,21 @@ public class FundraiserService {
 
     private void verifyIfFundraiserIsYours(FundraiserEntity fEntity) throws FundraiserException, UserColaboreException {
         /*Não permite a atualização de um fundraiser que não é do usuário.*/
-        if (!Objects.equals(userService.getLoggedUserId(), fEntity.getFundraiserCreator().getUserId())) {
+        if (!Objects.equals(userService.getLoggedUserId().getUserId(), fEntity.getFundraiserCreator().getUserId())) {
             throw new FundraiserException("You are not the owner.");
         }
+    }
+
+    private UserDTO buildExposedUser(UserEntity user) {
+        UserDTO userDTO = UserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+        if (user.getPhoto() != null) {
+            userDTO.setProfilePhoto(Base64.getEncoder().encodeToString(user.getPhoto()));
+        }
+        return userDTO;
     }
 
 }

@@ -1,7 +1,6 @@
 package br.com.dbc.devser.colabore.unit;
 
 import br.com.dbc.devser.colabore.dto.user.UserCreateDTO;
-import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.entity.RoleEntity;
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
@@ -17,14 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -47,13 +43,8 @@ public class UserServiceTests {
 
     private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    private final MultipartFile multipartFile = Mockito.mock(MultipartFile.class);
-
     @Mock
     private UserEntity userEntity;
-
-    @Mock
-    private UserCreateDTO userCreateDTO;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -108,44 +99,12 @@ public class UserServiceTests {
 
     /* ########## CREATE USER - END SHOULD WORK ##########*/
 
-
-
-    /* >>>>>>>>>> CREATE USER - SET PHOTO ENTITY <<<<<<<<**/
-
-    @Test
-    public void shouldSetPhotoEntity() throws UserColaboreException, IOException {
-
-        UserCreateDTO dto = dtoMock();
-        dto.setProfilePhoto(multipartFile); // Multipartfile continua como null?
-
-        RoleEntity role = roleMock();
-
-        UserEntity user = userMock();
-        user.setPhoto(multipartFile.getBytes());
-
-        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
-        when(roleRepository.findById(1)).thenReturn(Optional.of(role));
-        when(userRepository.save(any())).thenReturn(user);
-
-        userService.create(dtoMock());
-
-        /*Método chamado no setPhotoEntity*/
-        verify(userEntity, times(1)).setPhoto(any());
-
-    }
-
-
-    /* ############## CREATE USER - SET PHOTO ENTITY ########### */
-
-
-
     /* >>>>>>>>>>>>> UPDATE USER - THROW USER NOT FOUND <<<<<<<<<<<<< */
 
     @Test(expected = UserColaboreException.class)
     public void shouldThrowUserNotFound() throws UserColaboreException {
 
         UserCreateDTO userCreateMock = dtoMock();
-        UserEntity userMock = userMock();
 
         SecurityContextHolder.setContext(securityContext);
 
@@ -204,10 +163,5 @@ public class UserServiceTests {
         user.setEmail("exemplo@gmail.com");
         user.setPassword("123");
         return user;
-    }
-
-    public MockMultipartFile getMockMultipart() {
-        return new MockMultipartFile("data", "filename.txt"
-                , "text/plain", "some xml".getBytes());
     }
 }
