@@ -3,10 +3,11 @@ package br.com.dbc.devser.colabore.functional.tests.register;
 import br.com.dbc.devser.colabore.functional.actions.RegisterAction;
 import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TC_Register001 extends ConfigEnvironment {
 
-    RegisterAction act = new RegisterAction(driver);
+    RegisterAction act = new RegisterAction(driver, new WebDriverWait(driver, 8));
 
     @Test
     public void registerPass () throws InterruptedException {

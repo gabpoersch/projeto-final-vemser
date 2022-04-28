@@ -17,16 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -54,16 +50,13 @@ public class DonationServiceTests {
     @Mock
     private MailService mailService;
 
-
     @Mock
     private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @BeforeEach
     public void initMethods() {
         ReflectionTestUtils.setField(donationService, "objectMapper", objectMapper);
     }
-
 
     @Test
     public void shouldMakeDonation() throws Exception {

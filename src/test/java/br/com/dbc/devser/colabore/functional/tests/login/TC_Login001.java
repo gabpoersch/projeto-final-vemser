@@ -4,10 +4,11 @@ import br.com.dbc.devser.colabore.functional.actions.LoginAction;
 import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TC_Login001 extends ConfigEnvironment {
 
-    LoginAction act = new LoginAction(driver);
+    LoginAction act = new LoginAction(driver, new WebDriverWait(driver, 8));
 
     @Test
     public void shouldNotPass() throws InterruptedException {
