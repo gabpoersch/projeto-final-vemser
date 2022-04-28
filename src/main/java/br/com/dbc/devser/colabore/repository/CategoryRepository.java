@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    CategoryEntity findByNameContainsIgnoreCase(String name);
+    CategoryEntity findByName(String name);
 }

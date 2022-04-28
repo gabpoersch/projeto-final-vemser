@@ -13,10 +13,10 @@ public class TC_Login001 extends ConfigEnviroment {
     public void shouldNotPass() throws InterruptedException {
         driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
         driver.manage().window().maximize();
-        Thread.sleep(1500);
+        Thread.sleep(3500);
         act.writeInputEmail("123@odjksdhkahdsakom").writeInputPassword("123")
                 .clickLoginButton();
-        Thread.sleep(1500);
+        Thread.sleep(3500);
 
         Assertions.assertEquals("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/",
                 driver.getCurrentUrl());
