@@ -1,6 +1,7 @@
 package br.com.dbc.devser.colabore.unit;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
+import br.com.dbc.devser.colabore.email.service.MailService;
 import br.com.dbc.devser.colabore.entity.*;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
@@ -31,9 +32,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FundraiserServiceTests {
@@ -59,12 +61,14 @@ public class FundraiserServiceTests {
     @Mock
     private UserEntity userEntity;
 
+    @Mock
+    private MailService mailService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Authentication authentication = Mockito.mock(Authentication.class);
 
     private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-
 
 
     @Before
@@ -77,16 +81,15 @@ public class FundraiserServiceTests {
 
     @Test
     public void shouldSaveFundraiser() throws UserColaboreException {
-        FundraiserCreateDTO fundraiserCreateDTO = fundMockDTO();
+        FundraiserCreateDTO fundraiserCreateDTO = fundCreateDTOMock();
 
-        UserEntity user = userFundMock();
+        UserEntity user = userEntityMock();
         FundraiserEntity fundraiser = new FundraiserEntity();
         fundraiser.setFundraiserId(1L);
 
         SecurityContextHolder.setContext(securityContext);
 
         when(userService.getLoggedUser()).thenReturn(user);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(fundraiserRepository.save(any())).thenReturn(fundraiser);
 
         fundraiserService.saveFundraiser(fundraiserCreateDTO);
@@ -96,31 +99,52 @@ public class FundraiserServiceTests {
     public void shouldUpdateFundraiser() throws FundraiserException, UserColaboreException {
         SecurityContextHolder.setContext(securityContext);
 
-        when(userService.getLoggedUser()).thenReturn(userFundMock());
+        when(userService.getLoggedUser()).thenReturn(userEntityMock());
 
         when(fundraiserRepository.findById(any())).thenReturn(Optional.of(fundEntityMock()));
-        fundraiserService.updateFundraiser(1L, fundMockDTO());
+        fundraiserService.updateFundraiser(1L, fundCreateDTOMock());
     }
 
-    public RoleEntity roleMock() {
+    @Test(expected = FundraiserException.class)
+    public void shouldntUpdateWithDonation() throws FundraiserException, UserColaboreException {
+        Long id = fundEntityWithDonationMock().getFundraiserId();
+
+        when(fundraiserRepository.findById(any())).thenReturn(Optional.of(fundEntityWithDonationMock()));
+        when(userService.getLoggedUser()).thenReturn(userEntityMock());
+
+        fundraiserService.updateFundraiser(id, fundCreateDTOMock());
+    }
+
+    @Test
+    public void shouldCheckIfClosed() {
+        FundraiserEntity fundCheck = fundEntityMock();
+        fundCheck.setCurrentValue(new BigDecimal("100.0"));
+
+        fundraiserService.checkClosed(fundCheck);
+
+        assertFalse(fundCheck.getStatusActive());
+    }
+
+
+    public RoleEntity roleEntityMock() {
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRoleId(1);
         roleEntity.setName("ROLE_USER");
         return roleEntity;
     }
 
-    public UserEntity userFundMock() {
+    public UserEntity userEntityMock() {
         UserEntity userMock = new UserEntity();
         userMock.setUserId(1L);
         userMock.setName("exemplo");
         userMock.setEmail("exemplo@gmail.com");
         userMock.setPassword("123");
         userMock.setPhoto(null);
-        userMock.setRoles(roleMock());
+        userMock.setRoles(roleEntityMock());
         return userMock;
     }
 
-    public Set<String> categoryMock() {
+    public Set<String> categoryEntityStringSetMock() {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName("categorytest");
         categoryEntity.setCategoryId(1L);
@@ -130,7 +154,7 @@ public class FundraiserServiceTests {
         return categoryEntities;
     }
 
-    public Set<CategoryEntity> categoryEntityMock() {
+    public Set<CategoryEntity> categoryEntitySetMock() {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName("categorytest");
         categoryEntity.setCategoryId(1L);
@@ -140,11 +164,24 @@ public class FundraiserServiceTests {
         return categoryEntities;
     }
 
-    public Set<DonationEntity> emptyDonationEntityMock() {
+    public Set<DonationEntity> emptyDonationEntitySetMock() {
         return new HashSet<>();
     }
 
-    public FundraiserCreateDTO fundMockDTO() {
+    public Set<DonationEntity> donationEntitySetMock() {
+        DonationEntity donation = new DonationEntity();
+        donation.setMessage("Donation teste");
+        donation.setValue(new BigDecimal("50.0"));
+        donation.setDonator(userEntityMock());
+        donation.setFundraiser(fundEntityMock());
+
+        Set<DonationEntity> donationEntities = new HashSet<>();
+        donationEntities.add(donation);
+
+        return donationEntities;
+    }
+
+    public FundraiserCreateDTO fundCreateDTOMock() {
         FundraiserCreateDTO fundraiserCreateDTO = new FundraiserCreateDTO();
         fundraiserCreateDTO.setTitle("FundTest");
         fundraiserCreateDTO.setGoal(new BigDecimal("100.0"));
@@ -152,8 +189,27 @@ public class FundraiserServiceTests {
         fundraiserCreateDTO.setDescription("Teste da Fundraiser");
         fundraiserCreateDTO.setEndingDate(LocalDate.of(2023, 4, 30));
         fundraiserCreateDTO.setCoverPhoto(null);
-        fundraiserCreateDTO.setCategories(categoryMock());
+        fundraiserCreateDTO.setCategories(categoryEntityStringSetMock());
         return fundraiserCreateDTO;
+    }
+
+    public FundraiserEntity fundEntityWithDonationMock() {
+        FundraiserEntity fundraiserEntityMock = new FundraiserEntity();
+        fundraiserEntityMock.setFundraiserId(1L);
+        fundraiserEntityMock.setTitle("FundTest");
+        fundraiserEntityMock.setDescription("Teste da Fundraiser");
+        fundraiserEntityMock.setGoal(new BigDecimal("100.0"));
+        fundraiserEntityMock.setCurrentValue(new BigDecimal("0.0"));
+        fundraiserEntityMock.setCover(null);
+        fundraiserEntityMock.setStatusActive(true);
+        fundraiserEntityMock.setCreationDate(LocalDateTime.now());
+        fundraiserEntityMock.setEndingDate(LocalDate.of(2023, 4, 30));
+        fundraiserEntityMock.setLastUpdate(LocalDateTime.now());
+        fundraiserEntityMock.setAutomaticClose(true);
+        fundraiserEntityMock.setFundraiserCreator(userEntityMock());
+        fundraiserEntityMock.setCategoriesFundraiser(categoryEntitySetMock());
+        fundraiserEntityMock.setDonations(donationEntitySetMock());
+        return fundraiserEntityMock;
     }
 
     public FundraiserEntity fundEntityMock() {
@@ -169,9 +225,9 @@ public class FundraiserServiceTests {
         fundraiserEntityMock.setEndingDate(LocalDate.of(2023, 4, 30));
         fundraiserEntityMock.setLastUpdate(LocalDateTime.now());
         fundraiserEntityMock.setAutomaticClose(true);
-        fundraiserEntityMock.setFundraiserCreator(userFundMock());
-        fundraiserEntityMock.setCategoriesFundraiser(categoryEntityMock());
-        fundraiserEntityMock.setDonations(emptyDonationEntityMock());
+        fundraiserEntityMock.setFundraiserCreator(userEntityMock());
+        fundraiserEntityMock.setCategoriesFundraiser(categoryEntitySetMock());
+        fundraiserEntityMock.setDonations(emptyDonationEntitySetMock());
         return fundraiserEntityMock;
     }
 }
