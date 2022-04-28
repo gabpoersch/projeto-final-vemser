@@ -1,10 +1,10 @@
 package br.com.dbc.devser.colabore.functional.tests.register;
 
 import br.com.dbc.devser.colabore.functional.actions.RegisterAction;
-import br.com.dbc.devser.colabore.functional.config.ConfigEnviroment;
+import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 
-public class TC_Register001 extends ConfigEnviroment {
+public class TC_Register001 extends ConfigEnvironment {
 
     RegisterAction act = new RegisterAction(driver);
 

@@ -1,11 +1,11 @@
 package br.com.dbc.devser.colabore.functional.tests.login;
 
 import br.com.dbc.devser.colabore.functional.actions.LoginAction;
-import br.com.dbc.devser.colabore.functional.config.ConfigEnviroment;
+import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-public class TC_Login001 extends ConfigEnviroment {
+public class TC_Login001 extends ConfigEnvironment {
 
     LoginAction act = new LoginAction(driver);
 
