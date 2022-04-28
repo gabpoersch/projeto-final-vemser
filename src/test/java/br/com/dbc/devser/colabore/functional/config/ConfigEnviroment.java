@@ -12,7 +12,12 @@ public class ConfigEnviroment {
 
     @BeforeClass
     public static void initConfigClass() {
-        WebDriverManager.edgedriver().setup();
+        String os = System.getProperty("os.name");
+        if (os.equals("Linux")){
+            WebDriverManager.chromedriver().setup();
+        }else{
+            WebDriverManager.edgedriver().setup();
+        }
         driver = new EdgeDriver();
     }
 
