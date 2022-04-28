@@ -1,10 +1,7 @@
 package br.com.dbc.devser.colabore.unit;
 
 import br.com.dbc.devser.colabore.dto.fundraiser.FundraiserCreateDTO;
-import br.com.dbc.devser.colabore.entity.CategoryEntity;
-import br.com.dbc.devser.colabore.entity.FundraiserEntity;
-import br.com.dbc.devser.colabore.entity.RoleEntity;
-import br.com.dbc.devser.colabore.entity.UserEntity;
+import br.com.dbc.devser.colabore.entity.*;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.CategoryRepository;
@@ -25,7 +22,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -76,8 +72,6 @@ public class FundraiserServiceTests {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(fundraiserService, "objectMapper", objectMapper);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn("1");
     }
 
 
@@ -98,12 +92,15 @@ public class FundraiserServiceTests {
         fundraiserService.saveFundraiser(fundraiserCreateDTO);
     }
 
-//    @Test
-//    public void shouldUpdateFundraiser() throws FundraiserException, UserColaboreException {
-//
-//        when(fundraiserRepository.findById(any())).thenReturn(Optional.of(fundEntityMock()));
-//        fundraiserService.updateFundraiser(1L, fundMockDTO());
-//    }
+    @Test
+    public void shouldUpdateFundraiser() throws FundraiserException, UserColaboreException {
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userService.getLoggedUser()).thenReturn(userFundMock());
+
+        when(fundraiserRepository.findById(any())).thenReturn(Optional.of(fundEntityMock()));
+        fundraiserService.updateFundraiser(1L, fundMockDTO());
+    }
 
     public RoleEntity roleMock() {
         RoleEntity roleEntity = new RoleEntity();
@@ -143,6 +140,10 @@ public class FundraiserServiceTests {
         return categoryEntities;
     }
 
+    public Set<DonationEntity> emptyDonationEntityMock() {
+        return new HashSet<>();
+    }
+
     public FundraiserCreateDTO fundMockDTO() {
         FundraiserCreateDTO fundraiserCreateDTO = new FundraiserCreateDTO();
         fundraiserCreateDTO.setTitle("FundTest");
@@ -170,6 +171,7 @@ public class FundraiserServiceTests {
         fundraiserEntityMock.setAutomaticClose(true);
         fundraiserEntityMock.setFundraiserCreator(userFundMock());
         fundraiserEntityMock.setCategoriesFundraiser(categoryEntityMock());
+        fundraiserEntityMock.setDonations(emptyDonationEntityMock());
         return fundraiserEntityMock;
     }
 }
