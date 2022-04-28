@@ -2,7 +2,7 @@ package br.com.dbc.devser.colabore.functional.pageObjects;
 
 import org.openqa.selenium.By;
 
-public class NewFundraiser {
+public class NewFundraiser extends HomeColabore {
 
     public static By inputTitle = By.id("title");
     public static By inputGoal = By.id("goal");

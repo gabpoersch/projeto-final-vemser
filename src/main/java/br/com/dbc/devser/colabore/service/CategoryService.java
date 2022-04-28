@@ -28,4 +28,6 @@ public class CategoryService {
         return objectMapper.convertValue(categoryRepository.findByName(name), CategoryDTO.class);
     }
 
+
+
 }
