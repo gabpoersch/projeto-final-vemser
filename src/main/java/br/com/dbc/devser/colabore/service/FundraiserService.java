@@ -168,14 +168,13 @@ public class FundraiserService {
 
     public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
+
         verifyIfFundraiserIsYours(fundraiserEntity);
 
         Set<CategoryEntity> categories = fundraiserEntity.getCategoriesFundraiser();
 
-        categories.stream().filter(categoryEntity -> {
-            System.out.println(categories.size());
-            return categoryEntity.getFundraisers().size() == 1;
-        }).forEach(categoryRepository::delete);
+        categories.stream().filter(categoryEntity -> categoryEntity.getFundraisers().size() == 1)
+                .forEach(categoryRepository::delete);
 
         fundraiserRepository.delete(fundraiserEntity);
 

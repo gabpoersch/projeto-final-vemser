@@ -1,8 +1,6 @@
 package br.com.dbc.devser.colabore.functional.actions;
 
-import br.com.dbc.devser.colabore.functional.pageObjects.NewFundraiser;
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,17 +29,12 @@ public class NewFundraiserAction {
     }
 
     public NewFundraiserAction clickAutomaticClose() {
-        WebElement ele = driver.findElement(checkAutomaticClose);
-        JavascriptExecutor jse = (JavascriptExecutor)driver;
-        jse.executeScript("arguments[0].click()", ele);
-//        driver.findElement(checkAutomaticClose).click();
+        driver.findElement(checkAutomaticClose).click();
         return this;
     }
 
-    public NewFundraiserAction writeInputDate(String textDate) {
-        WebElement ele = driver.findElement(inputDate);
-        JavascriptExecutor jse = (JavascriptExecutor)driver;
-        jse.executeScript("arguments[0].setAttribute('value', '25/05/2022')", ele);
+    public NewFundraiserAction writeInputDate(String text) {
+        CommomActions.write(driver, wait, text, inputDate);
         return this;
     }
 
@@ -57,7 +50,7 @@ public class NewFundraiserAction {
                 .visibilityOf(driver.findElement(inputCategories)));
         Actions act = new Actions(driver);
         for (String category : categories) {
-            act.sendKeys(inputCreateCategories, category).sendKeys(Keys.ENTER);
+            act.sendKeys(inputCreateCategories, category).sendKeys(Keys.ENTER).build().perform();
         }
         return this;
     }

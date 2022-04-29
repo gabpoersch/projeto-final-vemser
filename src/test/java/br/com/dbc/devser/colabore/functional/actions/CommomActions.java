@@ -10,7 +10,6 @@ public class CommomActions {
 
     public static void write(WebDriver driver, WebDriverWait wait, String text, By inputBy) {
         WebElement inputElement = wait.until(ExpectedConditions.visibilityOf(driver.findElement(inputBy)));
-        inputElement.clear();
         inputElement.sendKeys(text);
     }
 }

@@ -7,17 +7,10 @@ import br.com.dbc.devser.colabore.functional.actions.RegisterAction;
 import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.BeforeMethod;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static br.com.dbc.devser.colabore.functional.pageObjects.HomeColabore.createButton;
 
 public class TC_Register001 extends ConfigEnvironment {
 
@@ -47,10 +40,12 @@ public class TC_Register001 extends ConfigEnvironment {
 
         homeAction.createFundraiser();
 
+        wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/create-campanhas"));
+
         newFundraiser.writeInputTitle("Teste automatizado")
                 .writeInputGoal("2500")
                 .clickAutomaticClose()
-                .writeInputDate("12/03/2024")
+                .writeInputDate("12/03/2023")
                 .clickBtnCoverPhoto()
                 .writeInputCategories(List.of("automatiza", "selenium"))
                 .writeDescription("Descrição")
@@ -59,20 +54,7 @@ public class TC_Register001 extends ConfigEnvironment {
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
 
         homeAction.logout();
-
+//
     }
-//
-//    @Test
-//    public void deleteUser () {
-//        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
-//
-//        actLogin.writeInputEmail("54321@dbccompany.com.br")
-//                .writeInputPassword("@!1234Aa123").clickLoginButton();
-//
-//
-//    }
-
-
-
 
 }

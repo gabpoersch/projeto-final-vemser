@@ -1,7 +1,6 @@
 package br.com.dbc.devser.colabore.functional.actions;
 
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +11,7 @@ import static br.com.dbc.devser.colabore.functional.pageObjects.HomeColabore.*;
 
 @RequiredArgsConstructor
 public class HomeAction {
+
     private final WebDriver driver;
     private final WebDriverWait wait;
 
@@ -27,24 +27,17 @@ public class HomeAction {
     }
 
     public HomeAction createFundraiser() {
-//        wait.until(ExpectedConditions
-//                .refreshed(ExpectedConditions.elementToBeClickable(driver.findElement(createButton))));
         WebElement ele = driver.findElement(createButton);
-        JavascriptExecutor jse = (JavascriptExecutor)driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("arguments[0].click()", ele);
         return this;
     }
 
     public HomeAction logout() {
-        wait.until(ExpectedConditions
-                .elementToBeClickable(driver.findElement(logoutButton))).click();
+        WebElement ele = driver.findElement(logoutButton);
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
+        jse.executeScript("arguments[0].click()", ele);
         return this;
     }
-//
-//    public HomeAction selectCategory() {
-//        wait.until(ExpectedConditions
-//                .elementToBeClickable(driver.findElement(categorySelectionButton))).click();
-//    }
-
 
 }
