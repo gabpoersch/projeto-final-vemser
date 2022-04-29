@@ -42,6 +42,8 @@ public class NewFundraiserAction {
         WebElement btnPhotoElement = wait.until(ExpectedConditions
                 .elementToBeClickable(driver.findElement(btnCoverPhoto)));
         btnPhotoElement.sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/doacao-foto.png");
+        Actions act = new Actions(driver);
+
         return this;
     }
 
@@ -50,7 +52,7 @@ public class NewFundraiserAction {
                 .visibilityOf(driver.findElement(inputCategories)));
         Actions act = new Actions(driver);
         for (int i = 0; i < categories.size(); i++) {
-            act.sendKeys(inputCreateCategories, categories.get(i)).keyDown(Keys.ENTER).keyUp(Keys.ENTER);
+            act.sendKeys(inputCreateCategories, categories.get(i)).sendKeys(Keys.ENTER);
         }
         return this;
     }

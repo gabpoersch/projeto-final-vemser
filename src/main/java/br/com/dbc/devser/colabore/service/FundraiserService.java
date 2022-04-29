@@ -166,22 +166,6 @@ public class FundraiserService {
                 });
     }
 
-    public Page<FundraiserGenericDTO> filterByFundraiserComplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserCompleted(getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
-    }
-
-    public Page<FundraiserGenericDTO> filterByFundraiserIncomplete(Integer numberPage) {
-        return fundraiserRepository.findFundraiserIncomplete(getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
-    }
-
     public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {
         FundraiserEntity fundraiserEntity = findById(fundraiserId);
         verifyIfFundraiserIsYours(fundraiserEntity);

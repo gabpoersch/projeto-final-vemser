@@ -25,7 +25,7 @@ public class HomeAction {
 
     public HomeAction createFundraiser() {
         wait.until(ExpectedConditions
-                .elementToBeClickable(driver.findElement(createButton))).click();
+                .visibilityOf(driver.findElement(createButton))).click();
         return this;
     }
 
