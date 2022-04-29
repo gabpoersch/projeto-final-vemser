@@ -28,17 +28,31 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
     @Query("select f from fundraiser f where f.endingDate = :end")
     List<FundraiserEntity> finishedFundraisers(@Param("end") LocalDate end);
 
-//    @Query(nativeQuery = true, value =
-//            "    SELECT f from fundraiser f \n" +
-//                    "    INNER JOIN\n" +
-//                    "        fundraiser_category fc ON (f.fundraiser_id = fc.fundraiser_id)\n" +
-//                    "    INNER JOIN\n" +
-//                    "        category c ON (fc.category_id = c.category_id) \n" +
-//                    "    WHERE\n" +
-//                    "        lower(c.name) IN (?1) AND f.status = true " +
-//                    "GROUP BY f.fundraiser_id, fc.fundraiser_id" +
-//                    ", fc.category_id, c.category_id")
-//    Page<FundraiserEntity> filterByCategories(List<String> categories, Pageable pageable);
-//
-//    @Query("select f from fundraiser f join ")
+    @Query("select f from fundraiser f " +
+            "join f.categoriesFundraiser fc " +
+            "where lower(fc.name) in(:categories) and f.statusActive = true group by f.fundraiserId")
+    Page<FundraiserEntity> filterByCategories(List<String> categories, Pageable pageable);
+
+
+
+//    SELECT
+//            f
+//    FROM
+//    fundraiser f
+//    INNER JOIN
+//    fundraiser_category fc
+//    ON (
+//            f.fundraiser_id = fc.fundraiser_id
+//    )
+//    INNER JOIN
+//    category c
+//    ON (
+//            fc.category_id = c.category_id
+//    )
+//    WHERE
+//    lower(c."name") IN (
+//            'automatiza','selenium'
+//            )      AND f.status = true
+//    group by f.fundraiser_id ;
+
 }

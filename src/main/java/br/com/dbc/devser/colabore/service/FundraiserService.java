@@ -170,19 +170,17 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<String> categoriesLower = new ArrayList<>();
-        Set<FundraiserEntity> distinctFundraisers = new HashSet<>();
+//        Set<FundraiserEntity> distinctFundraisers = new HashSet<>();
         /*Passa a entrada para lower case (Comparação)*/
         for (String str : categories) {
             categoriesLower.add(str.toLowerCase().trim());
         }
-       categoryRepository.filterByCategories(categoriesLower)
-                .forEach(categoryEntity -> distinctFundraisers.addAll(categoryEntity.getFundraisers().stream()
-                        .filter(FundraiserEntity::getStatusActive).collect(Collectors.toSet())));
-
-        return new PageImpl<>(distinctFundraisers.stream().map(fEntity->{
-           FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-           return completeFundraiser(generic, fEntity);
-       }).collect(Collectors.toList()));
+        return fundraiserRepository
+                .filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
+                .map(fEntity -> {
+                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+                    return completeFundraiser(generic, fEntity);
+                });
     }
 
     public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {
