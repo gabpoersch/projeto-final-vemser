@@ -5,13 +5,19 @@ import br.com.dbc.devser.colabore.functional.actions.LoginAction;
 import br.com.dbc.devser.colabore.functional.actions.NewFundraiserAction;
 import br.com.dbc.devser.colabore.functional.actions.RegisterAction;
 import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
-import br.com.dbc.devser.colabore.functional.pageObjects.NewFundraiser;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.BeforeMethod;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static br.com.dbc.devser.colabore.functional.pageObjects.HomeColabore.createButton;
 
 public class TC_Register001 extends ConfigEnvironment {
 
@@ -44,7 +50,7 @@ public class TC_Register001 extends ConfigEnvironment {
         newFundraiser.writeInputTitle("Teste automatizado")
                 .writeInputGoal("2500")
                 .clickAutomaticClose()
-                .writeInputDate("12032024")
+                .writeInputDate("12/03/2024")
                 .clickBtnCoverPhoto()
                 .writeInputCategories(List.of("automatiza", "selenium"))
                 .writeDescription("Descrição")

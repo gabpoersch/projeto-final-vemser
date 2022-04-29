@@ -1,6 +1,8 @@
 package br.com.dbc.devser.colabore.functional.actions;
 
+import br.com.dbc.devser.colabore.functional.pageObjects.NewFundraiser;
 import lombok.RequiredArgsConstructor;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,12 +31,17 @@ public class NewFundraiserAction {
     }
 
     public NewFundraiserAction clickAutomaticClose() {
-        driver.findElement(checkAutomaticClose).click();
+        WebElement ele = driver.findElement(checkAutomaticClose);
+        JavascriptExecutor jse = (JavascriptExecutor)driver;
+        jse.executeScript("arguments[0].click()", ele);
+//        driver.findElement(checkAutomaticClose).click();
         return this;
     }
 
     public NewFundraiserAction writeInputDate(String textDate) {
-        CommomActions.write(driver, wait, textDate, inputDate);
+        WebElement ele = driver.findElement(inputDate);
+        JavascriptExecutor jse = (JavascriptExecutor)driver;
+        jse.executeScript("arguments[0].setAttribute('value', '25/05/2022')", ele);
         return this;
     }
 
@@ -42,8 +49,6 @@ public class NewFundraiserAction {
         WebElement btnPhotoElement = wait.until(ExpectedConditions
                 .elementToBeClickable(driver.findElement(btnCoverPhoto)));
         btnPhotoElement.sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/doacao-foto.png");
-        Actions act = new Actions(driver);
-
         return this;
     }
 
@@ -51,8 +56,8 @@ public class NewFundraiserAction {
         WebElement inputCreateCategories = wait.until(ExpectedConditions
                 .visibilityOf(driver.findElement(inputCategories)));
         Actions act = new Actions(driver);
-        for (int i = 0; i < categories.size(); i++) {
-            act.sendKeys(inputCreateCategories, categories.get(i)).sendKeys(Keys.ENTER);
+        for (String category : categories) {
+            act.sendKeys(inputCreateCategories, category).sendKeys(Keys.ENTER);
         }
         return this;
     }
