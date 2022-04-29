@@ -22,6 +22,9 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
     @Query("select f from fundraiser f where f.statusActive=true and f.currentValue >= f.goal")
     Page<FundraiserEntity> findFundraisersActiveAcchieved(Pageable pageable);
 
+    @Query("select f from fundraiser f where f.statusActive=true")
+    Page<FundraiserEntity> findAllFundraisersActive(Pageable pageable);
+
     @Query("select f from fundraiser f where f.endingDate = :end")
     List<FundraiserEntity> finishedFundraisers(@Param("end") LocalDate end);
 

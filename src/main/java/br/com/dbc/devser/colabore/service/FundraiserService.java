@@ -138,6 +138,15 @@ public class FundraiserService {
                 });
     }
 
+    public Page<FundraiserGenericDTO> findAllFundraisersActive(Integer numberPage) {
+        return fundraiserRepository
+                .findAllFundraisersActive(getPageable(numberPage))
+                .map(fEntity -> {
+                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+                    return completeFundraiser(generic, fEntity);
+                });
+    }
+
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository
                 .findFundraisersOfUser(userService.getLoggedUser().getUserId(), getPageable(numberPage))

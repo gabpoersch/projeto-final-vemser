@@ -101,6 +101,15 @@ public class FundraiserController {
         return fundraiserService.findFundraisersActiveAcchieved(numberPage);
     }
 
+    @ApiOperation(value = "Apresenta todas as campanhas ativas (atingidas e não atingidas). Passar número da página como parâmetro (Resultado paginado)")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @GetMapping("/findAllFundraisersActive/{numberPage}")
+    public Page<FundraiserGenericDTO> findAllFundraisersActive(@PathVariable("numberPage") Integer numberPage) {
+        return fundraiserService.findFundraisersActiveAcchieved(numberPage);
+    }
+
     @ApiOperation(value = "Deleta os registros da campanha (campanha e doações) do banco de dados.")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Os registros da campanha foram deletados com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
