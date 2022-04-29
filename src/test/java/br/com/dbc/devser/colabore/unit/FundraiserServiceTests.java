@@ -68,7 +68,6 @@ public class FundraiserServiceTests {
         ReflectionTestUtils.setField(fundraiserService, "objectMapper", objectMapper);
     }
 
-
     @Test
     public void shouldSaveFundraiser() throws UserColaboreException {
         FundraiserCreateDTO fundraiserCreateDTO = fundCreateDTOMock();
@@ -124,7 +123,6 @@ public class FundraiserServiceTests {
 
         fundraiserService.deleteFundraiser(fundEntityMock().getFundraiserId());
     }
-
 
     public RoleEntity roleEntityMock() {
         RoleEntity roleEntity = new RoleEntity();

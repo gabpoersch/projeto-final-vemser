@@ -18,7 +18,10 @@ import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -120,37 +123,25 @@ public class FundraiserService {
     public Page<FundraiserGenericDTO> findFundraisersActiveNotAcchieved(Integer numberPage) {
         return fundraiserRepository
                 .findFundraisersActiveNotAcchieved(getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
+                .map(this::buildFundraiserGeneric);
     }
 
     public Page<FundraiserGenericDTO> findFundraisersActiveAcchieved(Integer numberPage) {
         return fundraiserRepository
                 .findFundraisersActiveAcchieved(getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
+                .map(this::buildFundraiserGeneric);
     }
 
     public Page<FundraiserGenericDTO> findAllFundraisersActive(Integer numberPage) {
         return fundraiserRepository
                 .findAllFundraisersActive(getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
+                .map(this::buildFundraiserGeneric);
     }
 
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository
                 .findFundraisersOfUser(userService.getLoggedUser().getUserId(), getPageable(numberPage))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
+                .map(this::buildFundraiserGeneric);
     }
 
     public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws UserColaboreException {
@@ -170,17 +161,12 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<String> categoriesLower = new ArrayList<>();
-//        Set<FundraiserEntity> distinctFundraisers = new HashSet<>();
         /*Passa a entrada para lower case (Comparação)*/
         for (String str : categories) {
             categoriesLower.add(str.toLowerCase().trim());
         }
-        return fundraiserRepository
-                .filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
-                .map(fEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fEntity);
-                });
+        return fundraiserRepository.filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
+                .map(this::buildFundraiserGeneric);
     }
 
     public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {
@@ -278,6 +264,10 @@ public class FundraiserService {
             userDTO.setProfilePhoto(Base64.getEncoder().encodeToString(user.getPhoto()));
         }
         return userDTO;
+    }
+
+    private FundraiserGenericDTO buildFundraiserGeneric(FundraiserEntity fEntity) {
+        return completeFundraiser(objectMapper.convertValue(fEntity, FundraiserGenericDTO.class), fEntity);
     }
 
 }

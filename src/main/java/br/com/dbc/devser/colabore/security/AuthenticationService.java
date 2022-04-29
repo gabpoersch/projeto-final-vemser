@@ -2,7 +2,6 @@ package br.com.dbc.devser.colabore.security;
 
 import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.repository.UserRepository;
-import br.com.dbc.devser.colabore.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

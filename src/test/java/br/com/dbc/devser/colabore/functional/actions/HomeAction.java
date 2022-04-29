@@ -33,6 +33,16 @@ public class HomeAction {
         return this;
     }
 
+    public HomeAction clickMyFundraisers (){
+        driver.findElement(btnMyFundraisers).click();
+        return this;
+    }
+
+    public HomeAction clickMyContributions (){
+        driver.findElement(btnMyContributions).click();
+        return this;
+    }
+
     public HomeAction logout() {
         WebElement ele = driver.findElement(logoutButton);
         JavascriptExecutor jse = (JavascriptExecutor) driver;

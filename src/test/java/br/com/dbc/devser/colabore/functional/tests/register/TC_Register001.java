@@ -58,6 +58,9 @@ public class TC_Register001 extends ConfigEnvironment {
 
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
 
+        homeAction.clickMyFundraisers();
+
+        Thread.sleep(8000);
 
         homeAction.logout();
     }

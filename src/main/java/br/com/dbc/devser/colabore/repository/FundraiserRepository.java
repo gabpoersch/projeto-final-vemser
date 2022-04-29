@@ -33,26 +33,4 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
             "where lower(fc.name) in(:categories) and f.statusActive = true group by f.fundraiserId")
     Page<FundraiserEntity> filterByCategories(List<String> categories, Pageable pageable);
 
-
-
-//    SELECT
-//            f
-//    FROM
-//    fundraiser f
-//    INNER JOIN
-//    fundraiser_category fc
-//    ON (
-//            f.fundraiser_id = fc.fundraiser_id
-//    )
-//    INNER JOIN
-//    category c
-//    ON (
-//            fc.category_id = c.category_id
-//    )
-//    WHERE
-//    lower(c."name") IN (
-//            'automatiza','selenium'
-//            )      AND f.status = true
-//    group by f.fundraiser_id ;
-
 }

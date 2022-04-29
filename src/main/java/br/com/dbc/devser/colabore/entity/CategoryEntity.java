@@ -28,7 +28,7 @@ public class CategoryEntity {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "fundraiser_category",
             joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"),
