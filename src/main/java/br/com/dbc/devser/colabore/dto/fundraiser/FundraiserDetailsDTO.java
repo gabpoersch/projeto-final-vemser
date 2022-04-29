@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -48,5 +49,8 @@ public class FundraiserDetailsDTO {
 
     @ApiModelProperty(value = "Fechar automaticamente quando atigir a meta")
     private Boolean automaticClose;
+
+    @ApiModelProperty(value = "Data de encerramento")
+    private LocalDate endingDate;
 
 }

@@ -83,13 +83,22 @@ public class FundraiserController {
         return fundraiserService.filterByCategories(categories, numberPage);
     }
 
-    @ApiOperation(value = "Apresenta todas as campanhas registradas no site. Passar número da página como parâmetro (Resultado paginado)")
+    @ApiOperation(value = "Apresenta todas as campanhas que ainda não foram alcançadas. Passar número da página como parâmetro (Resultado paginado)")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @GetMapping("/findAll/{numberPage}")
-    public Page<FundraiserGenericDTO> findAllFundraisers(@PathVariable("numberPage") Integer numberPage) {
-        return fundraiserService.findAllFundraisers(numberPage);
+    @GetMapping("/findNotAcchieved/{numberPage}")
+    public Page<FundraiserGenericDTO> findFundraisersActiveNotAcchieved(@PathVariable("numberPage") Integer numberPage) {
+        return fundraiserService.findFundraisersActiveNotAcchieved(numberPage);
+    }
+
+    @ApiOperation(value = "Apresenta todas as campanhas que atingiram a meta. Passar número da página como parâmetro (Resultado paginado)")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "As campanhas foram listadas com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @GetMapping("/findAcchieved/{numberPage}")
+    public Page<FundraiserGenericDTO> findFundraisersActiveAcchieved(@PathVariable("numberPage") Integer numberPage) {
+        return fundraiserService.findFundraisersActiveAcchieved(numberPage);
     }
 
     @ApiOperation(value = "Deleta os registros da campanha (campanha e doações) do banco de dados.")

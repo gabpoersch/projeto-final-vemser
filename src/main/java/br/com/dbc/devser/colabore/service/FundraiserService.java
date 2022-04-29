@@ -111,6 +111,7 @@ public class FundraiserService {
             details.setCoverPhoto(Base64.getEncoder().encodeToString(fundraiserEntity.getCover()));
         }
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
+        details.setEndingDate(fundraiserEntity.getEndingDate());
         details.setFundraiserCreator(buildExposedUser(fundraiserEntity.getFundraiserCreator()));
         details.setAutomaticClose(fundraiserEntity.getAutomaticClose());
         details.setContributors(fundraiserEntity.getDonations().stream()
@@ -119,15 +120,23 @@ public class FundraiserService {
         return details;
     }
 
-    public Page<FundraiserGenericDTO> findAllFundraisers(Integer numberPage) {
+    public Page<FundraiserGenericDTO> findFundraisersActiveNotAcchieved(Integer numberPage) {
         return fundraiserRepository
-                .findAllFundraisersActive(getPageable(numberPage))
+                .findFundraisersActiveNotAcchieved(getPageable(numberPage))
                 .map(fEntity -> {
                     FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
                     return completeFundraiser(generic, fEntity);
                 });
     }
 
+    public Page<FundraiserGenericDTO> findFundraisersActiveAcchieved(Integer numberPage) {
+        return fundraiserRepository
+                .findFundraisersActiveAcchieved(getPageable(numberPage))
+                .map(fEntity -> {
+                    FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+                    return completeFundraiser(generic, fEntity);
+                });
+    }
 
     public Page<FundraiserGenericDTO> findUserFundraisers(Integer numberPage) throws UserColaboreException {
         return fundraiserRepository

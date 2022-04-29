@@ -49,9 +49,10 @@ public class NewFundraiserAction {
         WebElement inputCreateCategories = wait.until(ExpectedConditions
                 .visibilityOf(driver.findElement(inputCategories)));
         Actions act = new Actions(driver);
-        for (String category : categories) {
-            act.sendKeys(inputCreateCategories, category).sendKeys(Keys.ENTER).build().perform();
-        }
+        categories.forEach(c -> {
+            act.sendKeys(inputCreateCategories, c).build().perform();
+            act.sendKeys(Keys.ENTER).build().perform();
+        });
         return this;
     }
 
