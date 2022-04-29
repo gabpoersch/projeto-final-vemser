@@ -47,12 +47,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO listLoggedUser() throws UserColaboreException {
-        UserEntity userEntity = getLoggedUser();
-
-        return objectMapper.convertValue(userEntity, UserDTO.class);
-    }
-
     public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {
 
         UserEntity userEntity = verifyIfEmailExists(updateUserDTO, true);
@@ -63,14 +57,6 @@ public class UserService {
         userEntity.setRoles(userEntity.getRoles());
 
         return buildExposedDTO(setPhotoBytes(userEntity, updateUserDTO));
-    }
-
-    public void delete() throws UserColaboreException {
-        userRepository.deleteById(getLoggedUser().getUserId());
-    }
-
-    public UserEntity findByLogin(String email) {
-        return userRepository.findByEmail(email);
     }
 
     public UserEntity getLoggedUser() throws UserColaboreException {
@@ -110,6 +96,10 @@ public class UserService {
             }
         }
         return userEntity;
+    }
+
+    public UserDTO listLoggedUser() throws UserColaboreException {
+        return objectMapper.convertValue(getLoggedUser(), UserDTO.class);
     }
 
     private UserDTO buildExposedDTO(UserEntity userEntity) {

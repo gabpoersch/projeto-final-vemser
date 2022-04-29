@@ -59,14 +59,4 @@ public class UserController {
     public UserDTO update(@Valid @ModelAttribute UserCreateDTO userUpdateDTO) throws UserColaboreException {
         return userService.update(userUpdateDTO);
     }
-
-
-    @ApiOperation(value = "Deleta um usuário do banco de dados.")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi deletado com sucesso."),
-            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
-            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
-    @DeleteMapping("/delete")
-    public void delete() throws UserColaboreException {
-        userService.delete();
-    }
 }

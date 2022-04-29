@@ -1,6 +1,7 @@
 package br.com.dbc.devser.colabore.security;
 
 import br.com.dbc.devser.colabore.entity.UserEntity;
+import br.com.dbc.devser.colabore.repository.UserRepository;
 import br.com.dbc.devser.colabore.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public UserEntity loadUserByUsername(String login) throws UsernameNotFoundException {
-        Optional<UserEntity> userEntityOptional = Optional.ofNullable(userService.findByLogin(login));
+        Optional<UserEntity> userEntityOptional = Optional.ofNullable(userRepository.findByEmail(login));
         if (userEntityOptional.isPresent()) {
             return userEntityOptional.get();
         }

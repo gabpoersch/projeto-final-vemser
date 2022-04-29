@@ -58,6 +58,8 @@ public class FundraiserServiceTests {
     private UserEntity userEntity;
     @Mock
     private MailService mailService;
+    @Mock
+    private CategoryEntity categoryEntity;
 
     @Before
     public void BeforeEach() {
@@ -113,6 +115,16 @@ public class FundraiserServiceTests {
         assertFalse(fundCheck.getStatusActive());
     }
 
+    @Test
+    public void shouldDeleteFundraiser() throws FundraiserException, UserColaboreException {
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userService.getLoggedUser()).thenReturn(userEntityMock());
+        when(fundraiserRepository.findById(any())).thenReturn(Optional.of(fundEntityMock()));
+
+        fundraiserService.deleteFundraiser(fundEntityMock().getFundraiserId());
+    }
+
 
     public RoleEntity roleEntityMock() {
         RoleEntity roleEntity = new RoleEntity();
@@ -146,6 +158,7 @@ public class FundraiserServiceTests {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName("categorytest");
         categoryEntity.setCategoryId(1L);
+        categoryEntity.setFundraisers(Set.of(new FundraiserEntity()));
 
         Set<CategoryEntity> categoryEntities = new HashSet<>();
         categoryEntities.add(categoryEntity);
