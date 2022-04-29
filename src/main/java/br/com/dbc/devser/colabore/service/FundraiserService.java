@@ -18,10 +18,7 @@ import br.com.dbc.devser.colabore.repository.FundraiserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -173,15 +170,19 @@ public class FundraiserService {
 
     public Page<FundraiserGenericDTO> filterByCategories(List<String> categories, Integer numberPage) {
         List<String> categoriesLower = new ArrayList<>();
+        Set<FundraiserEntity> distinctFundraisers = new HashSet<>();
         /*Passa a entrada para lower case (Comparação)*/
         for (String str : categories) {
             categoriesLower.add(str.toLowerCase().trim());
         }
-        return fundraiserRepository.filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
-                .map(fundraiserEntity -> {
-                    FundraiserGenericDTO generic = objectMapper.convertValue(fundraiserEntity, FundraiserGenericDTO.class);
-                    return completeFundraiser(generic, fundraiserEntity);
-                });
+       categoryRepository.filterByCategories(categoriesLower)
+                .forEach(categoryEntity -> distinctFundraisers.addAll(categoryEntity.getFundraisers().stream()
+                        .filter(FundraiserEntity::getStatusActive).collect(Collectors.toSet())));
+
+        return new PageImpl<>(distinctFundraisers.stream().map(fEntity->{
+           FundraiserGenericDTO generic = objectMapper.convertValue(fEntity, FundraiserGenericDTO.class);
+           return completeFundraiser(generic, fEntity);
+       }).collect(Collectors.toList()));
     }
 
     public void deleteFundraiser(Long fundraiserId) throws FundraiserException, UserColaboreException {

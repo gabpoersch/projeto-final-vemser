@@ -27,7 +27,6 @@ public class CategoryEntity {
     @Column(name = "name")
     private String name;
 
-    /*TODO: Verificar se o cascade All aqui ta certo.*/
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

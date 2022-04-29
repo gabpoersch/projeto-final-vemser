@@ -28,10 +28,17 @@ public interface FundraiserRepository extends JpaRepository<FundraiserEntity, Lo
     @Query("select f from fundraiser f where f.endingDate = :end")
     List<FundraiserEntity> finishedFundraisers(@Param("end") LocalDate end);
 
-    @Query(nativeQuery = true, value =
-            "SELECT * FROM fundraiser f " +
-                    "INNER JOIN fundraiser_category fc ON (f.fundraiser_id = fc.fundraiser_id)" +
-                    "INNER JOIN category c ON (fc.category_id = c.category_id) WHERE lower(c.\"name\") IN (?1)")
-    Page<FundraiserEntity> filterByCategories(List<String> categories, Pageable pageable);
-
+//    @Query(nativeQuery = true, value =
+//            "    SELECT f from fundraiser f \n" +
+//                    "    INNER JOIN\n" +
+//                    "        fundraiser_category fc ON (f.fundraiser_id = fc.fundraiser_id)\n" +
+//                    "    INNER JOIN\n" +
+//                    "        category c ON (fc.category_id = c.category_id) \n" +
+//                    "    WHERE\n" +
+//                    "        lower(c.name) IN (?1) AND f.status = true " +
+//                    "GROUP BY f.fundraiser_id, fc.fundraiser_id" +
+//                    ", fc.category_id, c.category_id")
+//    Page<FundraiserEntity> filterByCategories(List<String> categories, Pageable pageable);
+//
+//    @Query("select f from fundraiser f join ")
 }

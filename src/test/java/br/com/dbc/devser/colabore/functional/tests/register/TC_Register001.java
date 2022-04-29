@@ -28,10 +28,13 @@ public class TC_Register001 extends ConfigEnvironment {
 
         actLogin.clickLinkRegister();
 
+        Thread.sleep(3000);
+
         actRegister.writeInputEmail("54321@dbccompany.com.br")
                 .writeInputName("Stephen Wells-O'Shaugnessy Marcus")
                 .writeInputPassword("@!1234Aa123")
-                .btnPhoto().btnRegister();
+                .btnPhoto()
+                .btnRegister();
 
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
 
@@ -41,6 +44,8 @@ public class TC_Register001 extends ConfigEnvironment {
         homeAction.createFundraiser();
 
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/create-campanhas"));
+
+        Thread.sleep(3000);
 
         newFundraiser.writeInputTitle("Teste automatizado")
                 .writeInputGoal("2500")
@@ -52,6 +57,7 @@ public class TC_Register001 extends ConfigEnvironment {
                 .clickBtnSave();
 
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
+
 
         homeAction.logout();
     }

@@ -8,6 +8,9 @@ public class HomeColabore {
     public static By createButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[3]/button");
     public static By logoutButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[4]/button");
 
+    public static By btnMyFundraisers = By.xpath("//*[@id=\"root\"]/div[1]/div[1]/button[1]");
+    public static By btnMyContributions = By.xpath("//*[@id=\"root\"]/div[1]/div[1]/button[2]");
+
     public static By categorySelectionButton = By.xpath("//*[@id=\"root\"]/div[2]/div[1]/div/div[1]");
     public static By selectionButton = By.xpath("");
     public static By previousButton = By.xpath("//*[@id=\"root\"]/div[2]/div[3]/button[1]");
