@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,12 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(this::buildExposedDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UserDTO listLoggedUser() throws UserColaboreException {
+        UserEntity userEntity = getLoggedUser();
+
+        return objectMapper.convertValue(userEntity, UserDTO.class);
     }
 
     public UserDTO update(UserCreateDTO updateUserDTO) throws UserColaboreException {

@@ -33,6 +33,15 @@ public class UserController {
         return userService.list();
     }
 
+    @ApiOperation(value = "Retorna o usuário logado no sistema.")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi listado com sucesso."),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
+    @GetMapping("/profile")
+    public UserDTO listLoggedUser() throws UserColaboreException {
+        return userService.listLoggedUser();
+    }
+
     @ApiOperation(value = "Cadastra um usuário no banco de dados.")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "O usuário foi cadastrado com sucesso."),
             @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso."),
