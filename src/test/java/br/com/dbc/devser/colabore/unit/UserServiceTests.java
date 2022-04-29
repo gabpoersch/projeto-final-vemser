@@ -30,23 +30,17 @@ import static org.mockito.Mockito.*;
 @RequiredArgsConstructor
 public class UserServiceTests {
 
+    private final Authentication authentication = Mockito.mock(Authentication.class);
+    private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @InjectMocks
     private UserService userService;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private RoleRepository roleRepository;
-
-    private final Authentication authentication = Mockito.mock(Authentication.class);
-
-    private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-
     @Mock
     private UserEntity userEntity;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void BeforeEach() {

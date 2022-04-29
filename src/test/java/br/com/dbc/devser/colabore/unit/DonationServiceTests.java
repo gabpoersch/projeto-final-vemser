@@ -32,26 +32,20 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DonationServiceTests {
 
-    @InjectMocks
-    private DonationService donationService;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private FundraiserRepository fundraiserRepository;
-
-    @Mock
-    private DonationRepository donationRepository;
-
-    @Mock
-    private FundraiserService fundraiserService;
-
-    @Mock
-    private MailService mailService;
-
     @Mock
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @InjectMocks
+    private DonationService donationService;
+    @Mock
+    private UserService userService;
+    @Mock
+    private FundraiserRepository fundraiserRepository;
+    @Mock
+    private DonationRepository donationRepository;
+    @Mock
+    private FundraiserService fundraiserService;
+    @Mock
+    private MailService mailService;
 
     @BeforeEach
     public void initMethods() {

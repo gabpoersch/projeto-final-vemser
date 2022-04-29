@@ -34,42 +34,30 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FundraiserServiceTests {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Authentication authentication = Mockito.mock(Authentication.class);
+    private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     @InjectMocks
     private FundraiserService fundraiserService;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private UserService userService;
-
     @Mock
     private FundraiserRepository fundraiserRepository;
-
     @Mock
     private CategoryRepository categoryRepository;
-
     @Mock
     private FundraiserEntity fundraiserEntity;
-
     @Mock
     private UserEntity userEntity;
-
     @Mock
     private MailService mailService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private final Authentication authentication = Mockito.mock(Authentication.class);
-
-    private final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-
 
     @Before
     public void BeforeEach() {

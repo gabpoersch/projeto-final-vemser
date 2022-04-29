@@ -5,13 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ColaboreApplication {
-    /*
-        TODO:
-            - Testes unitários;
 
-        IDEIAS
-            - Testes automatizados;
-     */
     public static void main(String[] args) {
         SpringApplication.run(ColaboreApplication.class, args);
     }

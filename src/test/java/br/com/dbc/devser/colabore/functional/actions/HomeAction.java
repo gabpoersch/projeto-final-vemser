@@ -1,12 +1,11 @@
 package br.com.dbc.devser.colabore.functional.actions;
 
-import static br.com.dbc.devser.colabore.functional.pageObjects.HomeColabore.*;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static br.com.dbc.devser.colabore.functional.pageObjects.LoginColabore.*;
+import static br.com.dbc.devser.colabore.functional.pageObjects.HomeColabore.*;
 
 @RequiredArgsConstructor
 public class HomeAction {
@@ -19,7 +18,7 @@ public class HomeAction {
         return this;
     }
 
-    public HomeAction writeFundraiserToBeFound (String text) {
+    public HomeAction writeFundraiserToBeFound(String text) {
         CommomActions.write(driver, wait, text, searchBar);
         return this;
     }
@@ -40,7 +39,6 @@ public class HomeAction {
 //        wait.until(ExpectedConditions
 //                .elementToBeClickable(driver.findElement(categorySelectionButton))).click();
 //    }
-
 
 
 }

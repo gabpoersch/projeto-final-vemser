@@ -10,7 +10,7 @@ public class TC_Register001 extends ConfigEnvironment {
     RegisterAction act = new RegisterAction(driver, new WebDriverWait(driver, 8));
 
     @Test
-    public void registerPass () throws InterruptedException {
+    public void registerPass() throws InterruptedException {
         driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/register");
         driver.manage().window().maximize();
         act.writeInputEmail("joao@dbccompany.com.br")
