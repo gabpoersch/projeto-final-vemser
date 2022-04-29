@@ -107,7 +107,7 @@ public class FundraiserController {
             @ApiResponse(code = 500, message = "Foi gerada uma exceção no sistema."),})
     @GetMapping("/findAllFundraisersActive/{numberPage}")
     public Page<FundraiserGenericDTO> findAllFundraisersActive(@PathVariable("numberPage") Integer numberPage) {
-        return fundraiserService.findFundraisersActiveAcchieved(numberPage);
+        return fundraiserService.findAllFundraisersActive(numberPage);
     }
 
     @ApiOperation(value = "Deleta os registros da campanha (campanha e doações) do banco de dados.")
