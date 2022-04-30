@@ -38,7 +38,8 @@ public class UserService {
         user.setRoles(roleRepository.findById(1)
                 .orElseThrow(() -> new UserColaboreException("Role not found!")));
 
-        return buildExposedDTO(setPhotoBytes(user, userDTO));
+        UserEntity userReceived = userRepository.save(setPhotoBytes(user, userDTO));
+        return buildExposedDTO(userReceived);
     }
 
     public List<UserDTO> list() {
@@ -99,11 +100,10 @@ public class UserService {
     }
 
     public UserDTO listLoggedUser() throws UserColaboreException {
-        return objectMapper.convertValue(getLoggedUser(), UserDTO.class);
+        return objectMapper.convertValue(buildExposedDTO(getLoggedUser()), UserDTO.class);
     }
 
-    private UserDTO buildExposedDTO(UserEntity userEntity) {
-        UserEntity newUser = userRepository.save(userEntity);
+    private UserDTO buildExposedDTO(UserEntity newUser) {
 
         UserDTO exposedDTO = new UserDTO();
         exposedDTO.setUserId(newUser.getUserId());
