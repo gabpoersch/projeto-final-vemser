@@ -22,17 +22,15 @@ public class MailService {
     private final MailConfig mailConfig;
 
 
-    public void fundraiserMailService(FundraiserEntity fundraiserEntity) {
+
+
+    public void fundraiserMailService(FundraiserEntity fundraiserEntity, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         simpleMailMessage.setFrom("Colabore <colaborevemser@gmail.com>");
         simpleMailMessage.setTo(fundraiserEntity.getFundraiserCreator().getEmail());
         simpleMailMessage.setSubject("Parabéns! Sua campanha atingiu a meta!");
-        simpleMailMessage.setText("Olá, " + fundraiserEntity.getFundraiserCreator().getName() + "!\n\n" +
-                "Sua meta de R$ " + String.format("%.2f", fundraiserEntity.getGoal()) + " da sua campanha \"" + fundraiserEntity.getTitle() + "\" foi atingida com sucesso!\n" +
-                "Para resgatar o valor total da campanha, responda a este e-mail e iremos lhe auxiliar durante o processo :)\n\n" +
-                "Obrigado por utilizar a nossa plataforma!\n" +
-                "Colabore - VemSerDBC");
+        simpleMailMessage.setText(message);
 
         mailConfig.mailSender().send(simpleMailMessage);
     }

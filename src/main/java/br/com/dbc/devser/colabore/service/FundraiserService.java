@@ -201,6 +201,11 @@ public class FundraiserService {
                 .forEach(fEntity -> {
                     fEntity.setStatusActive(false);
                     fundraiserRepository.save(fEntity);
+                    mailService.fundraiserMailService(fEntity, "Olá, " + fEntity.getFundraiserCreator().getName() + "!\n\n" +
+                            "Sua campanha \"" + fEntity.getTitle() + "\" foi encerrada pois chegou à data de encerramento. \n" +
+                            "O valor total arrecadado foi de "+fEntity.getCurrentValue()+"."+
+                            "Obrigado por utilizar a nossa plataforma!\n" +
+                            "Colabore - VemSerDBC");
                 });
     }
 
@@ -211,12 +216,16 @@ public class FundraiserService {
         fundraiserRepository.save(fundraiserEntity);
 
         if (!fundraiserEntity.getStatusActive()) {
-            mailService.fundraiserMailService(fundraiserEntity);
+            mailService.fundraiserMailService(fundraiserEntity, "Olá, " + fundraiserEntity.getFundraiserCreator().getName() + "!\n\n" +
+                    "Sua meta de R$ " + String.format("%.2f", fundraiserEntity.getGoal()) + " da sua campanha \"" + fundraiserEntity.getTitle() + "\" foi atingida com sucesso!\n" +
+                    "Para resgatar o valor total da campanha, responda a este e-mail e iremos lhe auxiliar durante o processo :)\n\n" +
+                    "Obrigado por utilizar a nossa plataforma!\n" +
+                    "Colabore - VemSerDBC");
         }
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
-        return currentValue.compareTo(goal) < 0;
+        return currentValue.compareTo(goal) <= 0;
     }
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
