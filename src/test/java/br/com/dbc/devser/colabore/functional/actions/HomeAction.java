@@ -15,7 +15,7 @@ public class HomeAction {
     private final WebDriver driver;
     private final WebDriverWait wait;
 
-    public HomeAction fundraiserHome() {
+    public HomeAction clickButtonHome() {
         wait.until(ExpectedConditions
                 .elementToBeClickable(driver.findElement(exploreButton))).click();
         return this;
@@ -26,19 +26,19 @@ public class HomeAction {
         return this;
     }
 
-    public HomeAction createFundraiser() {
+    public HomeAction clickButtonCreateFundraiser() {
         WebElement ele = driver.findElement(createButton);
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("arguments[0].click()", ele);
         return this;
     }
 
-    public HomeAction clickMyFundraisers (){
+    public HomeAction clickMyFundraisers() {
         driver.findElement(btnMyFundraisers).click();
         return this;
     }
 
-    public HomeAction clickMyContributions (){
+    public HomeAction clickMyContributions() {
         driver.findElement(btnMyContributions).click();
         return this;
     }

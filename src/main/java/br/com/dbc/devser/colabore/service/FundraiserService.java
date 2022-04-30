@@ -9,7 +9,6 @@ import br.com.dbc.devser.colabore.dto.user.UserDTO;
 import br.com.dbc.devser.colabore.email.service.MailService;
 import br.com.dbc.devser.colabore.entity.CategoryEntity;
 import br.com.dbc.devser.colabore.entity.FundraiserEntity;
-import br.com.dbc.devser.colabore.entity.UserEntity;
 import br.com.dbc.devser.colabore.exception.FundraiserException;
 import br.com.dbc.devser.colabore.exception.UserColaboreException;
 import br.com.dbc.devser.colabore.repository.CategoryRepository;
@@ -112,10 +111,11 @@ public class FundraiserService {
         }
         details.setCategories(convertCategories(fundraiserEntity.getCategoriesFundraiser()));
         details.setEndingDate(fundraiserEntity.getEndingDate());
-        details.setFundraiserCreator(buildExposedUser(fundraiserEntity.getFundraiserCreator()));
+        //Usando o método de build da UserService para construir o user que será exposto.
+        details.setFundraiserCreator(userService.buildExposedDTO(fundraiserEntity.getFundraiserCreator()));
         details.setAutomaticClose(fundraiserEntity.getAutomaticClose());
         details.setContributors(fundraiserEntity.getDonations().stream()
-                .map(donationEntity -> buildExposedUser(donationEntity.getDonator())).collect(Collectors.toSet()));
+                .map(donationEntity -> userService.buildExposedDTO(donationEntity.getDonator())).collect(Collectors.toSet()));
 
         return details;
     }
@@ -148,10 +148,8 @@ public class FundraiserService {
         return donationRepository.findMyDonations(userService.getLoggedUser().getUserId(), PageRequest.of(numberPage, 20))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
-                    FundraiserGenericDTO fundraiserGeneric = objectMapper
-                            .convertValue(fEntity, FundraiserGenericDTO.class);
                     FundraiserUserContributionsDTO userContributions = objectMapper
-                            .convertValue(completeFundraiser(fundraiserGeneric, fEntity)
+                            .convertValue(buildFundraiserGeneric(fEntity)
                                     , FundraiserUserContributionsDTO.class);
                     userContributions.setStatus(fEntity.getStatusActive());
                     userContributions.setTotalContribution(userContribution.getValue());
@@ -165,7 +163,7 @@ public class FundraiserService {
         for (String str : categories) {
             categoriesLower.add(str.toLowerCase().trim());
         }
-        return fundraiserRepository.filterByCategories(categoriesLower, PageRequest.of(numberPage, 12))
+        return fundraiserRepository.filterByCategories(categoriesLower, getPageable(numberPage))
                 .map(this::buildFundraiserGeneric);
     }
 
@@ -176,6 +174,7 @@ public class FundraiserService {
 
         Set<CategoryEntity> categories = fundraiserEntity.getCategoriesFundraiser();
 
+        //Deletando categorias que não estão mais relacionadas a nenhum outro fundraiser;
         categories.stream().filter(categoryEntity -> categoryEntity.getFundraisers().size() == 1)
                 .forEach(categoryRepository::delete);
 
@@ -252,18 +251,6 @@ public class FundraiserService {
         if (!Objects.equals(userService.getLoggedUser().getUserId(), fEntity.getFundraiserCreator().getUserId())) {
             throw new FundraiserException("You are not the owner.");
         }
-    }
-
-    private UserDTO buildExposedUser(UserEntity user) {
-        UserDTO userDTO = UserDTO.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-        if (user.getPhoto() != null) {
-            userDTO.setProfilePhoto(Base64.getEncoder().encodeToString(user.getPhoto()));
-        }
-        return userDTO;
     }
 
     private FundraiserGenericDTO buildFundraiserGeneric(FundraiserEntity fEntity) {

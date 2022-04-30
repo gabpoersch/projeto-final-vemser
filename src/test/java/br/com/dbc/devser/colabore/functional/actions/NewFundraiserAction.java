@@ -39,9 +39,9 @@ public class NewFundraiserAction {
     }
 
     public NewFundraiserAction clickBtnCoverPhoto() {
-        WebElement btnPhotoElement = wait.until(ExpectedConditions
-                .elementToBeClickable(driver.findElement(btnCoverPhoto)));
-        btnPhotoElement.sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/doacao-foto.png");
+        wait.until(ExpectedConditions
+                        .elementToBeClickable(driver.findElement(btnCoverPhoto)))
+                .sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/doacao-foto.png");
         return this;
     }
 

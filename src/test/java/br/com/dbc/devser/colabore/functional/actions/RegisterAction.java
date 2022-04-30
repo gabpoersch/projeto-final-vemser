@@ -2,7 +2,6 @@ package br.com.dbc.devser.colabore.functional.actions;
 
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -31,9 +30,9 @@ public class RegisterAction {
     }
 
     public RegisterAction btnPhoto() {
-        WebElement btnPhotoElement = wait.until(ExpectedConditions
-                .elementToBeClickable(driver.findElement(btnPhoto)));
-        btnPhotoElement.sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/home.jpg");
+        wait.until(ExpectedConditions
+                        .elementToBeClickable(driver.findElement(btnPhoto)))
+                .sendKeys(System.getProperty("user.dir") + "/src/main/resources/img/home.jpg");
         return this;
     }
 

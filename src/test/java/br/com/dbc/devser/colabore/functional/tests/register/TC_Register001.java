@@ -8,17 +8,15 @@ import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
 public class TC_Register001 extends ConfigEnvironment {
 
-    WebDriverWait wait = new WebDriverWait(driver, 8);
     LoginAction actLogin = new LoginAction(driver, wait);
     RegisterAction actRegister = new RegisterAction(driver, wait);
     HomeAction homeAction = new HomeAction(driver, wait);
-    NewFundraiserAction newFundraiser = new NewFundraiserAction(driver, wait);
+    NewFundraiserAction newFundraiserAction = new NewFundraiserAction(driver, wait);
 
     @Test
     public void successfullyRegistration() throws InterruptedException {
@@ -28,6 +26,7 @@ public class TC_Register001 extends ConfigEnvironment {
 
         actLogin.clickLinkRegister();
 
+        //Tempo de apresentação
         Thread.sleep(3000);
 
         actRegister.writeInputEmail("54321@dbccompany.com.br")
@@ -41,13 +40,14 @@ public class TC_Register001 extends ConfigEnvironment {
         //1º Verificação
         Assertions.assertEquals("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas", driver.getCurrentUrl());
 
-        homeAction.createFundraiser();
+        homeAction.clickButtonCreateFundraiser();
 
         wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/create-campanhas"));
 
+        //Tempo de apresentação
         Thread.sleep(3000);
 
-        newFundraiser.writeInputTitle("Teste automatizado")
+        newFundraiserAction.writeInputTitle("Teste automatizado")
                 .writeInputGoal("2500")
                 .clickAutomaticClose()
                 .writeInputDate("12/03/2023")
@@ -60,6 +60,7 @@ public class TC_Register001 extends ConfigEnvironment {
 
         homeAction.clickMyFundraisers();
 
+        //Tempo de apresentação
         Thread.sleep(8000);
 
         homeAction.logout();
