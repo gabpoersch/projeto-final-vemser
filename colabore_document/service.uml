@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>br.com.dbc.devser.colabore.service</OriginalElement>
+  <nodes>
+    <node x="403.0" y="10.0">br.com.dbc.devser.colabore.service.UserService</node>
+    <node x="93.0" y="251.0">br.com.dbc.devser.colabore.service.CategoryService</node>
+    <node x="86.0" y="10.0">br.com.dbc.devser.colabore.service.FundraiserService</node>
+    <node x="-210.0" y="10.0">br.com.dbc.devser.colabore.service.DonationService</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="263.0" y="280.0" />
+  <SelectedNodes>
+    <node>br.com.dbc.devser.colabore.service.UserService</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
