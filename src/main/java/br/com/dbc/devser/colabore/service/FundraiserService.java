@@ -145,7 +145,7 @@ public class FundraiserService {
     }
 
     public Page<FundraiserUserContributionsDTO> userContributions(Integer numberPage) throws UserColaboreException {
-        return donationRepository.findMyDonations(userService.getLoggedUser().getUserId(), PageRequest.of(numberPage, 20))
+        return donationRepository.findMyDonations(userService.getLoggedUser().getUserId(), PageRequest.of(numberPage, 9))
                 .map(userContribution -> {
                     FundraiserEntity fEntity = userContribution.getFundraiserEntity();
                     FundraiserUserContributionsDTO userContributions = objectMapper
@@ -190,11 +190,10 @@ public class FundraiserService {
 
     private Pageable getPageable(Integer numberPage) {
         return PageRequest
-                .of(numberPage, 12, Sort.by("endingDate").ascending());
+                .of(numberPage, 9, Sort.by("endingDate").ascending());
     }
 
-    //TODO: Verificar se a expressão estar correta e se faz sentido com o gabriel
-    @Scheduled(cron = "0 59 23 * * *")
+    @Scheduled(cron = "0 0 23 * * *")
     public void setStatusFundraiser() {
         log.info("Scheduled method running on {}", LocalDate.now());
 
