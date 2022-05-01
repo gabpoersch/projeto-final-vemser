@@ -169,7 +169,6 @@ public class FundraiserServiceTests {
 
     public Set<DonationEntity> donationEntitySetMock() {
         DonationEntity donation = new DonationEntity();
-        donation.setMessage("Donation teste");
         donation.setValue(new BigDecimal("50.0"));
         donation.setDonator(userEntityMock());
         donation.setFundraiser(fundEntityMock());

@@ -98,7 +98,6 @@ public class DonationServiceTests {
 
     public DonateCreateDTO donateCreateDTOMock() {
         DonateCreateDTO donateCreateDTO = new DonateCreateDTO();
-        donateCreateDTO.setMessage("Mensagem do donate teste");
         donateCreateDTO.setValue(new BigDecimal("50.0"));
         return donateCreateDTO;
     }
