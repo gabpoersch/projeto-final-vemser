@@ -225,7 +225,7 @@ public class FundraiserService {
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
-        return currentValue.compareTo(goal) <= 0;
+        return currentValue.compareTo(goal) < 0;
     }
 
     private FundraiserGenericDTO completeFundraiser(FundraiserGenericDTO generic, FundraiserEntity fEntity) {
