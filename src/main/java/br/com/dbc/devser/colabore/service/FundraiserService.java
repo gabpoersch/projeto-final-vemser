@@ -193,7 +193,8 @@ public class FundraiserService {
                 .of(numberPage, 12, Sort.by("endingDate").ascending());
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    //TODO: Verificar se a expressão estar correta e se faz sentido com o gabriel
+    @Scheduled(cron = "0 59 23 * * *")
     public void setStatusFundraiser() {
         log.info("Scheduled method running on {}", LocalDate.now());
 
@@ -201,12 +202,12 @@ public class FundraiserService {
                 .forEach(fEntity -> {
                     fEntity.setStatusActive(false);
                     fundraiserRepository.save(fEntity);
-                    mailService.fundraiserMailService(fEntity, "Olá, " + fEntity.getFundraiserCreator().getName() + "!\n\n" +
-                            "Sua campanha \"" + fEntity.getTitle() + "\" foi encerrada pois chegou à data de encerramento. \n" +
-                            "O valor total arrecadado foi de " + fEntity.getCurrentValue() + "." +
-                            "Obrigado por utilizar a nossa plataforma!\n" +
-                            "Colabore - VemSerDBC");
+                    mailService.fundraiserMailService(fEntity, String.format("Olá, %s! %n%nSua campanha %s foi encerrada " +
+                                    "pois chegou à data de encerramento.%nO valor total arrecadado foi de R$ %.2f." +
+                                    "%nObrigado por usar a nossa plataforma!\nColabore - VemSerDBC", fEntity.getFundraiserCreator().getName()
+                            , fEntity.getTitle(), fEntity.getCurrentValue()));
                 });
+
     }
 
     public void checkClosed(FundraiserEntity fundraiserEntity) {
@@ -216,12 +217,14 @@ public class FundraiserService {
         fundraiserRepository.save(fundraiserEntity);
 
         if (!fundraiserEntity.getStatusActive()) {
-            mailService.fundraiserMailService(fundraiserEntity, "Olá, " + fundraiserEntity.getFundraiserCreator().getName() + "!\n\n" +
-                    "Sua meta de R$ " + String.format("%.2f", fundraiserEntity.getGoal()) + " da sua campanha \"" + fundraiserEntity.getTitle() + "\" foi atingida com sucesso!\n" +
-                    "Para resgatar o valor total da campanha, responda a este e-mail e iremos lhe auxiliar durante o processo :)\n\n" +
-                    "Obrigado por utilizar a nossa plataforma!\n" +
-                    "Colabore - VemSerDBC");
+            mailService.fundraiserMailService(fundraiserEntity, String.format("Olá, %s!%n%nSua meta de R$ %.2f da sua " +
+                            "campanha \"%s\" foi atingida com sucesso!" +
+                            "%nPara resgatar o valor total da campanha, responda a este e-mail e iremos lhe auxiliar durante o " +
+                            "processo :)%n%nObrigado por utilizar a nossa plataforma!%nColabore - VemSerDBC"
+                    , fundraiserEntity.getFundraiserCreator().getName(), fundraiserEntity.getGoal()
+                    , fundraiserEntity.getTitle()));
         }
+
     }
 
     public Boolean checkClosedValue(BigDecimal currentValue, BigDecimal goal) {
