@@ -23,8 +23,6 @@ public class DonationEntity {
     @Column(name = "donation_id")
     private Integer donationId;
 
-    private String message;
-
     private BigDecimal value;
 
     @ManyToOne(fetch = FetchType.LAZY)
