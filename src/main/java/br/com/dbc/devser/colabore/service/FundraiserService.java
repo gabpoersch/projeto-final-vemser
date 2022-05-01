@@ -203,7 +203,7 @@ public class FundraiserService {
                     fundraiserRepository.save(fEntity);
                     mailService.fundraiserMailService(fEntity, "Olá, " + fEntity.getFundraiserCreator().getName() + "!\n\n" +
                             "Sua campanha \"" + fEntity.getTitle() + "\" foi encerrada pois chegou à data de encerramento. \n" +
-                            "O valor total arrecadado foi de "+fEntity.getCurrentValue()+"."+
+                            "O valor total arrecadado foi de " + fEntity.getCurrentValue() + "." +
                             "Obrigado por utilizar a nossa plataforma!\n" +
                             "Colabore - VemSerDBC");
                 });

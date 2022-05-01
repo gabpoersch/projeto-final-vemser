@@ -5,7 +5,7 @@ import br.com.dbc.devser.colabore.functional.config.ConfigEnvironment;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-public class TC_Login001 extends ConfigEnvironment {
+public class ScenarioLogin extends ConfigEnvironment {
 
     LoginAction loginAction = new LoginAction(driver, wait);
 

@@ -22,7 +22,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenService tokenService;
     private final AuthenticationService authenticationService;
 
-    //TODO: Testar e verificar
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable().and().cors().and()

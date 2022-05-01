@@ -21,9 +21,6 @@ public class MailService {
 
     private final MailConfig mailConfig;
 
-
-
-
     public void fundraiserMailService(FundraiserEntity fundraiserEntity, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
