@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface DonationRepository extends JpaRepository<DonationEntity, Long> {
 
     @Query("select new br.com.dbc.devser.colabore.entity.UserContributions(f, sum (d.value)) " +
-            "from donation d join fetch fundraiser f on d.fundraiser.fundraiserId = f.fundraiserId " +
-            "where d.donator.userId = :userId group by f.fundraiserId")
+            "from donation d join fundraiser f on d.fundraiser.fundraiserId = f.fundraiserId " +
+            "where d.donator.userId = :userId and f.statusActive = true group by f.fundraiserId")
     Page<UserContributions> findMyDonations(@Param("userId") Long userId, Pageable pageable);
 
 }

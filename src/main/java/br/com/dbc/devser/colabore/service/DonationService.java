@@ -50,13 +50,13 @@ public class DonationService {
 
         log.info("Current value up to date, value add = {}.", donate.getValue());
 
-        /*Enviando email para doador*/
-        mailService.donatorMailService(donationSaved, fundraiserEntity);
-
         /*Agora está se passando a referência ao invés do próprio ID*/
         if (fundraiserEntity.getAutomaticClose()) {
             fundraiserService.checkClosed(fundraiserUpdated);
         }
+
+        /*Enviando email para doador*/
+        mailService.donatorMailService(donationSaved, fundraiserEntity);
 
     }
 
