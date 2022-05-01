@@ -194,7 +194,7 @@ public class FundraiserService {
     }
 
     //TODO: Verificar se a expressão estar correta e se faz sentido com o gabriel
-    @Scheduled(cron = "0 59 23 * * *")
+    @Scheduled(cron = "0 0 23 * * *")
     public void setStatusFundraiser() {
         log.info("Scheduled method running on {}", LocalDate.now());
 
