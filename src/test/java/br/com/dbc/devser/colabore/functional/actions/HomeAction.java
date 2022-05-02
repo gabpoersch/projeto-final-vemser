@@ -22,7 +22,7 @@ public class HomeAction {
     }
 
     public HomeAction writeFundraiserToBeFound(String text) {
-        CommomActions.write(driver, wait, text, searchBar);
+        CommonActions.write(driver, wait, text, searchBar);
         return this;
     }
 

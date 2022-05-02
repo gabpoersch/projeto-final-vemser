@@ -14,12 +14,12 @@ public class LoginAction {
     private final WebDriverWait wait;
 
     public LoginAction writeInputEmail(String text) {
-        CommomActions.write(driver, wait, text, inputEmail);
+        CommonActions.write(driver, wait, text, inputEmail);
         return this;
     }
 
     public LoginAction writeInputPassword(String text) {
-        CommomActions.write(driver, wait, text, inputPassword);
+        CommonActions.write(driver, wait, text, inputPassword);
         return this;
     }
 

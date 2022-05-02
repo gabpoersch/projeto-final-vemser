@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class CommomActions {
+public class CommonActions {
 
     /*Faz a digitação em um input com o Wait explícito setado*/
     public static void write(WebDriver driver, WebDriverWait wait, String text, By inputBy) {

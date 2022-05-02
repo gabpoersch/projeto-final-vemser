@@ -19,12 +19,12 @@ public class NewFundraiserAction {
     private final WebDriverWait wait;
 
     public NewFundraiserAction writeInputTitle(String text) {
-        CommomActions.write(driver, wait, text, inputTitle);
+        CommonActions.write(driver, wait, text, inputTitle);
         return this;
     }
 
     public NewFundraiserAction writeInputGoal(String text) {
-        CommomActions.write(driver, wait, text, inputGoal);
+        CommonActions.write(driver, wait, text, inputGoal);
         return this;
     }
 
@@ -34,7 +34,7 @@ public class NewFundraiserAction {
     }
 
     public NewFundraiserAction writeInputDate(String text) {
-        CommomActions.write(driver, wait, text, inputDate);
+        CommonActions.write(driver, wait, text, inputDate);
         return this;
     }
 
@@ -57,7 +57,7 @@ public class NewFundraiserAction {
     }
 
     public NewFundraiserAction writeDescription(String text) {
-        CommomActions.write(driver, wait, text, textArea);
+        CommonActions.write(driver, wait, text, textArea);
         return this;
     }
 

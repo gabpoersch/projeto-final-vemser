@@ -14,18 +14,18 @@ public class RegisterAction {
     private final WebDriverWait wait;
 
     public RegisterAction writeInputEmail(String text) {
-        CommomActions.write(driver, wait, text, inputEmail);
+        CommonActions.write(driver, wait, text, inputEmail);
         return this;
     }
 
     public RegisterAction writeInputName(String text) {
-        CommomActions.write(driver, wait, text, inputName);
+        CommonActions.write(driver, wait, text, inputName);
         return this;
     }
 
     public RegisterAction writeInputPassword(String text) {
-        CommomActions.write(driver, wait, text, inputPassword);
-        CommomActions.write(driver, wait, text, confirmPassword);
+        CommonActions.write(driver, wait, text, inputPassword);
+        CommonActions.write(driver, wait, text, confirmPassword);
         return this;
     }
 
