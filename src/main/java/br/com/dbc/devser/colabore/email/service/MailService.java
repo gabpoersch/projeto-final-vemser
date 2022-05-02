@@ -39,9 +39,10 @@ public class MailService {
         simpleMailMessage.setFrom("Colabore <colaborevemser@gmail.com>");
         simpleMailMessage.setTo(donationEntity.getDonator().getEmail());
         simpleMailMessage.setSubject("Obrigado pela sua contribuição!");
-        simpleMailMessage.setText(String.format("Olá, %s!%n%nVocê acaba de contribuir R$ %.2f para a campanha \"%s\"." +
+        simpleMailMessage.setText(String.format("Olá, %s!%n%nVocê acaba de contribuir R$ %.2f para a campanha \"%s\". " +
                         "Caso sinta-se à vontade, você poderá doar novamente para esta causa até %s.%n" +
-                        "Em nome dos autores da campanha e de toda a equipe Colabore, agradecemos pelo seu apoio!%nColabore - VemSerDBC"
+                        "Em nome dos autores da campanha e de toda a equipe Colabore, agradecemos pelo seu apoio!\n" +
+                        "Colabore - VemSerDBC"
                 , donationEntity.getDonator().getName(), donationEntity.getValue()
                 , fundraiserEntity.getTitle(), formattedEndingDate));
 
