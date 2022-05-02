@@ -22,7 +22,7 @@ public class ScenarioRegister extends ConfigEnvironment {
 
     @Test
     public void shouldRequireModelEmail() throws InterruptedException {
-        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
+        driver.get("https://final-vemser.vercel.app");
 
         driver.manage().window().maximize();
 
@@ -38,7 +38,7 @@ public class ScenarioRegister extends ConfigEnvironment {
 
     @Test
     public void shouldPassModelEmail() {
-        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
+        driver.get("https://final-vemser.vercel.app");
 
         driver.manage().window().maximize();
 
@@ -54,7 +54,7 @@ public class ScenarioRegister extends ConfigEnvironment {
 
     @Test
     public void successfullyRegistration() throws InterruptedException {
-        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
+        driver.get("https://final-vemser.vercel.app");
 
         driver.manage().window().maximize();
 
@@ -69,14 +69,13 @@ public class ScenarioRegister extends ConfigEnvironment {
                 .btnPhoto()
                 .btnRegister();
 
-        wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
+        wait.until(ExpectedConditions.urlToBe("https://final-vemser.vercel.app/campaigns"));
 
-        //1º Verificação
-        Assertions.assertEquals("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas", driver.getCurrentUrl());
+        Assertions.assertEquals("https://final-vemser.vercel.app/campaigns", driver.getCurrentUrl());
 
         homeAction.clickButtonCreateFundraiser();
 
-        wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/create-campanhas"));
+        wait.until(ExpectedConditions.urlToBe("https://final-vemser.vercel.app/create-campaigns"));
 
         //Tempo de apresentação
         Thread.sleep(3000);
@@ -86,11 +85,11 @@ public class ScenarioRegister extends ConfigEnvironment {
                 .clickAutomaticClose()
                 .writeInputDate("12/03/2023")
                 .clickBtnCoverPhoto()
-                .writeInputCategories(List.of("automatiza", "selenium"))
+                .writeInputCategories(List.of("automatiza"))
                 .writeDescription("Descrição")
                 .clickBtnSave();
 
-        wait.until(ExpectedConditions.urlToBe("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/campanhas"));
+        wait.until(ExpectedConditions.urlToBe("https://final-vemser.vercel.app/campaigns"));
 
         homeAction.clickMyFundraisers();
 

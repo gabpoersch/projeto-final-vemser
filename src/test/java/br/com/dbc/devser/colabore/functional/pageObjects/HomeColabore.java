@@ -5,8 +5,8 @@ import org.openqa.selenium.By;
 public class HomeColabore {
     public static By exploreButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[1]/a");
     public static By searchBar = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[2]/div");
-    public static By createButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[3]/button");
-    public static By logoutButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li[4]/button");
+    public static By createButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/div/li[2]/button");
+    public static By logoutButton = By.xpath("//*[@id=\"root\"]/header/nav/ul/li/button");
 
     public static By btnMyFundraisers = By.xpath("//*[@id=\"root\"]/div[1]/div[1]/button[1]");
     public static By btnMyContributions = By.xpath("//*[@id=\"root\"]/div[1]/div[1]/button[2]");

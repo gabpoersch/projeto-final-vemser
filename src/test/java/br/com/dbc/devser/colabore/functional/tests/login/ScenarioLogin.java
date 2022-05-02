@@ -11,21 +11,21 @@ public class ScenarioLogin extends ConfigEnvironment {
 
     @Test
     public void shouldNotPassWithoutEmail() {
-        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
+        driver.get("https://final-vemser.vercel.app");
 
         loginAction.writeInputPassword("321").clickLoginButton();
 
-        Assertions.assertEquals("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/"
+        Assertions.assertEquals("https://final-vemser.vercel.app/"
                 , driver.getCurrentUrl());
     }
 
     @Test
     public void shouldNotPassWithoutPassword() {
-        driver.get("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app");
+        driver.get("https://final-vemser.vercel.app");
 
         loginAction.writeInputEmail("321@mail.com").clickLoginButton();
 
-        Assertions.assertEquals("https://projeto-final-vem-ser-dbc-colabore-new.vercel.app/"
+        Assertions.assertEquals("https://final-vemser.vercel.app/"
                 , driver.getCurrentUrl());
     }
 }
